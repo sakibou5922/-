@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>こころの鏡</title>
+<meta name="description" content="あなたの表情や言葉から感情を読み取り、色・動き・言葉で応えるWebサイト。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#1d2433; --bg2:#2c3550; --accent:#b8c4e0; --ink:#f3f5fb; --ink-dim:rgba(243,245,251,.68);
+  --glass:rgba(255,255,255,.08); --glass-line:rgba(255,255,255,.16);
+  --font:"Zen Maru Gothic",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;font-family:var(--font);color:var(--ink);overflow-x:hidden;
+  background:radial-gradient(120% 90% at 50% 0%,var(--bg2),var(--bg1));
+  background-color:var(--bg1);transition:background-color 1.2s;
+}
+canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:40px 16px 64px;display:flex;flex-direction:column;align-items:center;gap:28px}
+header{text-align:center}
+h1{font-size:clamp(26px,6vw,40px);font-weight:700;margin:0;letter-spacing:.08em}
+.lead{margin:8px 0 0;color:var(--ink-dim);font-size:14px}
+
+.orb-wrap{position:relative;width:min(62vw,260px);aspect-ratio:1}
+.orb{
+  position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff8,transparent 45%),radial-gradient(circle,var(--accent),color-mix(in srgb,var(--accent) 40%,transparent) 70%);
+  box-shadow:0 0 60px color-mix(in srgb,var(--accent) 60%,transparent),0 0 140px color-mix(in srgb,var(--accent) 30%,transparent);
+  transition:background 1s,box-shadow 1s;will-change:transform,border-radius;
+}
+.face{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(52px,16vw,88px);user-select:none;transition:transform .4s}
+.mood{text-align:center;min-height:5.5em}
+.mood .label{font-size:clamp(22px,5vw,30px);font-weight:700;letter-spacing:.12em}
+.mood .msg{margin-top:8px;color:var(--ink-dim);line-height:1.9;font-size:15px}
+
+.panel{width:100%;background:var(--glass);border:1px solid var(--glass-line);border-radius:20px;padding:18px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.tab{flex:1 1 0;min-width:90px;font:inherit;font-size:14px;color:var(--ink);background:transparent;border:1px solid var(--glass-line);border-radius:999px;padding:8px 10px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:#1a1d26;border-color:var(--ink)}
+.pane[hidden]{display:none}
+textarea{width:100%;min-height:92px;resize:vertical;font:inherit;font-size:16px;color:var(--ink);background:rgba(0,0,0,.18);border:1px solid var(--glass-line);border-radius:14px;padding:12px}
+textarea::placeholder{color:rgba(243,245,251,.45)}
+.hint{font-size:12px;color:var(--ink-dim);margin:8px 0 0}
+.btn{font:inherit;font-size:14px;color:#1a1d26;background:var(--ink);border:0;border-radius:999px;padding:10px 18px;cursor:pointer}
+.btn.ghost{color:var(--ink);background:transparent;border:1px solid var(--glass-line)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.cam{position:relative;width:160px;aspect-ratio:4/3;border-radius:14px;overflow:hidden;background:rgba(0,0,0,.3);flex:none}
+.cam video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.picks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pick{font:inherit;font-size:14px;color:var(--ink);background:rgba(0,0,0,.15);border:1px solid var(--glass-line);border-radius:14px;padding:12px 6px;cursor:pointer}
+.pick span{display:block;font-size:26px}
+.bars{display:grid;gap:6px;margin-top:14px}
+.bar{display:grid;grid-template-columns:6.5em 1fr;white-space:nowrap;align-items:center;gap:8px;font-size:12px;color:var(--ink-dim)}
+.bar i{display:block;height:6px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden}
+.bar b{display:block;height:100%;width:0;border-radius:3px;transition:width .4s}
+footer{font-size:12px;color:var(--ink-dim);text-align:center}
+.sound{position:fixed;top:12px;right:12px;z-index:2}
+button:focus-visible,textarea:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.orb{animation:none!important}}
+</style>
+</head>
+<body>
+<canvas id="fx" aria-hidden="true"></canvas>
+<button class="btn ghost sound" id="soundBtn" aria-pressed="false">♪ 音 OFF</button>
+
+<main>
+  <header>
+    <h1>こころの鏡</h1>
+    <p class="lead">あなたの表情や言葉に、このページが応えます。</p>
+  </header>
+
+  <div class="orb-wrap" aria-hidden="true">
+    <div class="orb" id="orb"></div>
+    <div class="face" id="face">😌</div>
+  </div>
+
+  <section class="mood" aria-live="polite">
+    <div class="label" id="label">おだやか</div>
+    <div class="msg" id="msg">いまの気持ちを、表情か言葉で教えてください。</div>
+  </section>
+
+  <section class="panel">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-pane="text">✍️ 言葉で</button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="cam">📷 表情で</button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="pick">👆 選んで</button>
+    </div>
+
+    <div class="pane" id="pane-text">
+      <textarea id="text" placeholder="例：今日はテストで満点をとれてうれしい！"></textarea>
+      <p class="hint">入力するたびに、文章から気持ちを読み取ります。</p>
+    </div>
+
+    <div class="pane" id="pane-cam" hidden>
+      <div class="row">
+        <div class="cam"><video id="video" playsinline muted></video></div>
+        <div style="flex:1;min-width:180px">
+          <button class="btn" id="camBtn">カメラをはじめる</button>
+          <p class="hint" id="camStatus">映像は外部に送信されず、この端末のブラウザ内だけで解析します。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pane" id="pane-pick" hidden>
+      <div class="picks" id="picks"></div>
+    </div>
+
+    <div class="bars" id="bars"></div>
+  </section>
+
+  <footer>表情認識：face-api.js（ブラウザ内で動作）</footer>
+</main>
+
+<script>
+/* ============ 感情の定義 ============ */
+const EMO = {
+  happy:    {name:"よろこび", face:"😄", bg1:"#3a2310", bg2:"#f0a13a", accent:"#ffd166",
+             colors:["#ffd166","#ff9f1c","#ffe8a3","#ff7aa2"], motion:"rise",
+             msgs:["その笑顔、画面ごしでも伝わってきます。","いい流れですね。この気分、少しだけ誰かにおすそわけしてみては？","うれしい気持ちは、覚えておくとまた力になります。"]},
+  sad:      {name:"かなしみ", face:"😢", bg1:"#0c1424", bg2:"#2a4270", accent:"#7aa7e8",
+             colors:["#7aa7e8","#a9c6f0","#4f78b8"], motion:"rain",
+             msgs:["無理に元気を出さなくて大丈夫。ここでは、ゆっくりしていってください。","つらいときは、温かい飲みものを一杯。それだけでも少し変わります。","その気持ちを言葉にできたこと自体、ちゃんと前に進んでいます。"]},
+  angry:    {name:"いかり", face:"😠", bg1:"#240808", bg2:"#8f1d1d", accent:"#ff5a4f",
+             colors:["#ff5a4f","#ff8c42","#ffc15e"], motion:"ember",
+             msgs:["腹が立つのは、大事にしているものがあるから。","まずは深呼吸を3回。吸って…吐いて…。","その怒り、正当なものかもしれません。落ち着いてから、どう伝えるか考えましょう。"]},
+  surprised:{name:"おどろき", face:"😲", bg1:"#1a0f2e", bg2:"#7b3fe4", accent:"#c792ff",
+             colors:["#c792ff","#7df9ff","#fff27a","#ff8fd8"], motion:"burst",
+             msgs:["おっと！何か予想外のことが？","びっくりした瞬間は、新しい発見の入り口です。","心臓がドキッとしましたね。"]},
+  fearful:  {name:"ふあん", face:"😰", bg1:"#0b1112", bg2:"#2f4a4a", accent:"#8fb8b0",
+             colors:["#8fb8b0","#5f7f7a","#c6ddd8"], motion:"fog",
+             msgs:["不安なときは、いま目に見えるものを5つ数えてみてください。","先のことは、まだ決まっていません。ひとつずつで大丈夫。","ここは安全な場所です。肩の力を抜いてみましょう。"]},
+  neutral:  {name:"おだやか", face:"😌", bg1:"#1d2433", bg2:"#3a4666", accent:"#b8c4e0",
+             colors:["#b8c4e0","#dfe6f5","#8f9cc0"], motion:"float",
+             msgs:["おだやかな時間が流れています。","落ち着いた気分ですね。考えごとにちょうどいいかも。","いまの気持ちを、表情か言葉で教えてください。"]},
+};
+const KEYS = Object.keys(EMO);
+
+/* ============ 状態：感情ベクトルをなめらかに補間 ============ */
+const target = Object.fromEntries(KEYS.map(k=>[k,k==="neutral"?1:0]));
+const cur = {...target};
+let dominant = "neutral";
+
+function setTarget(scores){
+  let sum = 0; KEYS.forEach(k=>sum += scores[k]||0);
+  if(sum<=0){ KEYS.forEach(k=>target[k]=k==="neutral"?1:0); return; }
+  KEYS.forEach(k=>target[k]=(scores[k]||0)/sum);
+}
+
+/* ============ 見た目の更新 ============ */
+const $ = s=>document.querySelector(s);
+const root = document.documentElement;
+function hex2rgb(h){h=h.replace("#","");return [0,2,4].map(i=>parseInt(h.substr(i,2),16))}
+function mix(prop){
+  const rgb=[0,0,0];
+  KEYS.forEach(k=>hex2rgb(EMO[k][prop]).forEach((v,i)=>rgb[i]+=v*cur[k]));
+  return `rgb(${rgb.map(Math.round).join(",")})`;
+}
+function renderColors(){
+  root.style.setProperty("--bg1",mix("bg1"));
+  root.style.setProperty("--bg2",mix("bg2"));
+  root.style.setProperty("--accent",mix("accent"));
+}
+function renderMood(){
+  const top = KEYS.reduce((a,b)=>cur[a]>=cur[b]?a:b);
+  if(top!==dominant){
+    dominant = top;
+    const e = EMO[top];
+    $("#label").textContent = e.name;
+    $("#face").textContent = e.face;
+    $("#msg").textContent = e.msgs[Math.floor(Math.random()*e.msgs.length)];
+    $("#face").animate([{transform:"scale(.6)"},{transform:"scale(1.15)"},{transform:"scale(1)"}],{duration:500,easing:"ease-out"});
+    Sound.setMood(top);
+    if(top==="surprised") burst(40);
+  }
+}
+const bars = $("#bars");
+KEYS.forEach(k=>{
+  bars.insertAdjacentHTML("beforeend",`<div class="bar"><span>${EMO[k].face} ${EMO[k].name}</span><i><b id="bar-${k}" style="background:${EMO[k].accent}"></b></i></div>`);
+});
+function renderBars(){ KEYS.forEach(k=>$("#bar-"+k).style.width=(cur[k]*100).toFixed(1)+"%"); }
+
+/* ============ オーブの動き ============ */
+const orb = $("#orb");
+function renderOrb(t){
+  const w = cur;
+  const pulse = 1 + Math.sin(t/ (500 - 250*w.happy + 400*w.sad)) * (0.03 + 0.05*w.happy + 0.02*w.surprised);
+  const shake = (w.angry*6 + w.fearful*2);
+  const sx = (Math.random()-.5)*shake, sy = (Math.random()-.5)*shake;
+  const droop = w.sad*14;
+  const wob = 8 + w.fearful*14 + w.angry*10;
+  const r = i=>50 + Math.sin(t/700 + i*1.7)*wob*0.5;
+  orb.style.transform = `translate(${sx}px,${sy+droop}px) scale(${pulse*(1+w.surprised*.12)}, ${pulse*(1-w.sad*.08)})`;
+  orb.style.borderRadius = `${r(0)}% ${100-r(0)}% ${r(1)}% ${100-r(1)}% / ${r(2)}% ${r(3)}% ${100-r(3)}% ${100-r(2)}%`;
+}
+
+/* ============ パーティクル ============ */
+const cv = $("#fx"), ctx = cv.getContext("2d");
+let W,H,DPR;
+function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0)}
+addEventListener("resize",resize); resize();
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const parts = [];
+function pickEmotion(){ let r=Math.random(), a=0; for(const k of KEYS){a+=cur[k]; if(r<=a) return k;} return "neutral"; }
+function spawn(kind, x, y){
+  const e = EMO[kind], c = e.colors[Math.floor(Math.random()*e.colors.length)];
+  const p = {kind,c,life:0,max:4+Math.random()*4,x:x??Math.random()*W,y:y??0,vx:0,vy:0,s:2+Math.random()*3};
+  switch(e.motion){
+    case "rise":  p.y=H+10; p.vx=(Math.random()-.5)*.6; p.vy=-(0.6+Math.random()*1.4); p.s=2+Math.random()*4; break;
+    case "rain":  p.y=-10; p.vx=-.4; p.vy=5+Math.random()*4; p.s=1; p.len=10+Math.random()*14; p.max=3; break;
+    case "ember": p.y=H+10; p.vx=(Math.random()-.5)*3; p.vy=-(2+Math.random()*3); p.s=1.5+Math.random()*2.5; p.max=2.5; break;
+    case "burst": if(x==null){p.x=W/2;p.y=H*.33;} {const a=Math.random()*Math.PI*2,v=2+Math.random()*6; p.vx=Math.cos(a)*v; p.vy=Math.sin(a)*v;} p.max=1.6; break;
+    case "fog":   p.y=Math.random()*H; p.vx=(Math.random()-.5)*.3; p.vy=(Math.random()-.5)*.2; p.s=40+Math.random()*80; p.max=6+Math.random()*4; break;
+    default:      p.y=Math.random()*H; p.vx=(Math.random()-.5)*.3; p.vy=-.15-Math.random()*.3; p.s=1.5+Math.random()*2.5; p.max=6+Math.random()*4;
+  }
+  parts.push(p);
+}
+function burst(n){ if(reduceMotion) return; for(let i=0;i<n;i++) spawn("surprised"); }
+function stepParticles(dt){
+  const rate = reduceMotion ? 0 : 60*(0.5 + cur.angry + cur.sad*1.5 + cur.happy*.6);
+  let n = rate*dt; while(n>0){ if(Math.random()<n && parts.length<420) spawn(pickEmotion()); n--; }
+  ctx.clearRect(0,0,W,H);
+  for(let i=parts.length-1;i>=0;i--){
+    const p = parts[i]; p.life += dt;
+    const m = EMO[p.kind].motion;
+    if(m==="ember"){ p.vx += (Math.random()-.5)*.6; }
+    if(m==="rise"){ p.vx += Math.sin((p.life+p.y)*.02)*.02; }
+    if(m==="burst"){ p.vx*=.97; p.vy=p.vy*.97+.05; }
+    p.x += p.vx*dt*60; p.y += p.vy*dt*60;
+    const k = p.life/p.max;
+    if(k>=1 || p.y<-150 || p.y>H+150){ parts.splice(i,1); continue; }
+    const alpha = Math.sin(Math.PI*Math.min(k,1)) * (m==="fog"?.12:.9);
+    ctx.globalAlpha = alpha;
+    if(m==="rain"){
+      ctx.strokeStyle=p.c; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x+p.vx*2,p.y-p.len); ctx.stroke();
+    }else if(m==="fog"){
+      const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.s); g.addColorStop(0,p.c); g.addColorStop(1,"transparent");
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x,p.y,p.s,0,Math.PI*2); ctx.fill();
+    }else{
+      ctx.fillStyle=p.c; ctx.shadowColor=p.c; ctx.shadowBlur=m==="float"?0:10;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.s,0,Math.PI*2); ctx.fill(); ctx.shadowBlur=0;
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+
+/* ============ メインループ ============ */
+let last = performance.now();
+function loop(t){
+  const dt = Math.min((t-last)/1000,.05); last=t;
+  const ease = 1 - Math.pow(.04, dt); // 約1秒でなじむ
+  KEYS.forEach(k=>cur[k] += (target[k]-cur[k])*ease);
+  renderColors(); renderMood(); renderBars(); renderOrb(t); stepParticles(dt);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* ============ 入力①：テキスト解析 ============ */
+const LEX = {
+  happy:["うれし","嬉し","楽し","たのし","幸せ","しあわせ","最高","よかった","良かった","やった","好き","ありがと","感謝","わくわく","ワクワク","笑","満点","合格","成功","元気","素敵","すてき","ハッピー","😄","😊","😆","🥰","😍","♪","！！","w"],
+  sad:["悲し","かなし","寂し","さみし","つら","辛い","泣","涙","落ち込","しんど","疲れ","つかれ","憂鬱","ゆううつ","失敗","だめ","ダメ","残念","別れ","ひとり","孤独","😢","😭","😞","💧"],
+  angry:["怒","むかつ","ムカつ","ムカムカ","イライラ","いらいら","腹立","はらだ","ふざけ","許せ","うざ","ウザ","最悪","くそ","クソ","キレ","頭にく","😠","😡","💢"],
+  surprised:["驚","おどろ","びっくり","ビックリ","まさか","えっ","えー","うそ","嘘","マジ","まじ","信じられ","突然","急に","？！","!?","?!","😲","😮","😱"],
+  fearful:["不安","怖","こわ","心配","しんぱい","緊張","きんちょう","どうしよう","焦","あせ","ドキドキ","どきどき","ビクビク","恐","おそろし","😰","😨","😟"],
+};
+const NEG = /(ない|なかった|ません|じゃない|くない)/;
+function analyzeText(s){
+  const scores = Object.fromEntries(KEYS.map(k=>[k,0]));
+  if(!s.trim()){ return null; }
+  // 文ごとに見て、否定語があれば「よろこび」と「かなしみ」を入れ替える程度の簡易処理
+  s.split(/[。．.!！?？\n]/).forEach(sent=>{
+    if(!sent) return;
+    const neg = NEG.test(sent);
+    for(const k of Object.keys(LEX)){
+      let hit = 0; LEX[k].forEach(w=>{ if(sent.includes(w)) hit++; });
+      if(!hit) continue;
+      let key = k;
+      if(neg && k==="happy") key="sad";
+      else if(neg && k==="sad") key="neutral";
+      scores[key] += hit;
+    }
+  });
+  const ex = (s.match(/[!！]/g)||[]).length;
+  if(ex){ const top = KEYS.reduce((a,b)=>scores[a]>=scores[b]?a:b); if(scores[top]>0) scores[top]+=ex*.3; }
+  scores.neutral += .4; // 何も当たらなければ「おだやか」
+  return scores;
+}
+let textTimer;
+$("#text").addEventListener("input",e=>{
+  clearTimeout(textTimer);
+  textTimer = setTimeout(()=>{ const s = analyzeText(e.target.value); setTarget(s || {neutral:1}); },250);
+});
+
+/* ============ 入力②：カメラの表情認識 ============ */
+let camRunning=false, stream=null, faceapiReady=null;
+const MODEL_URL = "https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.14/model/";
+function loadFaceApi(){
+  if(faceapiReady) return faceapiReady;
+  faceapiReady = new Promise((res,rej)=>{
+    const s=document.createElement("script");
+    s.src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.14/dist/face-api.js";
+    s.onload=async()=>{ try{
+      const tf = faceapi.tf;
+      if(!(await tf.setBackend("webgl").catch(()=>false))) await tf.setBackend("cpu");
+      await tf.ready();
+      await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+      await faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL);
+      res(); }catch(err){ rej(err); } };
+    s.onerror=()=>rej(new Error("face-api.js を読み込めませんでした"));
+    document.head.appendChild(s);
+  });
+  return faceapiReady;
+}
+async function startCam(){
+  const status=$("#camStatus"), btn=$("#camBtn");
+  btn.disabled=true; status.textContent="準備しています…";
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:320,height:240},audio:false});
+    const v=$("#video"); v.srcObject=stream; await v.play();
+    status.textContent="表情モデルを読み込み中…";
+    await loadFaceApi();
+    camRunning=true; btn.textContent="カメラを止める"; btn.disabled=false;
+    status.textContent="顔をカメラに向けてください。";
+    detectLoop();
+  }catch(err){
+    btn.disabled=false; stopCam();
+    status.textContent = err.name==="NotAllowedError" ? "カメラの使用が許可されませんでした。「言葉で」や「選んで」も使えます。" : "カメラを開始できませんでした（"+err.message+"）";
+  }
+}
+function stopCam(){
+  camRunning=false; stream?.getTracks().forEach(t=>t.stop()); stream=null;
+  $("#camBtn").textContent="カメラをはじめる";
+}
+async function detectLoop(){
+  if(!camRunning) return;
+  const v=$("#video");
+  try{
+    const r = await faceapi.detectSingleFace(v,new faceapi.TinyFaceDetectorOptions({inputSize:224,scoreThreshold:.4})).withFaceExpressions();
+    if(r){
+      const x=r.expressions;
+      setTarget({happy:x.happy, sad:x.sad, angry:x.angry+x.disgusted*.8, surprised:x.surprised, fearful:x.fearful, neutral:x.neutral});
+      $("#camStatus").textContent="読み取り中…（映像は送信されません）";
+    }else{
+      $("#camStatus").textContent="顔が見つかりません。明るい場所で正面を向いてください。";
+    }
+  }catch(e){ /* 1フレームの失敗は無視 */ }
+  setTimeout(detectLoop,200);
+}
+$("#camBtn").addEventListener("click",()=> camRunning ? stopCam() : startCam());
+
+/* ============ 入力③：手動選択 ============ */
+KEYS.forEach(k=>{
+  const b=document.createElement("button"); b.className="pick"; b.innerHTML=`<span>${EMO[k].face}</span>${EMO[k].name}`;
+  b.addEventListener("click",()=>setTarget({[k]:1}));
+  $("#picks").appendChild(b);
+});
+
+/* ============ タブ ============ */
+document.querySelectorAll(".tab").forEach(tab=>tab.addEventListener("click",()=>{
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t===tab));
+  document.querySelectorAll(".pane").forEach(p=>p.hidden = p.id!=="pane-"+tab.dataset.pane);
+  if(tab.dataset.pane!=="cam" && camRunning) stopCam();
+}));
+
+/* ============ 音（感情に合わせた和音） ============ */
+const Sound = (()=>{
+  let ac=null, gain=null, oscs=[], on=false, mood="neutral";
+  const CHORDS = { // 周波数（Hz）
+    happy:[261.6,329.6,392.0,523.3], sad:[220.0,261.6,329.6,440.0], angry:[110.0,116.5,164.8,233.1],
+    surprised:[293.7,370.0,440.0,587.3], fearful:[196.0,207.7,277.2,311.1], neutral:[196.0,293.7,392.0,493.9],
+  };
+  function build(){
+    ac = new (window.AudioContext||window.webkitAudioContext)();
+    gain = ac.createGain(); gain.gain.value=0; gain.connect(ac.destination);
+    const lp = ac.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=1400; lp.connect(gain);
+    oscs = CHORDS.neutral.map((f,i)=>{ const o=ac.createOscillator(); o.type=i%2?"sine":"triangle"; o.frequency.value=f; const g=ac.createGain(); g.gain.value=.05; o.connect(g).connect(lp); o.start(); return o; });
+  }
+  function apply(){ if(!ac) return; const t=ac.currentTime; CHORDS[mood].forEach((f,i)=>oscs[i].frequency.setTargetAtTime(f,t,.6)); }
+  return {
+    toggle(){ if(!ac) build(); on=!on; ac.resume(); gain.gain.setTargetAtTime(on?.35:0,ac.currentTime,.4); apply(); return on; },
+    setMood(m){ mood=m; apply(); },
+  };
+})();
+$("#soundBtn").addEventListener("click",e=>{
+  const on = Sound.toggle(); e.currentTarget.textContent = on?"♪ 音 ON":"♪ 音 OFF"; e.currentTarget.setAttribute("aria-pressed",on);
+});
+</script>
+</body>
+</html>
