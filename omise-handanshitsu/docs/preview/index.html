@@ -1,0 +1,2003 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>お店の判断室 プレビュー版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&display=swap">
+<style>
+/* レイアウト: 本体サイトと同じ編集物スタイル（紙のような生成り・深緑・控えめな赤茶）。ライト固定（本体が color-scheme: light のため） */
+/* ------------------------------------------------------------------
+   お店の判断室 — Editorial / Decision Utility
+   12_VISUAL_DESIGN_BRIEF.md: warm off-white paper, deep green, restrained coral.
+   通常CSSのみ。Tailwind は使わない。
+------------------------------------------------------------------ */
+
+:root {
+  --paper: #f7f4ed;
+  --paper-2: #efeadf;
+  --paper-3: #e6dfd0;
+  --surface: #fffdf8;
+  --ink: #1c2622;
+  --ink-2: #3f4d47;
+  --muted: #566058;
+  --line: #d8d1c2;
+  --line-strong: #b9b09d;
+
+  --green: #1f4a3d;
+  --green-2: #2d6a56;
+  --green-soft: #e3ede7;
+  --coral: #b94d2a;
+  --coral-2: #9e3f21;
+  --coral-soft: #f9e6dc;
+  --ochre: #7a5a12;
+  --ochre-soft: #f3ead2;
+  --slate: #4f5f6e;
+  --slate-soft: #e6ebef;
+
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 0 rgba(28, 38, 34, 0.04), 0 10px 30px -18px rgba(28, 38, 34, 0.25);
+
+  --font-sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", "Yu Gothic", YuGothic,
+    "Noto Sans JP", "BIZ UDPGothic", Meiryo, system-ui, -apple-system, sans-serif;
+  --font-serif: var(--font-serif-web, "Noto Serif JP"), "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "BIZ UDPMincho",
+    "MS PMincho", Georgia, serif;
+
+  --fs-xs: 0.8125rem;
+  --fs-sm: 0.9375rem;
+  --fs-md: 1.0625rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.625rem;
+  --fs-2xl: 2.125rem;
+  --fs-3xl: 2.75rem;
+
+  --measure: 42rem;
+  --container: 1100px;
+  --gutter: 16px;
+  --tap: 44px;
+
+  color-scheme: light;
+}
+
+@media (min-width: 720px) {
+  :root {
+    --gutter: 28px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+  font-feature-settings: "palt" 0;
+  -webkit-font-smoothing: antialiased;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-break: strict;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  margin: 0;
+  text-wrap: balance;
+  color: var(--ink);
+}
+
+h1 {
+  font-size: var(--fs-2xl);
+}
+h2 {
+  font-size: var(--fs-xl);
+}
+h3 {
+  font-size: var(--fs-lg);
+}
+
+@media (min-width: 720px) {
+  h1 {
+    font-size: var(--fs-3xl);
+  }
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+a {
+  color: var(--green);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+a:hover {
+  color: var(--coral-2);
+}
+
+:focus-visible {
+  outline: 3px solid var(--coral);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+ul,
+ol {
+  padding-left: 1.4em;
+  margin: 0 0 1em;
+}
+li + li {
+  margin-top: 0.35em;
+}
+
+code {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--paper-2);
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  background: var(--ink);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  z-index: 100;
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+/* ---------- layout ---------- */
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.narrow {
+  max-width: calc(var(--measure) + var(--gutter) * 2);
+}
+
+main {
+  min-height: 60vh;
+}
+
+.section {
+  padding-block: 48px;
+}
+@media (min-width: 720px) {
+  .section {
+    padding-block: 72px;
+  }
+}
+.section--tight {
+  padding-block: 28px;
+}
+
+.section-head {
+  margin-bottom: 24px;
+}
+.section-head .eyebrow {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.14em;
+  color: var(--green-2);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.section-head p {
+  color: var(--ink-2);
+  max-width: var(--measure);
+}
+
+/* ---------- preview banner ---------- */
+
+.preview-banner {
+  background: var(--ink);
+  color: #f1ece2;
+  font-size: var(--fs-xs);
+  padding: 8px var(--gutter);
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+.preview-banner strong {
+  color: #f6c7b2;
+}
+
+/* ---------- header ---------- */
+
+.site-header {
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 64px;
+  flex-wrap: wrap;
+  padding-block: 10px;
+}
+.brand {
+  display: inline-flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.brand__name {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.brand__desc {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  margin-top: 3px;
+}
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  align-items: center;
+}
+.site-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 6px 12px;
+  text-decoration: none;
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+  border-radius: 999px;
+}
+.site-nav a:hover {
+  background: var(--paper-2);
+  color: var(--ink);
+}
+.site-nav a.is-primary {
+  background: var(--green);
+  color: #fff;
+  font-weight: 700;
+  padding-inline: 16px;
+}
+.site-nav a.is-primary:hover {
+  background: var(--green-2);
+}
+
+/* ---------- footer ---------- */
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  background: var(--paper-2);
+  padding-block: 36px 28px;
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+.site-footer__grid {
+  display: grid;
+  gap: 24px;
+}
+@media (min-width: 720px) {
+  .site-footer__grid {
+    grid-template-columns: 1.3fr 1fr 1fr;
+  }
+}
+.site-footer h2 {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.site-footer ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.site-footer li {
+  margin: 0;
+}
+.site-footer a {
+  display: inline-block;
+  padding-block: 6px;
+  text-decoration: none;
+  color: var(--ink-2);
+}
+.site-footer a:hover {
+  color: var(--coral-2);
+  text-decoration: underline;
+}
+.site-footer__note {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+
+/* ---------- buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+  text-align: center;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn--primary {
+  background: var(--coral);
+  color: #fff;
+}
+.btn--primary:hover {
+  background: var(--coral-2);
+  color: #fff;
+}
+.btn--secondary {
+  background: transparent;
+  color: var(--green);
+  border-color: var(--green);
+}
+.btn--secondary:hover {
+  background: var(--green-soft);
+  color: var(--green);
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--ink-2);
+  border-color: var(--line-strong);
+  min-height: var(--tap);
+  padding: 8px 16px;
+  font-weight: 500;
+}
+.btn--ghost:hover {
+  background: var(--paper-2);
+}
+.btn[disabled],
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.btn-support {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  padding-block: 44px 40px;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+@media (min-width: 720px) {
+  .hero {
+    padding-block: 72px 64px;
+  }
+}
+.hero__grid {
+  display: grid;
+  gap: 36px;
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .hero__grid {
+    grid-template-columns: 1.15fr 1fr;
+    gap: 56px;
+  }
+}
+.hero h1 {
+  font-size: clamp(1.9rem, 1.3rem + 2.6vw, 3rem);
+  line-height: 1.3;
+  margin-bottom: 20px;
+}
+.hero__lead {
+  color: var(--ink-2);
+  font-size: var(--fs-md);
+  max-width: 36rem;
+}
+.hero__cta {
+  margin-top: 28px;
+}
+.hero__secondary {
+  margin-top: 16px;
+  font-size: var(--fs-sm);
+}
+
+/* 3段 Decision visual */
+.tiers {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.tier {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  align-items: start;
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.tier__mark {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+}
+.tier__title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+.tier__items {
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+  margin: 0;
+}
+.tier--now {
+  border-left: 6px solid var(--green);
+}
+.tier--now .tier__mark {
+  background: var(--green);
+  color: #fff;
+}
+.tier--next {
+  border-left: 6px solid var(--ochre);
+}
+.tier--next .tier__mark {
+  background: var(--ochre-soft);
+  color: var(--ochre);
+}
+.tier--not {
+  border-left: 6px solid var(--slate);
+}
+.tier--not .tier__mark {
+  background: var(--slate-soft);
+  color: var(--slate);
+}
+.tiers__caption {
+  margin-top: 10px;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+
+/* ---------- cards ---------- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+@media (min-width: 720px) {
+  .card {
+    padding: 24px 26px;
+  }
+}
+.card-grid {
+  display: grid;
+  gap: 16px;
+}
+@media (min-width: 720px) {
+  .card-grid--2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .card-grid--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.article-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+  min-height: 100%;
+}
+.article-card:hover {
+  border-color: var(--line-strong);
+}
+.article-card__kicker {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  color: var(--green-2);
+  font-weight: 700;
+}
+.article-card h3 {
+  font-size: 1.1rem;
+}
+.article-card p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--fs-sm);
+}
+.article-card__more {
+  margin-top: auto;
+  padding-top: 8px;
+  font-size: var(--fs-sm);
+  color: var(--coral-2);
+  font-weight: 700;
+}
+
+/* ---------- status badge ---------- */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.status::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.status--FREE_FOUNDATION {
+  background: var(--green-soft);
+  color: var(--green);
+}
+.status--NOW {
+  background: var(--green);
+  color: #fff;
+}
+.status--NEXT {
+  background: var(--ochre-soft);
+  color: var(--ochre);
+}
+.status--LATER {
+  background: var(--paper-2);
+  color: var(--muted);
+}
+.status--NOT_PRIORITY {
+  background: var(--slate-soft);
+  color: var(--slate);
+}
+.status--REVIEW_EXISTING {
+  background: var(--coral-soft);
+  color: var(--coral-2);
+}
+
+/* ---------- decision card ---------- */
+
+.decision {
+  border-left-width: 6px;
+}
+.decision--FREE_FOUNDATION {
+  border-left-color: var(--green-2);
+}
+.decision--NOW {
+  border-left-color: var(--green);
+}
+.decision--NEXT {
+  border-left-color: var(--ochre);
+}
+.decision--LATER {
+  border-left-color: var(--line-strong);
+}
+.decision--NOT_PRIORITY {
+  border-left-color: var(--slate);
+}
+.decision--REVIEW_EXISTING {
+  border-left-color: var(--coral);
+}
+.decision__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  margin-bottom: 10px;
+}
+.decision__head h3 {
+  font-size: 1.2rem;
+}
+.decision__reasons {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  color: var(--ink);
+}
+.decision__reasons li {
+  position: relative;
+  padding-left: 1.2em;
+}
+.decision__reasons li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--muted);
+}
+.decision__sub {
+  display: grid;
+  gap: 10px;
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+.decision__sub dt {
+  font-weight: 700;
+  color: var(--ink);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+}
+.decision__sub dd {
+  margin: 2px 0 0;
+}
+.decision__sub ul {
+  margin: 0;
+  padding-left: 1.2em;
+}
+.decision__sub li + li {
+  margin-top: 0.15em;
+}
+.decision__link {
+  margin-top: 12px;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+/* result page */
+.result-group {
+  margin-bottom: 36px;
+}
+.result-group__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 14px;
+  margin-bottom: 12px;
+}
+.result-group__head h2 {
+  font-size: 1.45rem;
+}
+.result-group__head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+.result-group--now .result-group__head h2 {
+  color: var(--green);
+}
+.result-group--next .result-group__head h2 {
+  color: var(--ochre);
+}
+.result-group--not .result-group__head h2 {
+  color: var(--slate);
+}
+.result-group__empty {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  padding: 14px 16px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-sm);
+}
+.result-summary {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 28px;
+}
+.result-summary dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+  margin: 0;
+  font-size: var(--fs-sm);
+}
+.result-summary dt {
+  color: var(--muted);
+}
+.result-summary dd {
+  margin: 0;
+}
+.result-entry {
+  background: var(--green-soft);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+.result-entry p {
+  margin: 0;
+}
+
+/* ---------- offer card（決定カードより控えめ） ---------- */
+
+.offers {
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 1px dashed var(--line-strong);
+}
+.offers__head {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink-2);
+  margin-bottom: 4px;
+}
+.offers__note {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.offer {
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  font-size: var(--fs-sm);
+  box-shadow: none;
+}
+.offer__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+  margin-bottom: 8px;
+}
+.offer__name {
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.offer__pr {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  border: 1px solid var(--ink-2);
+  color: var(--ink-2);
+  padding: 0 6px;
+  border-radius: 3px;
+}
+.offer dl {
+  display: grid;
+  gap: 6px 12px;
+  margin: 0 0 10px;
+}
+@media (min-width: 720px) {
+  .offer dl {
+    grid-template-columns: 7.5em 1fr;
+  }
+}
+.offer dt {
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.offer dd {
+  margin: 0;
+}
+.offer ul {
+  margin: 0;
+  padding-left: 1.1em;
+}
+.offer__meta {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  margin-top: 8px;
+}
+.offer__stale {
+  background: var(--ochre-soft);
+  color: var(--ochre);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: var(--fs-xs);
+  margin-bottom: 8px;
+}
+.offer a.btn {
+  min-height: var(--tap);
+  font-size: var(--fs-sm);
+}
+
+/* ---------- article ---------- */
+
+.article-header {
+  padding-block: 32px 24px;
+  border-bottom: 1px solid var(--line);
+}
+.article-header .question {
+  font-size: var(--fs-sm);
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.article-header h1 {
+  margin-bottom: 14px;
+}
+.article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+
+.prose {
+  max-width: var(--measure);
+}
+.prose h2 {
+  margin-top: 2.2em;
+  margin-bottom: 0.6em;
+  padding-top: 0.4em;
+  font-size: 1.5rem;
+}
+.prose h3 {
+  margin-top: 1.5em;
+  margin-bottom: 0.4em;
+}
+.prose p,
+.prose li {
+  color: var(--ink);
+}
+
+.answer-box {
+  background: var(--surface);
+  border: 1.5px solid var(--green);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin: 24px 0 8px;
+}
+.answer-box__label {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.14em;
+  color: var(--green);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.answer-box p:last-child {
+  margin-bottom: 0;
+}
+
+.fact {
+  position: relative;
+}
+.fact__src {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  vertical-align: 0.15em;
+  white-space: nowrap;
+}
+.fact--stale {
+  background: var(--ochre-soft);
+  border-left: 4px solid var(--ochre);
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.decision-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  margin: 12px 0 8px;
+}
+.decision-table th,
+.decision-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+}
+.decision-table th {
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  border-top: 0;
+}
+.decision-table td:first-child {
+  font-weight: 700;
+  white-space: nowrap;
+}
+@media (max-width: 719px) {
+  .decision-table thead {
+    display: none;
+  }
+  .decision-table tr {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    background: var(--surface);
+  }
+  .decision-table td {
+    display: block;
+    border: 0;
+    padding: 4px 0;
+  }
+  .decision-table td:first-child {
+    white-space: normal;
+  }
+  .decision-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-size: var(--fs-xs);
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+}
+
+.measure-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.measure-list li {
+  margin: 0;
+  padding: 6px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: var(--fs-sm);
+}
+
+.next-action {
+  background: var(--coral-soft);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+}
+.next-action p:last-child {
+  margin: 0;
+}
+
+.related {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+/* ---------- mini check ---------- */
+
+.minicheck {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px;
+  margin: 20px 0;
+  box-shadow: var(--shadow);
+}
+.minicheck__lead {
+  color: var(--ink-2);
+  margin-bottom: 14px;
+}
+.minicheck fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 16px;
+  min-width: 0;
+}
+.minicheck legend {
+  font-weight: 700;
+  margin-bottom: 8px;
+  padding: 0;
+}
+.choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.choice {
+  position: relative;
+}
+.choice input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.choice span {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 8px 16px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--paper);
+  cursor: pointer;
+  font-size: var(--fs-sm);
+  transition:
+    background 0.12s,
+    border-color 0.12s;
+}
+.choice input:checked + span {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+  font-weight: 700;
+}
+.choice input:focus-visible + span {
+  outline: 3px solid var(--coral);
+  outline-offset: 2px;
+}
+.choice:hover span {
+  border-color: var(--green-2);
+}
+
+.result-card {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--green);
+  background: var(--green-soft);
+}
+.result-card--conditional {
+  border-color: var(--ochre);
+  background: var(--ochre-soft);
+}
+.result-card--not {
+  border-color: var(--slate);
+  background: var(--slate-soft);
+}
+.result-card__label {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: var(--muted);
+}
+.result-card h3 {
+  margin: 4px 0 8px;
+}
+.result-card p {
+  margin-bottom: 8px;
+}
+.result-card__next {
+  font-weight: 700;
+}
+
+/* ---------- wizard ---------- */
+
+.wizard {
+  max-width: 44rem;
+  margin-inline: auto;
+}
+.wizard__progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--fs-sm);
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+.wizard__bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--paper-3);
+  overflow: hidden;
+}
+.wizard__bar span {
+  display: block;
+  height: 100%;
+  background: var(--green);
+  transition: width 0.25s ease;
+}
+.wizard__card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+@media (min-width: 720px) {
+  .wizard__card {
+    padding: 36px 40px;
+  }
+}
+.wizard__card fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.wizard__card legend {
+  padding: 0;
+  margin-bottom: 6px;
+}
+.wizard__title {
+  font-size: 1.45rem;
+}
+.wizard__help {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  margin: 0 0 18px;
+}
+.wizard__prefilled {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  color: var(--green-2);
+  background: var(--green-soft);
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+.option-list {
+  display: grid;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px;
+}
+.option {
+  position: relative;
+}
+.option input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.option label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 12px 16px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    border-color 0.12s;
+}
+.option label:hover {
+  border-color: var(--green-2);
+}
+.option input:checked + label {
+  border-color: var(--green);
+  background: var(--green-soft);
+  font-weight: 700;
+}
+.option input:focus-visible + label {
+  outline: 3px solid var(--coral);
+  outline-offset: 2px;
+}
+.option__mark {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  display: inline-grid;
+  place-items: center;
+}
+.option--multi .option__mark {
+  border-radius: 5px;
+}
+.option input:checked + label .option__mark {
+  border-color: var(--green);
+  background: var(--green);
+}
+.option input:checked + label .option__mark::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: inherit;
+}
+.option__hint {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  font-weight: 400;
+  margin-left: auto;
+  text-align: right;
+}
+.wizard__nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.wizard__error {
+  color: var(--coral-2);
+  font-size: var(--fs-sm);
+  margin: -10px 0 14px;
+}
+
+.review-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px;
+  display: grid;
+  gap: 8px;
+}
+.review-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  font-size: var(--fs-sm);
+}
+.review-list .q {
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  display: block;
+}
+.review-list button {
+  flex: none;
+  min-height: var(--tap);
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  border-radius: 999px;
+  padding: 4px 14px;
+  cursor: pointer;
+  font-size: var(--fs-xs);
+}
+.review-list button:hover {
+  background: var(--paper-2);
+}
+
+/* sticky CTA（コアチェック入口だけ） */
+.sticky-cta {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  padding: 10px var(--gutter) calc(10px + env(safe-area-inset-bottom));
+}
+.sticky-cta .btn {
+  width: 100%;
+  font-size: var(--fs-sm);
+  padding-inline: 14px;
+}
+@media (min-width: 720px) {
+  .sticky-cta {
+    display: none;
+  }
+}
+
+/* ---------- calculator ---------- */
+
+.calc {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin: 16px 0 24px;
+}
+.calc__grid {
+  display: grid;
+  gap: 14px;
+}
+@media (min-width: 720px) {
+  .calc__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.calc label {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--ink-2);
+  margin-bottom: 4px;
+}
+.calc input {
+  width: 100%;
+  min-height: var(--tap);
+  font: inherit;
+  padding: 8px 12px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+}
+.calc__out {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.calc__out strong {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+}
+.calc__note {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  margin: 6px 0 0;
+}
+
+/* ---------- misc ---------- */
+
+.breadcrumbs {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  padding-block: 14px 0;
+}
+.breadcrumbs ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+}
+.breadcrumbs li + li::before {
+  content: "/";
+  margin-right: 6px;
+  color: var(--line-strong);
+}
+.breadcrumbs a {
+  color: var(--muted);
+}
+
+.steps {
+  counter-reset: step;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+.steps > li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 14px;
+  align-items: start;
+  margin: 0;
+}
+.steps > li::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--green);
+  color: #fff;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.steps h2 {
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+}
+.steps p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--fs-sm);
+}
+.steps .step__status {
+  margin-left: 8px;
+}
+
+.notice {
+  background: var(--ochre-soft);
+  border-left: 4px solid var(--ochre);
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: var(--fs-sm);
+}
+.notice--muted {
+  background: var(--paper-2);
+  border-left-color: var(--line-strong);
+  color: var(--ink-2);
+}
+
+.policy-list dt {
+  font-weight: 700;
+  margin-top: 1em;
+}
+.policy-list dd {
+  margin: 0.2em 0 0;
+  color: var(--ink-2);
+}
+
+.page-title {
+  padding-block: 36px 8px;
+}
+.page-title p {
+  color: var(--ink-2);
+  max-width: var(--measure);
+}
+
+.not-found {
+  text-align: center;
+  padding-block: 80px;
+}
+
+.smask-exit {
+  margin-top: 36px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+  font-size: var(--fs-sm);
+}
+.smask-exit p {
+  margin-bottom: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  .site-header,
+  .site-footer,
+  .sticky-cta,
+  .preview-banner {
+    display: none;
+  }
+}
+
+/* 狭い幅では選択肢のヒントをラベルの下に回す */
+@media (max-width: 719px) {
+  .option label {
+    flex-wrap: wrap;
+  }
+  .option__hint {
+    flex-basis: 100%;
+    margin-left: 32px;
+    text-align: left;
+    margin-top: -4px;
+  }
+}
+
+/* 「気になっていたもの」は状態ではなく目印（バッジとは別物） */
+.entry-mark {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line-strong);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+/* 考え方：カードではなく、罫線付きの定義リスト（編集物らしく） */
+.principles {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-top: 2px solid var(--ink);
+}
+@media (min-width: 720px) {
+  .principles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 36px;
+  }
+}
+.principles > div {
+  padding: 18px 0 20px;
+  border-bottom: 1px solid var(--line);
+}
+.principles dt {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.principles dd {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--fs-sm);
+}
+
+/* スマホ：ヘッダーを低く、パンくずの末尾（H1と重複）を隠す */
+@media (max-width: 719px) {
+  .brand__desc {
+    display: none;
+  }
+  .site-header__inner {
+    min-height: 56px;
+    padding-block: 6px;
+  }
+  .site-nav a {
+    padding: 6px 9px;
+    font-size: 0.875rem;
+  }
+  .breadcrumbs li:last-child {
+    display: none;
+  }
+  .page-title {
+    padding-block: 24px 4px;
+  }
+}
+
+/* チェックページ：タイトルとカードの軸を揃える */
+.check-page .wizard {
+  max-width: none;
+  margin-inline: 0;
+}
+
+
+
+/* ---- プレビュー版の追加（単一ページ・ライト固定） ---- */
+:root { --font-serif-web: "Noto Serif JP"; }
+html { scroll-behavior: auto; }
+body { padding-inline: 0; }
+.site-nav a[aria-current="page"] { background: var(--paper-2); color: var(--ink); }
+.preview-banner a { color: #f6c7b2; }
+#app { min-height: 60vh; }
+
+</style>
+</head>
+<body>
+<a href="#app" class="skip-link">本文へ移動</a>
+<div class="preview-banner" role="status"><strong>PREVIEW CANDIDATE</strong>｜お店の判断室 の単一ページ版プレビューです。判断エンジン・記事・候補データは本体と同じ。料金・条件は検証中で、収益リンクは無効です。</div>
+<header class="site-header"><div class="container site-header__inner">
+  <a href="#home" class="brand" aria-label="お店の判断室 トップへ"><span class="brand__name">お店の判断室</span><span class="brand__desc">小さなお店の開業・運営サービス判断ガイド</span></a>
+  <nav class="site-nav" aria-label="主なページ"><a href="#need">本当に必要？</a><a href="#guide">開業の順番</a><a href="#policy">運営方針</a><a href="#check" class="is-primary">8問チェック</a></nav>
+</div></header>
+<main id="app" aria-live="polite"></main>
+<footer class="site-footer"><div class="container">
+  <div class="site-footer__grid">
+    <div><h2>お店の判断室</h2><p style="margin:0">みんな使っている、では決めない。必要なものだけ、必要な順番で。</p></div>
+    <div><h2>判断する</h2><ul><li><a href="#check">8問｜お店に今必要なものチェック</a></li><li><a href="#need">「本当に必要？」記事一覧</a></li><li><a href="#guide">開業の順番</a></li></ul></div>
+    <div><h2>運営</h2><ul><li><a href="#policy">運営方針（要約）</a></li></ul></div>
+  </div>
+  <p class="site-footer__note">記載の料金・条件は 2026年10月6日 時点の公開情報をもとにしています。期限を過ぎた数値は自動的に非表示になります。最終判断は各サービスの公式情報でご確認ください。</p>
+</div></footer>
+<script>var OHS=(()=>{var S=Object.defineProperty;var ge=Object.getOwnPropertyDescriptor;var Pe=Object.getOwnPropertyNames;var ye=Object.prototype.hasOwnProperty;var ve=(e,t,i)=>t in e?S(e,t,{enumerable:!0,configurable:!0,writable:!0,value:i}):e[t]=i;var be=(e,t)=>{for(var i in t)S(e,i,{get:t[i],enumerable:!0})},xe=(e,t,i,n)=>{if(t&&typeof t=="object"||typeof t=="function")for(let r of Pe(t))!ye.call(e,r)&&r!==i&&S(e,r,{get:()=>t[r],enumerable:!(n=ge(t,r))||n.enumerable});return e};var Me=e=>xe(S({},"__esModule",{value:!0}),e);var h=(e,t,i)=>ve(e,typeof t!="symbol"?t+"":t,i);var ot={};be(ot,{AREA_META:()=>I,ARTICLES:()=>M,BRAND:()=>at,OFFERS:()=>rt,QUESTIONS:()=>R,REGISTRY_VERIFIED_AT:()=>pe,RULE_VERSION:()=>ne,STATUS_META:()=>H,answerLabel:()=>k,answersToParams:()=>oe,checkSource:()=>fe,decide:()=>re,entryFromParams:()=>_e,formatDateJa:()=>Se,freshnessDays:()=>Ae,getArticle:()=>ce,getMiniCheck:()=>ue,isNeedConfirmed:()=>g,listSources:()=>Ie,optionLabel:()=>d,paramsToAnswers:()=>Ee,visibleQuestions:()=>w});var U={version:"0.1",_note:"03_DECISION_ENGINE.md \u306E\u70B9\u6570\u30FB\u95BE\u5024\u30FB\u30CF\u30FC\u30C9\u30EB\u30FC\u30EB\u3092\u30C7\u30FC\u30BF\u5316\u3057\u305F\u3082\u306E\u3002engine \u306F flags / offers \u3092\u53C2\u7167\u3057\u306A\u3044\uFF08Affiliate \u306F Need \u5224\u5B9A\u306B\u5F71\u97FF\u3057\u306A\u3044\uFF09\u3002INTEGRATION \u306E HIDDEN \u5224\u5B9A\uFF08\u65E2\u5B58>=integration_min_existing_services \u304B\u3064 \u4E8C\u91CD\u5165\u529B YES \u3067 NEXT\u3001\u305D\u308C\u4EE5\u5916 HIDDEN\uFF09\u3060\u3051\u306F engine \u5185\u306B\u5B9F\u88C5\u3002ACCOUNTING / WEBSITE \u306E\u70B9\u6570\u306F\u4ED5\u69D8\u306B\u5B9A\u7FA9\u304C\u306A\u3044\u305F\u3081 v0.1 \u66AB\u5B9A\u3002",max_now:3,max_next:2,areas:[{id:"GOOGLE_FOUNDATION",existing:"GOOGLE_BUSINESS"},{id:"RESERVATION",existing:"RESERVATION"},{id:"CASHLESS",existing:"CASHLESS"},{id:"POS",existing:"POS"},{id:"ACCOUNTING",existing:"ACCOUNTING"},{id:"LINE",existing:"LINE"},{id:"EXTERNAL_PLATFORM",existing:"EXTERNAL_PLATFORM"},{id:"WEBSITE",existing:"WEBSITE"},{id:"INTEGRATION",existing:null}],thresholds:{RESERVATION:{NOW:6,NEXT:3},CASHLESS:{NOW:5,NEXT:3},POS:{NOW:6,NEXT:3},LINE:{NOW:6,NEXT:3},EXTERNAL_PLATFORM:{NEXT:5},ACCOUNTING:{NEXT:3},WEBSITE:{NEXT:3}},scores:{RESERVATION:{reservation_model:{APPOINTMENT_DOMINANT:5,MIXED:2,WALKIN_DOMINANT:-6},staff_count:{SMALL_2_3:1,TEAM_4_PLUS:2},repeat_rate:{HIGH:1},stage:{PRE_OPEN_0_30:1,OPERATING:1},business_type:{BEAUTY_SALON:1,HEALTH_TREATMENT:1,LESSON_SCHOOL:1,FITNESS:1,PET:1}},CASHLESS:{onsite_payment:{MOST:5,SOME:2,LITTLE:-6},stage:{PRE_OPEN_0_30:1,OPERATING:1},business_type:{FOOD:1,RETAIL:1,BEAUTY_SALON:1,HEALTH_TREATMENT:1,PET:1}},POS:{ops_complexity:{INVENTORY_IMPORTANT:5,MULTI_LOW_INVENTORY:2,SIMPLE:-4},staff_count:{SMALL_2_3:1,TEAM_4_PLUS:2},business_type:{RETAIL:2,FOOD:1},onsite_payment:{MOST:1}},LINE:{repeat_rate:{HIGH:4,MEDIUM:2,LOW:-4},stage:{OPERATING:2,PRE_OPEN_31_90:-1,PRE_OPEN_90_PLUS:-2},business_type:{BEAUTY_SALON:1,HEALTH_TREATMENT:1,FITNESS:1,LESSON_SCHOOL:1,PET:1}},EXTERNAL_PLATFORM:{stage:{PRE_OPEN_31_90:2,PRE_OPEN_0_30:2,OPERATING:1},business_type:{BEAUTY_SALON:2,HEALTH_TREATMENT:2,FOOD:2},new_customer_state:{NEED_MORE:3,ENOUGH:-2,CAPACITY_FULL:-5}},ACCOUNTING:{stage:{PRE_OPEN_90_PLUS:1,PRE_OPEN_31_90:1,PRE_OPEN_0_30:3,OPERATING:3}},WEBSITE:{stage:{OPERATING:1},new_customer_state:{NEED_MORE:2}}},hard_rules:{not_priority_when:[{area:"RESERVATION",all:[{key:"reservation_model",value:"WALKIN_DOMINANT"}]},{area:"CASHLESS",all:[{key:"onsite_payment",value:"LITTLE"}]},{area:"POS",all:[{key:"staff_count",value:"SOLO"},{key:"ops_complexity",value:"SIMPLE"}]},{area:"LINE",all:[{key:"repeat_rate",value:"LOW"}]}],caps:[{area:"EXTERNAL_PLATFORM",max_status:"NEXT"},{area:"LINE",max_status:"NEXT",unless:{key:"stage",value:"OPERATING"}},{area:"WEBSITE",max_status:"LATER",when_existing:"EXTERNAL_PLATFORM"}],integration_min_existing_services:3}};var F={version:"0.1",questions:[{id:"Q1",key:"stage",type:"single",values:["PRE_OPEN_90_PLUS","PRE_OPEN_31_90","PRE_OPEN_0_30","OPERATING"]},{id:"Q2",key:"business_type",type:"single",values:["BEAUTY_SALON","HEALTH_TREATMENT","FOOD","RETAIL","LESSON_SCHOOL","FITNESS","PET","OTHER_FACE_TO_FACE"]},{id:"Q3",key:"reservation_model",type:"single",values:["APPOINTMENT_DOMINANT","MIXED","WALKIN_DOMINANT"]},{id:"Q4",key:"onsite_payment",type:"single",values:["MOST","SOME","LITTLE"]},{id:"Q5",key:"ops_complexity",type:"single",values:["SIMPLE","MULTI_LOW_INVENTORY","INVENTORY_IMPORTANT"]},{id:"Q6",key:"staff_count",type:"single",values:["SOLO","SMALL_2_3","TEAM_4_PLUS"]},{id:"Q7",key:"repeat_rate",type:"single",values:["HIGH","MEDIUM","LOW"]},{id:"Q8",key:"existing_services",type:"multi",values:["GOOGLE_BUSINESS","EXTERNAL_PLATFORM","LINE","RESERVATION","CASHLESS","POS","ACCOUNTING","WEBSITE","NONE"]}],conditional:[{id:"CQ1",when:"EXTERNAL_PLATFORM in Q8",key:"platform_dependency",values:["HIGH","MEDIUM","LOW","UNKNOWN"]},{id:"CQ2",when:"count(Q8 excluding NONE)>=3",key:"manual_duplication",values:["YES","NO","UNKNOWN"]},{id:"CQ3",when:"Q1==OPERATING",key:"new_customer_state",values:["NEED_MORE","ENOUGH","CAPACITY_FULL","UNKNOWN"]}],persist_personal_answers:!1};function b(e){return(e.existing_services??[]).filter(t=>t!=="NONE").length}var R=[{id:"Q1",key:"stage",type:"single",title:"\u304A\u5E97\u306F\u3001\u3044\u307E\u3069\u306E\u6BB5\u968E\u3067\u3059\u304B\uFF1F",help:"\u958B\u696D\u524D\u306F\u300C\u958B\u696D\u65E5\u307E\u3067\u306E\u65E5\u6570\u300D\u3067\u9078\u3093\u3067\u304F\u3060\u3055\u3044\u3002",options:[{value:"PRE_OPEN_90_PLUS",label:"\u958B\u696D\u307E\u306790\u65E5\u4EE5\u4E0A",hint:"\u7269\u4EF6\u3084\u8CC7\u91D1\u306E\u691C\u8A0E\u4E2D"},{value:"PRE_OPEN_31_90",label:"\u958B\u696D\u307E\u306731\u301C90\u65E5",hint:"\u5185\u88C5\u30FB\u5099\u54C1\u3092\u6C7A\u3081\u3066\u3044\u308B"},{value:"PRE_OPEN_0_30",label:"\u958B\u696D\u307E\u306730\u65E5\u4EE5\u5185",hint:"\u30AA\u30FC\u30D7\u30F3\u76F4\u524D"},{value:"OPERATING",label:"\u3059\u3067\u306B\u55B6\u696D\u3057\u3066\u3044\u308B"}]},{id:"Q2",key:"business_type",type:"single",title:"\u696D\u7A2E\u306F\u3001\u3069\u308C\u306B\u8FD1\u3044\u3067\u3059\u304B\uFF1F",help:"\u696D\u7A2E\u306F\u5224\u65AD\u306E\u5F31\u3044\u88DC\u6B63\u306B\u3060\u3051\u4F7F\u3044\u307E\u3059\u3002\u5B9F\u969B\u306E\u904B\u55B6\u306E\u7B54\u3048\u3092\u512A\u5148\u3057\u307E\u3059\u3002",options:[{value:"BEAUTY_SALON",label:"\u7F8E\u5BB9\u5BA4\u30FB\u7406\u5BB9\u30FB\u30CD\u30A4\u30EB\u30FB\u307E\u3064\u3052"},{value:"HEALTH_TREATMENT",label:"\u6574\u4F53\u30FB\u937C\u7078\u30FB\u30EA\u30E9\u30AF\u30BC\u30FC\u30B7\u30E7\u30F3"},{value:"FOOD",label:"\u98F2\u98DF\u30FB\u30AB\u30D5\u30A7\u30FB\u30C6\u30A4\u30AF\u30A2\u30A6\u30C8"},{value:"RETAIL",label:"\u7269\u8CA9\u30FB\u5C0F\u58F2"},{value:"LESSON_SCHOOL",label:"\u6559\u5BA4\u30FB\u30B9\u30AF\u30FC\u30EB"},{value:"FITNESS",label:"\u30B8\u30E0\u30FB\u30E8\u30AC\u30FB\u30D1\u30FC\u30BD\u30CA\u30EB"},{value:"PET",label:"\u30DA\u30C3\u30C8\uFF08\u30C8\u30EA\u30DF\u30F3\u30B0\u306A\u3069\uFF09"},{value:"OTHER_FACE_TO_FACE",label:"\u305D\u306E\u4ED6\u306E\u5BFE\u9762\u30B5\u30FC\u30D3\u30B9"}]},{id:"Q3",key:"reservation_model",type:"single",title:"\u304A\u5BA2\u3055\u307E\u306E\u6765\u5E97\u306F\u3001\u4E88\u7D04\u304C\u4E2D\u5FC3\u3067\u3059\u304B\uFF1F",options:[{value:"APPOINTMENT_DOMINANT",label:"\u307B\u307C\u4E88\u7D04\u5236"},{value:"MIXED",label:"\u4E88\u7D04\u3068\u98DB\u3073\u8FBC\u307F\u304C\u534A\u3005\u304F\u3089\u3044"},{value:"WALKIN_DOMINANT",label:"\u307B\u307C\u98DB\u3073\u8FBC\u307F\uFF08\u4E88\u7D04\u306A\u3057\uFF09"}]},{id:"Q4",key:"onsite_payment",type:"single",title:"\u304A\u5E97\u3067\u306E\u652F\u6255\u3044\uFF08\u5E97\u982D\u6C7A\u6E08\uFF09\u306F\u3001\u3069\u306E\u304F\u3089\u3044\u3042\u308A\u307E\u3059\u304B\uFF1F",options:[{value:"MOST",label:"\u307B\u3068\u3093\u3069\u304C\u5E97\u982D\u3067\u652F\u6255\u3046"},{value:"SOME",label:"\u5E97\u982D\u3068\u632F\u8FBC\u30FB\u8ACB\u6C42\u304C\u6DF7\u3056\u308B"},{value:"LITTLE",label:"\u5E97\u982D\u3067\u306E\u652F\u6255\u3044\u306F\u307B\u307C\u306A\u3044",hint:"\u8ACB\u6C42\u66F8\u30FB\u632F\u8FBC\u30FB\u6708\u8B1D\u304C\u4E2D\u5FC3"}]},{id:"Q5",key:"ops_complexity",type:"single",title:"\u5546\u54C1\u30FB\u30E1\u30CB\u30E5\u30FC\u3068\u5728\u5EAB\u306E\u7BA1\u7406\u306F\uFF1F",options:[{value:"SIMPLE",label:"\u30E1\u30CB\u30E5\u30FC\u304C\u5C11\u306A\u304F\u3001\u5728\u5EAB\u7BA1\u7406\u306F\u4E0D\u8981"},{value:"MULTI_LOW_INVENTORY",label:"\u54C1\u76EE\u306F\u591A\u3044\u304C\u3001\u5728\u5EAB\u7BA1\u7406\u306F\u8EFD\u3044"},{value:"INVENTORY_IMPORTANT",label:"\u5728\u5EAB\u306E\u7BA1\u7406\u304C\u91CD\u8981"}]},{id:"Q6",key:"staff_count",type:"single",title:"\u30B9\u30BF\u30C3\u30D5\u306E\u4EBA\u6570\u306F\uFF1F",help:"\u30AA\u30FC\u30CA\u30FC\u672C\u4EBA\u3092\u542B\u3081\u305F\u4EBA\u6570\u3067\u3059\u3002",options:[{value:"SOLO",label:"\u81EA\u5206\u3072\u3068\u308A"},{value:"SMALL_2_3",label:"2\u301C3\u4EBA"},{value:"TEAM_4_PLUS",label:"4\u4EBA\u4EE5\u4E0A"}]},{id:"Q7",key:"repeat_rate",type:"single",title:"\u540C\u3058\u304A\u5BA2\u3055\u307E\u304C\u3001\u7E70\u308A\u8FD4\u3057\u6765\u308B\u5272\u5408\u306F\uFF1F",help:"\u958B\u696D\u524D\u306A\u3089\u3001\u60F3\u5B9A\u3067\u69CB\u3044\u307E\u305B\u3093\u3002",options:[{value:"HIGH",label:"\u9AD8\u3044\uFF08\u518D\u6765\u304C\u4E2D\u5FC3\uFF09"},{value:"MEDIUM",label:"\u3075\u3064\u3046"},{value:"LOW",label:"\u4F4E\u3044\uFF08\u4E00\u898B\u306E\u304A\u5BA2\u3055\u307E\u304C\u4E2D\u5FC3\uFF09"}]},{id:"Q8",key:"existing_services",type:"multi",title:"\u3059\u3067\u306B\u4F7F\u3063\u3066\u3044\u308B\u3082\u306E\u306F\uFF1F",help:"\u8907\u6570\u9078\u3079\u307E\u3059\u3002\u307E\u3060\u4F55\u3082\u306A\u3051\u308C\u3070\u300C\u307E\u3060\u4F55\u3082\u4F7F\u3063\u3066\u3044\u306A\u3044\u300D\u3092\u9078\u3093\u3067\u304F\u3060\u3055\u3044\u3002",options:[{value:"GOOGLE_BUSINESS",label:"Google\u30D3\u30B8\u30CD\u30B9\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB"},{value:"EXTERNAL_PLATFORM",label:"\u5916\u90E8\u306E\u96C6\u5BA2\u5A92\u4F53",hint:"\u30DB\u30C3\u30C8\u30DA\u30C3\u30D1\u30FC\u306A\u3069"},{value:"LINE",label:"LINE\u516C\u5F0F\u30A2\u30AB\u30A6\u30F3\u30C8"},{value:"RESERVATION",label:"\u4E88\u7D04\u30B7\u30B9\u30C6\u30E0"},{value:"CASHLESS",label:"\u30AD\u30E3\u30C3\u30B7\u30E5\u30EC\u30B9\u6C7A\u6E08"},{value:"POS",label:"POS\u30EC\u30B8"},{value:"ACCOUNTING",label:"\u4F1A\u8A08\u30BD\u30D5\u30C8"},{value:"WEBSITE",label:"\u81EA\u793E\u30B5\u30A4\u30C8"},{value:"NONE",label:"\u307E\u3060\u4F55\u3082\u4F7F\u3063\u3066\u3044\u306A\u3044"}]},{id:"CQ1",key:"platform_dependency",type:"single",title:"\u65B0\u898F\u306E\u304A\u5BA2\u3055\u307E\u306E\u3046\u3061\u3001\u5916\u90E8\u5A92\u4F53\u7D4C\u7531\u306F\u3069\u306E\u304F\u3089\u3044\u3067\u3059\u304B\uFF1F",when:e=>(e.existing_services??[]).includes("EXTERNAL_PLATFORM"),options:[{value:"HIGH",label:"\u5927\u534A\u304C\u5A92\u4F53\u7D4C\u7531"},{value:"MEDIUM",label:"\u534A\u5206\u304F\u3089\u3044"},{value:"LOW",label:"\u5C11\u306A\u3044"},{value:"UNKNOWN",label:"\u628A\u63E1\u3057\u3066\u3044\u306A\u3044"}]},{id:"CQ2",key:"manual_duplication",type:"single",title:"\u30B5\u30FC\u30D3\u30B9\u540C\u58EB\u3067\u3001\u540C\u3058\u60C5\u5831\u3092\u624B\u3067\u5165\u529B\u3057\u76F4\u3059\u3053\u3068\u306F\u3042\u308A\u307E\u3059\u304B\uFF1F",help:"\u4F8B\uFF1A\u4E88\u7D04\u53F0\u5E33\u306E\u5185\u5BB9\u3092\u30EC\u30B8\u306B\u3082\u6253\u3061\u76F4\u3059\u3001\u58F2\u4E0A\u3092\u4F1A\u8A08\u306B\u8EE2\u8A18\u3059\u308B\u3002",when:e=>b(e)>=3,options:[{value:"YES",label:"\u3042\u308B\uFF08\u4E8C\u91CD\u5165\u529B\u304C\u8CA0\u62C5\uFF09"},{value:"NO",label:"\u306A\u3044"},{value:"UNKNOWN",label:"\u308F\u304B\u3089\u306A\u3044"}]},{id:"CQ3",key:"new_customer_state",type:"single",title:"\u65B0\u898F\u306E\u304A\u5BA2\u3055\u307E\u306F\u3001\u8DB3\u308A\u3066\u3044\u307E\u3059\u304B\uFF1F",when:e=>e.stage==="OPERATING",options:[{value:"NEED_MORE",label:"\u3082\u3063\u3068\u5FC5\u8981"},{value:"ENOUGH",label:"\u8DB3\u308A\u3066\u3044\u308B"},{value:"CAPACITY_FULL",label:"\u53D7\u3051\u5165\u308C\u304C\u9650\u754C\u306B\u8FD1\u3044"},{value:"UNKNOWN",label:"\u308F\u304B\u3089\u306A\u3044"}]}],x=Object.fromEntries(R.map(e=>[e.key,e]));function d(e,t){return x[e].options.find(i=>i.value===t)?.label??t}function w(e){return R.filter(t=>!t.when||t.when(e))}function k(e,t,i="\u2014"){return Array.isArray(t)?t.map(n=>d(e,n)).join("\u3001"):typeof t=="string"?d(e,t):i}var W={stage:{PRE_OPEN_90_PLUS:"\u958B\u696D\u307E\u306790\u65E5\u4EE5\u4E0A\u3042\u308B",PRE_OPEN_31_90:"\u958B\u696D\u307E\u306731\u301C90\u65E5",PRE_OPEN_0_30:"\u958B\u696D\u307E\u306730\u65E5\u4EE5\u5185",OPERATING:"\u3059\u3067\u306B\u55B6\u696D\u4E2D"},business_type:{BEAUTY_SALON:"\u7F8E\u5BB9\u7CFB\u306E\u696D\u614B",HEALTH_TREATMENT:"\u65BD\u8853\u7CFB\u306E\u696D\u614B",FOOD:"\u98F2\u98DF\u306E\u696D\u614B",RETAIL:"\u7269\u8CA9\u306E\u696D\u614B",LESSON_SCHOOL:"\u6559\u5BA4\u30FB\u30B9\u30AF\u30FC\u30EB\u306E\u696D\u614B",FITNESS:"\u30D5\u30A3\u30C3\u30C8\u30CD\u30B9\u7CFB\u306E\u696D\u614B",PET:"\u30DA\u30C3\u30C8\u7CFB\u306E\u696D\u614B",OTHER_FACE_TO_FACE:"\u5BFE\u9762\u30B5\u30FC\u30D3\u30B9\u306E\u696D\u614B"},reservation_model:{APPOINTMENT_DOMINANT:"\u6765\u5E97\u304C\u307B\u307C\u4E88\u7D04\u5236",MIXED:"\u4E88\u7D04\u3068\u98DB\u3073\u8FBC\u307F\u304C\u6DF7\u5728",WALKIN_DOMINANT:"\u6765\u5E97\u304C\u307B\u307C\u98DB\u3073\u8FBC\u307F"},onsite_payment:{MOST:"\u5E97\u982D\u3067\u306E\u652F\u6255\u3044\u304C\u5927\u534A",SOME:"\u5E97\u982D\u3068\u632F\u8FBC\u30FB\u8ACB\u6C42\u304C\u6DF7\u5728",LITTLE:"\u5E97\u982D\u3067\u306E\u652F\u6255\u3044\u304C\u307B\u307C\u306A\u3044"},ops_complexity:{SIMPLE:"\u30E1\u30CB\u30E5\u30FC\u304C\u5C11\u306A\u304F\u5728\u5EAB\u7BA1\u7406\u304C\u4E0D\u8981",MULTI_LOW_INVENTORY:"\u54C1\u76EE\u306F\u591A\u3044\u304C\u5728\u5EAB\u7BA1\u7406\u306F\u8EFD\u3044",INVENTORY_IMPORTANT:"\u5728\u5EAB\u7BA1\u7406\u304C\u91CD\u8981"},staff_count:{SOLO:"\u3072\u3068\u308A\u904B\u55B6",SMALL_2_3:"\u30B9\u30BF\u30C3\u30D52\u301C3\u4EBA",TEAM_4_PLUS:"\u30B9\u30BF\u30C3\u30D54\u4EBA\u4EE5\u4E0A"},repeat_rate:{HIGH:"\u518D\u6765\u304C\u4E2D\u5FC3",MEDIUM:"\u518D\u6765\u306F\u3075\u3064\u3046",LOW:"\u4E00\u898B\u306E\u304A\u5BA2\u3055\u307E\u304C\u4E2D\u5FC3"},platform_dependency:{HIGH:"\u65B0\u898F\u5BA2\u306E\u5927\u534A\u304C\u5A92\u4F53\u7D4C\u7531",MEDIUM:"\u65B0\u898F\u5BA2\u306E\u534A\u5206\u307B\u3069\u304C\u5A92\u4F53\u7D4C\u7531",LOW:"\u5A92\u4F53\u7D4C\u7531\u306E\u65B0\u898F\u5BA2\u306F\u5C11\u306A\u3044",UNKNOWN:"\u5A92\u4F53\u7D4C\u7531\u306E\u5272\u5408\u304C\u672A\u628A\u63E1"},manual_duplication:{YES:"\u624B\u4F5C\u696D\u306E\u4E8C\u91CD\u5165\u529B\u304C\u3042\u308B",NO:"\u4E8C\u91CD\u5165\u529B\u306F\u306A\u3044",UNKNOWN:"\u4E8C\u91CD\u5165\u529B\u306E\u6709\u7121\u304C\u672A\u628A\u63E1"},new_customer_state:{NEED_MORE:"\u65B0\u898F\u5BA2\u304C\u3082\u3063\u3068\u5FC5\u8981",ENOUGH:"\u65B0\u898F\u5BA2\u306F\u8DB3\u308A\u3066\u3044\u308B",CAPACITY_FULL:"\u53D7\u3051\u5165\u308C\u304C\u9650\u754C\u306B\u8FD1\u3044",UNKNOWN:"\u65B0\u898F\u5BA2\u306E\u5145\u8DB3\u304C\u672A\u628A\u63E1"}};function he(e){return W[e.key]?.[e.value]??`${e.key}=${e.value}`}function G(e){let t=e.map(he);return t.length===0?"":t.length===1?t[0]??"":`${t.slice(0,-1).join("\u3001")}\u3067\u3001${t[t.length-1]}`}var I={GOOGLE_FOUNDATION:{name:"Google\u30D3\u30B8\u30CD\u30B9\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB",href:"/guide/opening-order",measure:["\u5E97\u540D\u691C\u7D22\u306E\u8868\u793A\u56DE\u6570","\u96FB\u8A71\u30FB\u7D4C\u8DEF\u30FB\u30B5\u30A4\u30C8\u306E\u30BF\u30C3\u30D7\u6570","\u53E3\u30B3\u30DF\u6570\u3068\u8FD4\u4FE1\u7387"],alternative:null,review_points:["\u55B6\u696D\u6642\u9593\u30FB\u4F4F\u6240\u30FB\u5199\u771F\u304C\u6700\u65B0\u304B","\u53E3\u30B3\u30DF\u306B\u8FD4\u4FE1\u3057\u3066\u3044\u308B\u304B","\u4E88\u7D04\u30EA\u30F3\u30AF\u306A\u3069\u5C0E\u7DDA\u3092\u7F6E\u3051\u3066\u3044\u308B\u304B"],next_action:{FREE_FOUNDATION:"\u30AA\u30FC\u30CA\u30FC\u78BA\u8A8D\u3092\u6E08\u307E\u305B\u3001\u55B6\u696D\u6642\u9593\u30FB\u5199\u771F\u30FB\u8AAC\u660E\u6587\u3092\u4ECA\u65E5\u4E2D\u306B\u57CB\u3081\u308B\u3002",REVIEW_EXISTING:"\u55B6\u696D\u6642\u9593\u30FB\u5199\u771F\u30FB\u53E3\u30B3\u30DF\u8FD4\u4FE1\u3092\u898B\u76F4\u3059\u3002\u4E88\u7D04\u30EA\u30F3\u30AF\u304C\u7F6E\u3051\u308B\u306A\u3089\u7F6E\u304F\u3002"}},RESERVATION:{name:"\u4E88\u7D04\u30B7\u30B9\u30C6\u30E0",href:"/need/reservation-system",measure:["\u4E88\u7D04\u5BFE\u5FDC\u306B\u304B\u304B\u308B\u6642\u9593","\u55B6\u696D\u6642\u9593\u5916\u306E\u4E88\u7D04\u6570","\u4E88\u7D04\u6F0F\u308C\u30FB\u4E8C\u91CD\u4E88\u7D04\u306E\u4EF6\u6570","\u30AD\u30E3\u30F3\u30BB\u30EB\u5BFE\u5FDC\u306E\u624B\u9593","\u4E88\u7D04\u7D4C\u8DEF\u306E\u6570"],alternative:"\u96FB\u8A71\u30FBLINE\u30FBDM\u3067\u53D7\u3051\u3001\u7D19\u304B\u30B9\u30D7\u30EC\u30C3\u30C9\u30B7\u30FC\u30C8\u306E\u53F0\u5E33\u3067\u7BA1\u7406\u3059\u308B\u3002",review_points:["\u6709\u6599\u30D7\u30E9\u30F3\u306E\u6A5F\u80FD\u3092\u4F7F\u3044\u5207\u308C\u3066\u3044\u308B\u304B","\u53D7\u4ED8\u7D4C\u8DEF\u304C\u5206\u6563\u3057\u3066\u4E8C\u91CD\u7BA1\u7406\u306B\u306A\u3063\u3066\u3044\u306A\u3044\u304B","\u30EA\u30DE\u30A4\u30F3\u30C9\u30FB\u30AD\u30E3\u30F3\u30BB\u30EB\u51E6\u7406\u304C\u81EA\u52D5\u5316\u3067\u304D\u3066\u3044\u308B\u304B"],next_action:{NOW:"\u76F4\u8FD11\u9031\u9593\u306E\u4E88\u7D04\u5BFE\u5FDC\u6642\u9593\u3068\u53D7\u4ED8\u7D4C\u8DEF\u6570\u3092\u6570\u3048\u3001\u7121\u6599\u30D7\u30E9\u30F3\u3067\u4E88\u7D04\u30DA\u30FC\u30B8\u3092\u8A66\u3059\u3002",NEXT:"\u7121\u6599\u30D7\u30E9\u30F3\u3067\u4E88\u7D04\u30DA\u30FC\u30B8\u3060\u3051\u4F5C\u308A\u3001\u55B6\u696D\u6642\u9593\u5916\u306E\u4E88\u7D04\u304C\u5165\u308B\u304B\u30921\u304B\u6708\u898B\u308B\u3002",LATER:"\u4E88\u7D04\u6F0F\u308C\u3084\u4E8C\u91CD\u4E88\u7D04\u304C\u8D77\u304D\u305F\u3089\u3001\u305D\u306E\u3068\u304D\u306B\u898B\u76F4\u3059\u3002",NOT_PRIORITY:"\u53D7\u4ED8\u306F\u4ECA\u306E\u65B9\u6CD5\u306E\u307E\u307E\u3002\u4E88\u7D04\u304C\u5897\u3048\u3066\u304D\u305F\u3089\u518D\u78BA\u8A8D\u3059\u308B\u3002",REVIEW_EXISTING:"\u30D7\u30E9\u30F3\u30FB\u53D7\u4ED8\u7D4C\u8DEF\u30FB\u81EA\u52D5\u5316\u306E3\u70B9\u3092\u78BA\u8A8D\u3059\u308B\u3002"}},CASHLESS:{name:"\u30AD\u30E3\u30C3\u30B7\u30E5\u30EC\u30B9\u6C7A\u6E08",href:"/need/cashless-payment",measure:["\u30AD\u30E3\u30C3\u30B7\u30E5\u30EC\u30B9\u5229\u7528\u7387","\u6708\u9593\u306E\u6C7A\u6E08\u624B\u6570\u6599","\u4F1A\u8A08\u306B\u304B\u304B\u308B\u6642\u9593","\u73FE\u91D1\u7DE0\u3081\u306E\u6642\u9593","\u304A\u5BA2\u3055\u307E\u304B\u3089\u306E\u8981\u671B\u6570"],alternative:"\u73FE\u91D1\u3068\u632F\u8FBC\u3067\u53D7\u3051\u3001\u8981\u671B\u304C\u51FA\u305F\u56DE\u6570\u3092\u8A18\u9332\u3059\u308B\u3002",review_points:["\u624B\u6570\u6599\u7387\u304C\u73FE\u5728\u306E\u6761\u4EF6\u3068\u3057\u3066\u59A5\u5F53\u304B","\u5165\u91D1\u30B5\u30A4\u30AF\u30EB\u304C\u8CC7\u91D1\u7E70\u308A\u306B\u5408\u3063\u3066\u3044\u308B\u304B","\u30EC\u30B8\u30FB\u4F1A\u8A08\u3068\u306E\u9023\u643A\u3067\u8EE2\u8A18\u304C\u6E1B\u3063\u3066\u3044\u308B\u304B"],next_action:{NOW:"\u6708\u306E\u5E97\u982D\u58F2\u4E0A\u306E\u60F3\u5B9A\u984D\u3067\u624B\u6570\u6599\u3092\u8A66\u7B97\u3057\u3001\u56FA\u5B9A\u8CBB\u30BC\u30ED\u306E\u5019\u88DC\u304B\u3089\u6BD4\u8F03\u3059\u308B\u3002",NEXT:"\u304A\u5BA2\u3055\u307E\u306E\u8981\u671B\u30921\u304B\u6708\u8A18\u9332\u3057\u3001\u8981\u671B\u304C\u7D9A\u304F\u306A\u3089\u56FA\u5B9A\u8CBB\u30BC\u30ED\u306E\u5019\u88DC\u3092\u8A66\u3059\u3002",LATER:"\u5E97\u982D\u6C7A\u6E08\u304C\u5897\u3048\u3066\u304D\u305F\u3089\u3001\u305D\u306E\u3068\u304D\u306B\u8A66\u7B97\u3059\u308B\u3002",NOT_PRIORITY:"\u5E97\u982D\u6C7A\u6E08\u304C\u307B\u307C\u306A\u3044\u305F\u3081\u3001\u4ECA\u306F\u512A\u5148\u3057\u306A\u3044\u3002\u8ACB\u6C42\u30FB\u632F\u8FBC\u306E\u65B9\u6CD5\u3092\u6574\u3048\u308B\u3002",REVIEW_EXISTING:"\u624B\u6570\u6599\u30FB\u5165\u91D1\u30B5\u30A4\u30AF\u30EB\u30FB\u9023\u643A\u306E3\u70B9\u3092\u898B\u76F4\u3059\u3002"}},POS:{name:"POS\u30EC\u30B8",href:"/need/pos-register",measure:["\u7DE0\u3081\u4F5C\u696D\u306E\u6642\u9593","\u5728\u5EAB\u5DEE\u7570","\u96C6\u8A08\u306E\u6642\u9593","\u8EE2\u8A18\u306E\u56DE\u6570","\u58F2\u4E0A\u5206\u6790\u3092\u898B\u305F\u983B\u5EA6"],alternative:"\u7121\u6599\u306E\u30EC\u30B8\u30A2\u30D7\u30EA\u304B\u624B\u66F8\u304D\u4F1D\u7968\uFF0B\u8868\u8A08\u7B97\u3067\u3001\u58F2\u4E0A\u3060\u3051\u8A18\u9332\u3059\u308B\u3002",review_points:["\u6709\u6599\u6A5F\u80FD\u3092\u4F7F\u3063\u3066\u3044\u308B\u304B","\u5728\u5EAB\u30FB\u58F2\u4E0A\u5206\u6790\u3092\u5B9F\u969B\u306B\u898B\u3066\u3044\u308B\u304B","\u6C7A\u6E08\u30FB\u4F1A\u8A08\u3068\u9023\u643A\u3067\u304D\u3066\u3044\u308B\u304B"],next_action:{NOW:"\u5546\u54C1\u30FB\u30E1\u30CB\u30E5\u30FC\u6570\u3068\u5728\u5EAB\u306E\u7BA1\u7406\u65B9\u6CD5\u3092\u66F8\u304D\u51FA\u3057\u3001\u7121\u6599POS\u30A2\u30D7\u30EA\u3067\u767B\u9332\u3057\u3066\u307F\u308B\u3002",NEXT:"\u7121\u6599POS\u30A2\u30D7\u30EA\u3067\u58F2\u4E0A\u8A18\u9332\u3060\u3051\u59CB\u3081\u3001\u5728\u5EAB\u3084\u5206\u6790\u304C\u5FC5\u8981\u306B\u306A\u3063\u305F\u6642\u70B9\u3067\u6A5F\u80FD\u3092\u8DB3\u3059\u3002",LATER:"\u54C1\u76EE\u3084\u30B9\u30BF\u30C3\u30D5\u304C\u5897\u3048\u305F\u3089\u3001\u305D\u306E\u3068\u304D\u306B\u898B\u76F4\u3059\u3002",NOT_PRIORITY:"\u3072\u3068\u308A\u904B\u55B6\u3067\u5728\u5EAB\u7BA1\u7406\u304C\u4E0D\u8981\u306A\u305F\u3081\u3001\u9AD8\u6A5F\u80FD\u306APOS\u306F\u4ECA\u306F\u512A\u5148\u3057\u306A\u3044\u3002",REVIEW_EXISTING:"\u6709\u6599\u6A5F\u80FD\u30FB\u5206\u6790\u30FB\u9023\u643A\u306E3\u70B9\u3092\u898B\u76F4\u3059\u3002"}},ACCOUNTING:{name:"\u4F1A\u8A08\u30BD\u30D5\u30C8",href:"/guide/opening-order",measure:["\u6708\u6B21\u306E\u8A18\u5E33\u306B\u304B\u304B\u308B\u6642\u9593","\u30EC\u30B7\u30FC\u30C8\u30FB\u660E\u7D30\u306E\u53D6\u308A\u8FBC\u307F\u7387","\u78BA\u5B9A\u7533\u544A\u306E\u6E96\u5099\u6642\u9593"],alternative:"\u958B\u696D\u521D\u6708\u306F\u8868\u8A08\u7B97\u3067\u53CE\u652F\u3092\u8A18\u9332\u3057\u3001\u7A0E\u7406\u58EB\u306B\u4F9D\u983C\u3059\u308B\u304B\u3092\u6C7A\u3081\u308B\u3002",review_points:["\u9280\u884C\u30FB\u30AB\u30FC\u30C9\u660E\u7D30\u306E\u81EA\u52D5\u53D6\u308A\u8FBC\u307F\u3092\u4F7F\u3048\u3066\u3044\u308B\u304B","\u58F2\u4E0A\u30C7\u30FC\u30BF\u306E\u8EE2\u8A18\u304C\u6B8B\u3063\u3066\u3044\u306A\u3044\u304B","\u30D7\u30E9\u30F3\u304C\u53D6\u5F15\u91CF\u306B\u5408\u3063\u3066\u3044\u308B\u304B"],next_action:{NEXT:"\u8A18\u5E33\u3092\u81EA\u5206\u3067\u3084\u308B\u304B\u7A0E\u7406\u58EB\u306B\u4EFB\u305B\u308B\u304B\u3092\u6C7A\u3081\u3001\u81EA\u5206\u3067\u3084\u308B\u306A\u3089\u660E\u7D30\u9023\u643A\u3067\u304D\u308B\u30BD\u30D5\u30C8\u3092\u9078\u3076\u3002",LATER:"\u958B\u696D30\u65E5\u524D\u307E\u3067\u306B\u8A18\u5E33\u306E\u65B9\u6CD5\u3092\u6C7A\u3081\u308B\u3002",REVIEW_EXISTING:"\u660E\u7D30\u9023\u643A\u30FB\u8EE2\u8A18\u30FB\u30D7\u30E9\u30F3\u306E3\u70B9\u3092\u898B\u76F4\u3059\u3002"}},LINE:{name:"LINE\u516C\u5F0F\u30A2\u30AB\u30A6\u30F3\u30C8",href:"/need/line-official",measure:["\u53CB\u3060\u3061\u306E\u7D14\u5897\u6570","\u914D\u4FE1\u306E\u5230\u9054\u6570","\u30D6\u30ED\u30C3\u30AF\u6570","\u4E88\u7D04\u30FB\u518D\u6765\u306B\u3064\u306A\u304C\u3063\u305F\u6570","\u914D\u4FE1\u30B3\u30B9\u30C8"],alternative:"\u518D\u6765\u306E\u304A\u793C\u3084\u6B21\u56DE\u4E88\u7D04\u306F\u3001\u4F1A\u8A08\u6642\u306E\u4E00\u8A00\u3068\u540D\u523A\u30FB\u30AB\u30FC\u30C9\u3067\u5341\u5206\u306A\u3053\u3068\u304C\u591A\u3044\u3002",review_points:["\u914D\u4FE1\u306E\u76EE\u7684\u3068\u983B\u5EA6\u304C\u6C7A\u307E\u3063\u3066\u3044\u308B\u304B","\u30D6\u30ED\u30C3\u30AF\u7387\u304C\u4E0A\u304C\u3063\u3066\u3044\u306A\u3044\u304B","\u4E88\u7D04\u3084\u518D\u6765\u306B\u5B9F\u969B\u306B\u3064\u306A\u304C\u3063\u3066\u3044\u308B\u304B"],next_action:{NOW:"\u7121\u6599\u30D7\u30E9\u30F3\u3067\u4F5C\u308A\u3001\u300C\u4F55\u3092\u300D\u300C\u8AB0\u306B\u300D\u300C\u6708\u306B\u4F55\u56DE\u300D\u9001\u308B\u304B\u3092\u5148\u306B\u6C7A\u3081\u3066\u304B\u3089\u6848\u5185\u3059\u308B\u3002",NEXT:"\u518D\u6765\u5BA2\u304C\u4E00\u5B9A\u6570\u3064\u3044\u305F\u3089\u7121\u6599\u30D7\u30E9\u30F3\u3067\u59CB\u3081\u3001\u5FC5\u8981\u306A\u901A\u6570\u3092\u6E2C\u308B\u3002",LATER:"\u307E\u305A\u306F\u6765\u5E97\u5BA2\u3092\u5897\u3084\u3059\u3053\u3068\u3092\u512A\u5148\u3057\u3001\u518D\u6765\u5BA2\u304C\u898B\u3048\u3066\u304D\u305F\u3089\u4F5C\u308B\u3002",NOT_PRIORITY:"\u518D\u6765\u304C\u5C11\u306A\u3044\u696D\u614B\u306E\u305F\u3081\u3001\u4ECA\u306F\u512A\u5148\u3057\u306A\u3044\u3002",REVIEW_EXISTING:"\u76EE\u7684\u30FB\u30D6\u30ED\u30C3\u30AF\u7387\u30FB\u6210\u679C\u306E3\u70B9\u3092\u898B\u76F4\u3059\u3002"}},EXTERNAL_PLATFORM:{name:"\u5916\u90E8\u306E\u96C6\u5BA2\u5A92\u4F53",href:"/need/hotpepper-beauty",measure:["\u5A92\u4F53\u7D4C\u7531\u306E\u65B0\u898F\u6570","\u65B0\u898F1\u4EBA\u3042\u305F\u308A\u306E\u7372\u5F97\u8CBB\uFF08CAC\uFF09","\u518D\u6765\u7387","6\u304B\u6708\u306E\u9867\u5BA2\u4FA1\u5024","\u5A92\u4F53\u4F9D\u5B58\u7387"],alternative:"Google\u30D3\u30B8\u30CD\u30B9\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB\u30FB\u5E97\u540D\u691C\u7D22\u30FB\u7D39\u4ECB\u30FBSNS\u3067\u76F4\u63A5\u306E\u5C0E\u7DDA\u3092\u80B2\u3066\u308B\u3002",review_points:["\u5A92\u4F53\u95A2\u9023\u8CBB\xF7\u5A92\u4F53\u7D4C\u7531\u65B0\u898F\u6570\uFF08CAC\uFF09\u3092\u51FA\u3057\u3066\u3044\u308B\u304B","\u5A92\u4F53\u3092\u6B62\u3081\u305F\u3068\u304D\u306B\u6B8B\u308B\u7D4C\u8DEF\u304C\u3042\u308B\u304B","\u518D\u6765\u7387\u304C\u5A92\u4F53\u7D4C\u7531\u3068\u305D\u308C\u4EE5\u5916\u3067\u9055\u3046\u304B"],next_action:{NEXT:"\u65B0\u898F\u5BA2\u304C\u5FC5\u8981\u306A\u7406\u7531\u3068\u3001\u6708\u306B\u6255\u3048\u308B\u4E0A\u9650\u984D\u3092\u6C7A\u3081\u3066\u304B\u3089\u3001\u63B2\u8F09\u6761\u4EF6\u3092\u554F\u3044\u5408\u308F\u305B\u308B\u3002",LATER:"\u307E\u305AGoogle\u30D3\u30B8\u30CD\u30B9\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB\u3068\u76F4\u63A5\u306E\u5C0E\u7DDA\u3092\u6574\u3048\u3001\u65B0\u898F\u5BA2\u306E\u4E0D\u8DB3\u304C\u898B\u3048\u305F\u3089\u691C\u8A0E\u3059\u308B\u3002",NOT_PRIORITY:"\u65B0\u898F\u5BA2\u306F\u8DB3\u308A\u3066\u3044\u308B\uFF08\u307E\u305F\u306F\u53D7\u3051\u5165\u308C\u304C\u9650\u754C\uFF09\u305F\u3081\u3001\u4ECA\u306F\u512A\u5148\u3057\u306A\u3044\u3002",REVIEW_EXISTING:"CAC\u30FB\u4F9D\u5B58\u5EA6\u30FB\u518D\u6765\u7387\u306E3\u70B9\u3092\u51FA\u3057\u3001\u7D9A\u3051\u308B\u304B\u30FB\u6E1B\u3089\u3059\u304B\u3092\u5224\u65AD\u3059\u308B\u3002"}},WEBSITE:{name:"\u81EA\u793E\u30B5\u30A4\u30C8",href:"/guide/opening-order",measure:["\u691C\u7D22\u304B\u3089\u306E\u8A2A\u554F\u6570","\u30B5\u30A4\u30C8\u7D4C\u7531\u306E\u4E88\u7D04\u30FB\u554F\u3044\u5408\u308F\u305B\u6570","\u6EDE\u5728\u6642\u9593"],alternative:"Google\u30D3\u30B8\u30CD\u30B9\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB\u3068\u4E88\u7D04\u30DA\u30FC\u30B8\uFF08\u7121\u6599\u30D7\u30E9\u30F3\uFF09\u3067\u3001\u691C\u7D22\u306E\u53D7\u3051\u76BF\u3092\u4F5C\u308B\u3002",review_points:["\u66F4\u65B0\u304C\u6B62\u307E\u3063\u3066\u3044\u306A\u3044\u304B","\u4E88\u7D04\u30FB\u554F\u3044\u5408\u308F\u305B\u306E\u5C0E\u7DDA\u304C1\u30BF\u30C3\u30D7\u3067\u5206\u304B\u308B\u304B","\u30B9\u30DE\u30DB\u3067\u5D29\u308C\u3066\u3044\u306A\u3044\u304B"],next_action:{NEXT:"\u4F1D\u3048\u305F\u3044\u3053\u30683\u3064\u3068\u4E88\u7D04\u5C0E\u7DDA\u3092\u6C7A\u3081\u30011\u30DA\u30FC\u30B8\u3067\u4F5C\u308B\u3002",LATER:"Google\u30D3\u30B8\u30CD\u30B9\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB\u3092\u6574\u3048\u305F\u3042\u3068\u3001\u4F1D\u3048\u305F\u3044\u5185\u5BB9\u304C\u56FA\u307E\u3063\u3066\u304B\u3089\u4F5C\u308B\u3002",REVIEW_EXISTING:"\u66F4\u65B0\u30FB\u5C0E\u7DDA\u30FB\u30B9\u30DE\u30DB\u8868\u793A\u306E3\u70B9\u3092\u898B\u76F4\u3059\u3002"}},INTEGRATION:{name:"\u30B5\u30FC\u30D3\u30B9\u9593\u306E\u9023\u643A",href:"/guide/opening-order",measure:["\u4E8C\u91CD\u5165\u529B\u306E\u56DE\u6570","\u8EE2\u8A18\u30DF\u30B9\u306E\u4EF6\u6570","\u7DE0\u3081\u4F5C\u696D\u306E\u6642\u9593"],alternative:"\u4E8C\u91CD\u5165\u529B\u3057\u3066\u3044\u308B\u9805\u76EE\u3092\u66F8\u304D\u51FA\u3057\u3066\u304A\u304D\u3001\u6B21\u306B\u898B\u76F4\u3059\u3068\u304D\u306B\u9023\u643A\u304B\u3089\u691C\u8A0E\u3059\u308B\u3002",review_points:[],next_action:{NEXT:"\u4E8C\u91CD\u5165\u529B\u3057\u3066\u3044\u308B\u9805\u76EE\u3092\u66F8\u304D\u51FA\u3057\u3001\u65E2\u88FD\u30B5\u30FC\u30D3\u30B9\u540C\u58EB\u306E\u9023\u643A\u3067\u6D88\u305B\u308B\u3082\u306E\u304B\u3089\u8A66\u3059\u3002",LATER:"\u4E8C\u91CD\u5165\u529B\u3057\u3066\u3044\u308B\u9805\u76EE\u3092\u66F8\u304D\u51FA\u3057\u3066\u304A\u304D\u3001\u6B21\u306E\u898B\u76F4\u3057\u6642\u306B\u9023\u643A\u304B\u3089\u691C\u8A0E\u3059\u308B\u3002"}}},H={FREE_FOUNDATION:{label:"\u7121\u6599\u3067\u5148\u306B\u6574\u3048\u308B",description:"\u8CBB\u7528\u30BC\u30ED\u3067\u3001\u3069\u306E\u696D\u614B\u3067\u3082\u5148\u306B\u6574\u3048\u3066\u640D\u304C\u306A\u3044\u571F\u53F0\u3067\u3059\u3002"},NOW:{label:"\u4ECA\u3001\u6574\u3048\u308B",description:"\u3044\u307E\u306E\u304A\u5E97\u306E\u6761\u4EF6\u306A\u3089\u3001\u5148\u306B\u624B\u3092\u4ED8\u3051\u308B\u4FA1\u5024\u304C\u9AD8\u3044\u3082\u306E\u3067\u3059\uFF08\u6700\u59273\u3064\uFF09\u3002"},NEXT:{label:"\u6B21\u306B\u8003\u3048\u308B",description:"\u4ECA\u3059\u3050\u3067\u306F\u306A\u3044\u304C\u3001\u6761\u4EF6\u304C\u305D\u308D\u3048\u3070\u691C\u8A0E\u3059\u308B\u4FA1\u5024\u304C\u3042\u308B\u3082\u306E\u3067\u3059\uFF08\u6700\u59272\u3064\uFF09\u3002"},LATER:{label:"\u3042\u3068\u3067\u8003\u3048\u308B",description:"\u4ECA\u306F\u52D5\u304B\u306A\u304F\u3066\u3088\u3044\u3082\u306E\u3002\u72B6\u6CC1\u304C\u5909\u308F\u3063\u305F\u3089\u898B\u76F4\u3057\u307E\u3059\u3002"},NOT_PRIORITY:{label:"\u4ECA\u306F\u512A\u5148\u3057\u306A\u3044",description:"\u3044\u307E\u306E\u304A\u5E97\u306E\u6761\u4EF6\u3067\u306F\u3001\u5165\u308C\u306A\u3044\u5224\u65AD\u3067\u554F\u984C\u306A\u3044\u3082\u306E\u3067\u3059\u3002"},REVIEW_EXISTING:{label:"\u65E2\u5B58\u30B5\u30FC\u30D3\u30B9\u306E\u898B\u76F4\u3057",description:"\u3059\u3067\u306B\u4F7F\u3063\u3066\u3044\u308B\u305F\u3081\u65B0\u898F\u5C0E\u5165\u306F\u52E7\u3081\u307E\u305B\u3093\u3002\u4F7F\u3044\u65B9\u3068\u8CBB\u7528\u5BFE\u52B9\u679C\u3092\u898B\u76F4\u3059\u89B3\u70B9\u3067\u3059\u3002"}},_=e=>e?`${e}\u3002`:"",Ue={GOOGLE_FOUNDATION:{FREE_FOUNDATION:()=>"\u5E97\u540D\u3084\u5730\u57DF\u3067\u691C\u7D22\u3055\u308C\u305F\u3068\u304D\u306E\u53D7\u3051\u76BF\u3067\u3059\u3002\u7121\u6599\u3067\u3001\u3069\u306E\u696D\u614B\u3067\u3082\u5148\u306B\u6574\u3048\u3066\u640D\u304C\u3042\u308A\u307E\u305B\u3093\u3002"},RESERVATION:{NOW:e=>`${e}\u3068\u3044\u3046\u6761\u4EF6\u304C\u305D\u308D\u3063\u3066\u3044\u307E\u3059\u3002\u53D7\u4ED8\u30FB\u5909\u66F4\u30FB\u30EA\u30DE\u30A4\u30F3\u30C9\u3092\u4EBA\u306E\u624B\u3060\u3051\u3067\u56DE\u3059\u3068\u3001\u6F0F\u308C\u3084\u4E8C\u91CD\u4E88\u7D04\u306E\u8CA0\u62C5\u304C\u51FA\u3084\u3059\u3044\u72B6\u614B\u3067\u3059\u3002`,NEXT:e=>`${_(e)}\u4ECA\u3059\u3050\u6709\u6599\u306E\u30B7\u30B9\u30C6\u30E0\u3092\u5951\u7D04\u3059\u308B\u5FC5\u8981\u306F\u3042\u308A\u307E\u305B\u3093\u304C\u3001\u7121\u6599\u30D7\u30E9\u30F3\u3067\u300C\u672C\u5F53\u306B\u5FC5\u8981\u304B\u300D\u3092\u8A66\u3059\u4FA1\u5024\u306F\u3042\u308A\u307E\u3059\u3002`,LATER:(e,t)=>`${_(t||e)}\u96FB\u8A71\u30FBLINE\u30FBDM\u3067\u53D7\u3051\u3066\u56F0\u3063\u3066\u3044\u306A\u3051\u308C\u3070\u3001\u307E\u3060\u6025\u3050\u5FC5\u8981\u306F\u3042\u308A\u307E\u305B\u3093\u3002`,NOT_PRIORITY:(e,t)=>`${t}\u306E\u305F\u3081\u3001\u4E88\u7D04\u30B7\u30B9\u30C6\u30E0\u3088\u308A\u5148\u306B\u6574\u3048\u308B\u3082\u306E\u304C\u3042\u308A\u307E\u3059\u3002\u4E88\u7D04\u304C\u5897\u3048\u3066\u304D\u305F\u3089\u898B\u76F4\u3057\u3066\u304F\u3060\u3055\u3044\u3002`},CASHLESS:{NOW:e=>`${e}\u3068\u3044\u3046\u6761\u4EF6\u3067\u3059\u3002\u624B\u6570\u6599\u3092\u6255\u3063\u3066\u3082\u3001\u4F1A\u8A08\u306E\u901F\u3055\u3068\u73FE\u91D1\u7BA1\u7406\u306E\u8CA0\u62C5\u6E1B\u3067\u5143\u304C\u53D6\u308C\u3084\u3059\u3044\u72B6\u614B\u3067\u3059\u3002`,NEXT:e=>`${_(e)}\u8981\u671B\u304C\u7D9A\u304F\u304B\u3001\u5E97\u982D\u6C7A\u6E08\u304C\u5897\u3048\u308B\u304B\u3092\u898B\u3066\u304B\u3089\u3001\u56FA\u5B9A\u8CBB\u30BC\u30ED\u306E\u5019\u88DC\u3067\u8A66\u3059\u6BB5\u968E\u3067\u3059\u3002`,LATER:(e,t)=>`${_(t||e)}\u5E97\u982D\u6C7A\u6E08\u304C\u5897\u3048\u3066\u304D\u305F\u3089\u3001\u305D\u306E\u3068\u304D\u306B\u8A66\u7B97\u3059\u308C\u3070\u9593\u306B\u5408\u3044\u307E\u3059\u3002`,NOT_PRIORITY:(e,t)=>`${t}\u305F\u3081\u3001\u6C7A\u6E08\u624B\u6570\u6599\u3092\u6255\u3046\u4FA1\u5024\u304C\u51FA\u306B\u304F\u3044\u72B6\u614B\u3067\u3059\u3002\u8ACB\u6C42\u30FB\u632F\u8FBC\u306E\u65B9\u6CD5\u3092\u6574\u3048\u308B\u307B\u3046\u304C\u5148\u3067\u3059\u3002`},POS:{NOW:e=>`${e}\u3068\u3044\u3046\u6761\u4EF6\u3067\u3059\u3002\u58F2\u4E0A\u30FB\u5728\u5EAB\u30FB\u62C5\u5F53\u5225\u306E\u96C6\u8A08\u3092\u624B\u4F5C\u696D\u3067\u56DE\u3059\u3068\u3001\u7DE0\u3081\u4F5C\u696D\u3068\u8EE2\u8A18\u306E\u8CA0\u62C5\u304C\u5927\u304D\u304F\u306A\u308A\u307E\u3059\u3002`,NEXT:e=>`${_(e)}\u9AD8\u6A5F\u80FD\u306APOS\u306F\u4E0D\u8981\u3067\u3082\u3001\u7121\u6599\u306E\u30EC\u30B8\u30A2\u30D7\u30EA\u3067\u58F2\u4E0A\u8A18\u9332\u3060\u3051\u59CB\u3081\u308B\u4FA1\u5024\u306F\u3042\u308A\u307E\u3059\u3002`,LATER:(e,t)=>`${_(t||e)}\u54C1\u76EE\u3084\u30B9\u30BF\u30C3\u30D5\u304C\u5897\u3048\u305F\u3089\u3001\u305D\u306E\u3068\u304D\u306B\u898B\u76F4\u305B\u3070\u5341\u5206\u3067\u3059\u3002`,NOT_PRIORITY:(e,t)=>`${t}\u305F\u3081\u3001\u9AD8\u6A5F\u80FD\u306APOS\u306F\u4ECA\u306F\u512A\u5148\u3057\u307E\u305B\u3093\u3002\u7121\u6599\u306E\u30EC\u30B8\u30A2\u30D7\u30EA\u304B\u624B\u66F8\u304D\u3067\u58F2\u4E0A\u3060\u3051\u8A18\u9332\u3059\u308C\u3070\u8DB3\u308A\u307E\u3059\u3002`},LINE:{NOW:e=>`${e}\u3068\u3044\u3046\u6761\u4EF6\u3067\u3059\u3002\u3059\u3067\u306B\u63A5\u70B9\u306E\u3042\u308B\u304A\u5BA2\u3055\u307E\u306B\u3001\u4E88\u7D04\u3084\u518D\u6765\u306E\u6848\u5185\u3092\u5C4A\u3051\u308B\u7528\u9014\u304C\u306F\u3063\u304D\u308A\u3057\u3066\u3044\u307E\u3059\u3002`,NEXT:e=>`${_(e)}\u518D\u6765\u5BA2\u304C\u4E00\u5B9A\u6570\u3064\u3044\u3066\u304B\u3089\u3001\u7121\u6599\u30D7\u30E9\u30F3\u3067\u59CB\u3081\u3066\u5FC5\u8981\u306A\u901A\u6570\u3092\u6E2C\u308B\u6BB5\u968E\u3067\u3059\u3002`,LATER:(e,t)=>`${_(t||e)}\u958B\u696D\u524D\u3067\u9867\u5BA2\u304C\u307B\u307C\u3044\u306A\u3044\u6BB5\u968E\u3067\u306F\u3001\u65B0\u898F\u96C6\u5BA2\u3084\u55B6\u696D\u6E96\u5099\u306E\u307B\u3046\u304C\u5148\u3067\u3059\u3002`,NOT_PRIORITY:(e,t)=>`${t}\u305F\u3081\u3001\u518D\u6765\u306E\u6848\u5185\u3092\u9001\u308B\u76F8\u624B\u304C\u5C11\u306A\u3044\u72B6\u614B\u3067\u3059\u3002\u7121\u6599\u3067\u3082\u904B\u7528\u306E\u624B\u9593\u304C\u5148\u306B\u7ACB\u3061\u307E\u3059\u3002`},EXTERNAL_PLATFORM:{NEXT:e=>`${_(e)}\u65B0\u898F\u5BA2\u3092\u65E9\u304F\u5897\u3084\u3057\u305F\u3044\u7406\u7531\u304C\u3042\u308B\u306A\u3089\u8A66\u3059\u5408\u7406\u6027\u304C\u3042\u308A\u307E\u3059\u304C\u3001\u8CBB\u7528\u3068\u4F9D\u5B58\u5EA6\u3092\u5148\u306B\u6C7A\u3081\u3066\u304B\u3089\u52D5\u304F\u6BB5\u968E\u3067\u3059\u3002`,LATER:(e,t)=>`${_(t||e)}\u5148\u306BGoogle\u30D3\u30B8\u30CD\u30B9\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB\u3068\u76F4\u63A5\u306E\u5C0E\u7DDA\u3092\u6574\u3048\u3001\u65B0\u898F\u5BA2\u306E\u4E0D\u8DB3\u304C\u898B\u3048\u3066\u304B\u3089\u691C\u8A0E\u3057\u3066\u3082\u9045\u304F\u3042\u308A\u307E\u305B\u3093\u3002`,NOT_PRIORITY:(e,t)=>`${t}\u305F\u3081\u3001\u65B0\u898F\u96C6\u5BA2\u306B\u304A\u91D1\u3092\u304B\u3051\u308B\u6BB5\u968E\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002`},ACCOUNTING:{NEXT:e=>`${_(e)}\u958B\u696D\u5F8C\u306F\u5E33\u7C3F\u3068\u78BA\u5B9A\u7533\u544A\u304C\u5FC5\u305A\u767A\u751F\u3057\u307E\u3059\u3002\u53D6\u5F15\u304C\u5897\u3048\u308B\u524D\u306B\u8A18\u9332\u306E\u65B9\u6CD5\u3092\u6C7A\u3081\u3066\u304A\u304F\u3068\u5F8C\u304C\u697D\u3067\u3059\u3002`,LATER:e=>`${_(e)}\u5E33\u7C3F\u306E\u65B9\u6CD5\u306F\u958B\u696D30\u65E5\u524D\u307E\u3067\u306B\u6C7A\u3081\u308C\u3070\u9593\u306B\u5408\u3044\u307E\u3059\u3002\u307E\u305A\u306F\u958B\u696D\u6E96\u5099\u306E\u512A\u5148\u4E8B\u9805\u3092\u5148\u306B\u3002`},WEBSITE:{NEXT:e=>`${e}\u3067\u3001\u5916\u90E8\u5A92\u4F53\u3082\u4F7F\u3063\u3066\u3044\u307E\u305B\u3093\u3002\u691C\u7D22\u304B\u3089\u76F4\u63A5\u4E88\u7D04\u306B\u3064\u306A\u3052\u308B\u53D7\u3051\u76BF\u3068\u3057\u3066\u30011\u30DA\u30FC\u30B8\u3067\u3082\u691C\u8A0E\u3059\u308B\u6BB5\u968E\u3067\u3059\u3002`,LATER:()=>"\u307E\u305A\u306FGoogle\u30D3\u30B8\u30CD\u30B9\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB\u3067\u691C\u7D22\u306E\u53D7\u3051\u76BF\u3092\u4F5C\u308C\u3070\u8DB3\u308A\u308B\u3053\u3068\u304C\u591A\u3044\u3067\u3059\u3002\u4F1D\u3048\u305F\u3044\u5185\u5BB9\u3084\u4E88\u7D04\u5C0E\u7DDA\u304C\u56FA\u307E\u3063\u3066\u304B\u3089\u3067\u9045\u304F\u3042\u308A\u307E\u305B\u3093\u3002"},INTEGRATION:{NEXT:()=>"\u3059\u3067\u306B3\u3064\u4EE5\u4E0A\u306E\u30B5\u30FC\u30D3\u30B9\u3092\u4F7F\u3044\u3001\u624B\u4F5C\u696D\u306E\u4E8C\u91CD\u5165\u529B\u304C\u767A\u751F\u3057\u3066\u3044\u307E\u3059\u3002\u65B0\u3057\u3044\u30B5\u30FC\u30D3\u30B9\u3092\u8DB3\u3059\u524D\u306B\u3001\u9023\u643A\u3084\u5165\u529B\u306E\u4E00\u672C\u5316\u3092\u898B\u76F4\u3059\u6BB5\u968E\u3067\u3059\u3002"}};function Y(e,t,i){let n=G(i.filter(E=>E.weight>0)),r=G(i.filter(E=>E.weight<0)),a=Ue[e][t];return a?[a(n,r)]:[]}function X(e,t){let i=[`${I[e].name}\u306F\u3059\u3067\u306B\u5C0E\u5165\u6E08\u307F\u306E\u305F\u3081\u3001\u65B0\u898F\u5C0E\u5165\u3068\u3057\u3066\u306F\u52E7\u3081\u307E\u305B\u3093\u3002`];if(e==="EXTERNAL_PLATFORM"&&t.platform_dependency){let n=W.platform_dependency[t.platform_dependency];t.platform_dependency==="HIGH"?i.push(`${n}\u3067\u3059\u3002\u5A92\u4F53\u3092\u6B62\u3081\u305F\u3068\u304D\u306B\u6B8B\u308B\u96C6\u5BA2\u7D4C\u8DEF\u3092\u3001\u7D9A\u3051\u306A\u304C\u3089\u80B2\u3066\u308B\u6BB5\u968E\u3067\u3059\u3002`):t.platform_dependency==="UNKNOWN"?i.push(`${n}\u3067\u3059\u3002\u7D9A\u3051\u308B\u30FB\u6E1B\u3089\u3059\u306E\u524D\u306B\u3001\u5A92\u4F53\u95A2\u9023\u8CBB\u3068\u5A92\u4F53\u7D4C\u7531\u306E\u65B0\u898F\u6570\u3092\u51FA\u3059\u306E\u304C\u5148\u3067\u3059\u3002`):i.push(`${n}\u3067\u3059\u3002\u8CBB\u7528\u5BFE\u52B9\u679C\uFF08CAC\u30FB\u518D\u6765\u7387\uFF09\u3092\u5B9A\u671F\u7684\u306B\u51FA\u3057\u3066\u5224\u65AD\u3057\u3066\u304F\u3060\u3055\u3044\u3002`)}return i}var V=["PRE_OPEN_90_PLUS","PRE_OPEN_31_90","PRE_OPEN_0_30","OPERATING"],Q=["BEAUTY_SALON","HEALTH_TREATMENT","FOOD","RETAIL","LESSON_SCHOOL","FITNESS","PET","OTHER_FACE_TO_FACE"],K=["APPOINTMENT_DOMINANT","MIXED","WALKIN_DOMINANT"],B=["MOST","SOME","LITTLE"],$=["SIMPLE","MULTI_LOW_INVENTORY","INVENTORY_IMPORTANT"],j=["SOLO","SMALL_2_3","TEAM_4_PLUS"],q=["HIGH","MEDIUM","LOW"],L=["GOOGLE_BUSINESS","EXTERNAL_PLATFORM","LINE","RESERVATION","CASHLESS","POS","ACCOUNTING","WEBSITE","NONE"],J=["HIGH","MEDIUM","LOW","UNKNOWN"],z=["YES","NO","UNKNOWN"],Z=["NEED_MORE","ENOUGH","CAPACITY_FULL","UNKNOWN"],ee=["GOOGLE_FOUNDATION","RESERVATION","CASHLESS","POS","ACCOUNTING","LINE","EXTERNAL_PLATFORM","WEBSITE","INTEGRATION"],Fe=["NOW","NEXT","FREE_FOUNDATION"];function g(e){return Fe.includes(e)}var m=class extends Error{constructor(i){super(`\u8A3A\u65AD\u306E\u56DE\u7B54\u304C\u4E0D\u5B8C\u5168\u307E\u305F\u306F\u4E0D\u6B63\u3067\u3059: ${i.join(", ")}`);h(this,"problems");this.name="DecisionInputError",this.problems=i}};function te(e,t){return typeof t=="string"&&e.includes(t)}var Ge={platform_dependency:J,manual_duplication:z,new_customer_state:Z};function A(e){let t=[],i=e??{},n=(l,c)=>{let T=i[l];if(te(c,T))return T;t.push(l)},r=Array.isArray(i.existing_services)?i.existing_services:[],a=[];for(let l of r)te(L,l)&&!a.includes(l)&&a.push(l);a.length===0&&t.push("existing_services");let E=(a.length>1?a.filter(l=>l!=="NONE"):a).sort((l,c)=>L.indexOf(l)-L.indexOf(c)),u={stage:n("stage",V),business_type:n("business_type",Q),reservation_model:n("reservation_model",K),onsite_payment:n("onsite_payment",B),ops_complexity:n("ops_complexity",$),staff_count:n("staff_count",j),repeat_rate:n("repeat_rate",q),existing_services:E};for(let[l,c]of Object.entries(Ge))x[l].when?.(u)&&(u[l]=n(l,c));if(t.length>0)throw new m(t);return u}var P=U,ne=P.version,we=F.version,Rt=Object.fromEntries(P.areas.filter(e=>e.existing).map(e=>[e.id,e.existing]));function ke(e,t,i=P){let n=[];for(let[r,a]of Object.entries(i.scores[e])){let E=t[r],u=typeof E=="string"?a[E]:void 0;u&&n.push({key:r,value:E,weight:u})}return{score:se(n),factors:n}}var se=e=>e.reduce((t,i)=>t+i.weight,0),ie={NOW:4,NEXT:3,LATER:2,NOT_PRIORITY:1,FREE_FOUNDATION:0,REVIEW_EXISTING:0,HIDDEN:0};function We(e,t){return t.NOW!==void 0&&e>=t.NOW?"NOW":e>=t.NEXT?"NEXT":e<0?"NOT_PRIORITY":"LATER"}function He(e,t){let i=JSON.stringify({v:t,stage:e.stage,business_type:e.business_type,reservation_model:e.reservation_model,onsite_payment:e.onsite_payment,ops_complexity:e.ops_complexity,staff_count:e.staff_count,repeat_rate:e.repeat_rate,existing_services:[...e.existing_services].sort(),platform_dependency:e.platform_dependency??null,manual_duplication:e.manual_duplication??null,new_customer_state:e.new_customer_state??null}),n=2166136261;for(let r=0;r<i.length;r++)n^=i.charCodeAt(r),n=Math.imul(n,16777619)>>>0;return n.toString(16).padStart(8,"0")}function Ye(e,t,i){let n=I[e.area],r=e.status,a=[...e.reasons];t==="NOW"?a.push(`\u6761\u4EF6\u306F\u305D\u308D\u3063\u3066\u3044\u307E\u3059\u304C\u3001\u4ECA\u56DE\u306F\u300C\u4ECA\u3001\u6574\u3048\u308B\u300D\u3092${i.max_now}\u3064\u307E\u3067\u306B\u7D5E\u308B\u305F\u3081\u3001\u6B21\u306B\u56DE\u3057\u307E\u3057\u305F\u3002`):t==="NEXT"&&a.push(`\u691C\u8A0E\u306E\u4FA1\u5024\u306F\u3042\u308A\u307E\u3059\u304C\u3001\u300C\u6B21\u306B\u8003\u3048\u308B\u300D\u3092${i.max_next}\u3064\u307E\u3067\u306B\u7D5E\u308B\u305F\u3081\u3001\u3042\u3068\u306B\u56DE\u3057\u307E\u3057\u305F\u3002`);let E=g(r);return{area:e.area,status:r,reasons:a,measure:E||r==="REVIEW_EXISTING"?n.measure:[],alternative:E?null:n.alternative,next_action:n.next_action[r]??n.next_action.LATER??"",review_points:r==="REVIEW_EXISTING"?n.review_points:[],demoted_from:t,href:n.href}}function re(e,t=P){let i=A(e),n=new Set(i.existing_services.filter(s=>s!=="NONE")),r=s=>i[s.key]===s.value,a=(s,o,O=[])=>({area:s,status:o,score:se(O),factors:O,reasons:o==="REVIEW_EXISTING"?X(s,i):Y(s,o,O)}),E=b(i)>=t.hard_rules.integration_min_existing_services&&i.manual_duplication==="YES",u=t.areas.map(({id:s,existing:o})=>{if(o&&n.has(o))return a(s,"REVIEW_EXISTING");if(s==="GOOGLE_FOUNDATION")return a(s,"FREE_FOUNDATION");if(s==="INTEGRATION")return E?a(s,"NEXT",[{key:"manual_duplication",value:"YES",weight:4}]):a(s,"HIDDEN");let{score:O,factors:Le}=ke(s,i,t),v=t.hard_rules.not_priority_when.some(N=>N.area===s&&N.all.every(r))?"NOT_PRIORITY":We(O,t.thresholds[s]);for(let N of t.hard_rules.caps)N.area===s&&(N.unless&&r(N.unless)||N.when_existing&&!n.has(N.when_existing)||ie[v]>ie[N.max_status]&&(v=N.max_status));return a(s,v,Le)}),l=new Map(t.areas.map((s,o)=>[s.id,o])),c=(s,o)=>(l.get(s.area)??0)-(l.get(o.area)??0),T=(s,o)=>o.score-s.score||c(s,o),f=new Map;for(let s of u.filter(o=>o.status==="NOW").sort(T).slice(t.max_now))s.status="NEXT",f.set(s.area,"NOW");for(let s of u.filter(o=>o.status==="NEXT").sort(T).slice(t.max_next))s.status="LATER",f.has(s.area)||f.set(s.area,"NEXT");let y=u.filter(s=>s.status!=="HIDDEN"),C=new Map(y.map(s=>[s.area,Ye(s,f.get(s.area)??null,t)])),p=(s,o)=>y.filter(O=>O.status===s).sort(o).map(O=>C.get(O.area)),me={free_foundation:p("FREE_FOUNDATION",c),now:p("NOW",T),next:p("NEXT",T),later:p("LATER",T),not_priority:p("NOT_PRIORITY",c),review_existing:p("REVIEW_EXISTING",c)};return{rule_version:t.version,schema_version:we,input_hash:He(i,t.version),answers:i,decisions:[...y].sort(c).map(s=>C.get(s.area)),groups:me,integration_candidate:E}}var ae={stage:"st",business_type:"bt",reservation_model:"rm",onsite_payment:"op",ops_complexity:"oc",staff_count:"sc",repeat_rate:"rr",existing_services:"ex",platform_dependency:"pd",manual_duplication:"md",new_customer_state:"nc"},Xe=ee.filter(e=>e!=="INTEGRATION");function oe(e,t){let i=new URLSearchParams;for(let[n,r]of Object.entries(ae)){let a=e[n];a!==void 0&&i.set(r,Array.isArray(a)?a.join(","):a)}return t&&i.set("from",t),i}function le(e){return Array.isArray(e)?e[0]:e}function Ee(e){let t={};for(let[i,n]of Object.entries(ae)){let r=le(e[n]);r!==void 0&&(t[i]=i==="existing_services"?r.split(",").filter(Boolean):r)}try{return A(t)}catch{return null}}function _e(e){let t=le(e.from);return t&&Xe.includes(t)?t:null}var Ve={slug:"hotpepper-beauty",subject:"\u30DB\u30C3\u30C8\u30DA\u30C3\u30D1\u30FC\u30D3\u30E5\u30FC\u30C6\u30A3\u30FC",area:"EXTERNAL_PLATFORM",title:"\u30DB\u30C3\u30C8\u30DA\u30C3\u30D1\u30FC\u30D3\u30E5\u30FC\u30C6\u30A3\u30FC\u306F\u672C\u5F53\u306B\u5FC5\u8981\uFF1F\u63B2\u8F09\u3059\u308B\u5E97\u30FB\u3057\u306A\u3044\u5E97\u306E\u5224\u65AD\u57FA\u6E96",shortTitle:"\u30DB\u30C3\u30C8\u30DA\u30C3\u30D1\u30FC\u30D3\u30E5\u30FC\u30C6\u30A3\u30FC\u306F\u672C\u5F53\u306B\u5FC5\u8981\uFF1F",description:"HOT PEPPER Beauty\u306F\u3059\u3079\u3066\u306E\u30B5\u30ED\u30F3\u306B\u5FC5\u9808\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u65B0\u898F\u5BA2\u306E\u5FC5\u8981\u6027\u30FB\u4F9D\u5B58\u5EA6\u30FB\u7372\u5F97\u5358\u4FA1\u30FB\u518D\u6765\u7387\u306E4\u70B9\u3067\u3001\u63B2\u8F09\u3059\u308B\u5E97\u3068\u3057\u306A\u3044\u5E97\u3092\u5224\u65AD\u3059\u308B\u57FA\u6E96\u3092\u307E\u3068\u3081\u307E\u3057\u305F\u3002",question:"\u30DB\u30C3\u30C8\u30DA\u30C3\u30D1\u30FC\u30D3\u30E5\u30FC\u30C6\u30A3\u30FC\u3001\u3046\u3061\u306E\u5E97\u306B\u672C\u5F53\u306B\u5FC5\u8981\uFF1F",keywords:["\u30DB\u30C3\u30C8\u30DA\u30C3\u30D1\u30FC\u30D3\u30E5\u30FC\u30C6\u30A3\u30FC \u5FC5\u8981","\u30DB\u30C3\u30C8\u30DA\u30C3\u30D1\u30FC\u30D3\u30E5\u30FC\u30C6\u30A3\u30FC \u63B2\u8F09 \u5224\u65AD","\u30DB\u30C3\u30C8\u30DA\u30C3\u30D1\u30FC \u4F9D\u5B58","\u30B5\u30ED\u30F3 \u96C6\u5BA2\u5A92\u4F53"],publishedAt:"2026-10-06",reviewedAt:"2026-10-06",immediateAnswer:["\u3059\u3079\u3066\u306E\u30B5\u30ED\u30F3\u306B\u5FC5\u9808\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u958B\u696D\u76F4\u5F8C\u3067\u8A8D\u77E5\u304C\u306A\u304F\u3001\u65B0\u898F\u5BA2\u3092\u65E9\u304F\u7372\u5F97\u3057\u305F\u3044\u5E97\u306B\u306F\u5F37\u3044\u9078\u629E\u80A2\u306B\u306A\u308A\u5F97\u307E\u3059\u3002","\u5224\u65AD\u3057\u305F\u3044\u306E\u306F\u300C\u63B2\u8F09\u3059\u308B\u304B\u300D\u3060\u3051\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u4F55\u306E\u305F\u3081\u306B\u4F7F\u3046\u304B\u30011\u4EBA\u7372\u5F97\u3059\u308B\u306E\u306B\u3044\u304F\u3089\u6255\u3046\u304B\u3001\u6765\u5E97\u5F8C\u306B\u518D\u6765\u3057\u3066\u3044\u308B\u304B\u3001\u5A92\u4F53\u4EE5\u5916\u306E\u96C6\u5BA2\u7D4C\u8DEF\u304C\u80B2\u3063\u3066\u3044\u308B\u304B\u3001\u307E\u3067\u898B\u3066\u521D\u3081\u3066\u81EA\u5E97\u306B\u5408\u3046\u304B\u5224\u65AD\u3067\u304D\u307E\u3059\u3002"],whyUsed:["\u5229\u7528\u8005\u306F\u3001\u691C\u7D22\u30FB\u7A7A\u5E2D\u78BA\u8A8D\u30FB\u53E3\u30B3\u30DF\u30FB\u4E88\u7D04\u307E\u3067\u4E00\u3064\u306E\u30B5\u30FC\u30D3\u30B9\u5185\u3067\u9032\u3081\u3089\u308C\u307E\u3059\u3002\u5E97\u8217\u5074\u3082\u4E88\u7D04\u30FB\u9867\u5BA2\u30FB\u58F2\u4E0A\u306A\u3069\u3092\u7BA1\u7406\u3059\u308B\u4ED5\u7D44\u307F\u3092\u5229\u7528\u3067\u304D\u307E\u3059\u3002","\u3064\u307E\u308A\u300C\u3059\u3067\u306B\u4EBA\u304C\u96C6\u307E\u3063\u3066\u3044\u308B\u5834\u6240\u300D\u3068\u300C\u4E88\u7D04\u904B\u7528\u300D\u304C\u307E\u3068\u307E\u3063\u3066\u3044\u308B\u306E\u304C\u5F37\u307F\u3067\u3059\u3002\u958B\u696D\u76F4\u5F8C\u306B\u81EA\u529B\u3067\u96C6\u5BA2\u7D4C\u8DEF\u3092\u4F5C\u308B\u3088\u308A\u3001\u7ACB\u3061\u4E0A\u304C\u308A\u304C\u65E9\u3044\u3053\u3068\u304C\u3042\u308A\u307E\u3059\u3002"],costIntro:"\u300C\u6708\u984D\u304C\u9AD8\u3044\u300D\u3060\u3051\u3067\u306F\u5224\u65AD\u3067\u304D\u307E\u305B\u3093\u3002\u81EA\u5E97\u306E\u5B9F\u984D\u3067\u8A08\u7B97\u3057\u307E\u3059\u3002",costFacts:[{text:"\u63B2\u8F09\u8CBB\u306F\u4E00\u5F8B\u306E\u516C\u958B\u4FA1\u683C\u3067\u306F\u306A\u304F\u3001\u63B2\u8F09\u306F\u554F\u3044\u5408\u308F\u305B\u65B9\u5F0F\u3067\u3059\u3002\u500B\u5225\u306B\u78BA\u8A8D\u3059\u308B\u5FC5\u8981\u304C\u3042\u308A\u307E\u3059\u3002",sources:["HPB_LISTING"],fallback:"\u63B2\u8F09\u8CBB\u306E\u6848\u5185\u65B9\u5F0F\u306F\u6700\u7D42\u78BA\u8A8D\u304B\u3089\u65E5\u304C\u7D4C\u3063\u3066\u3044\u307E\u3059\u3002\u516C\u5F0F\u30B5\u30A4\u30C8\u3067\u518D\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002"},{text:"\u5229\u7528\u7D04\u6B3E\u4E0A\u3001\u5BFE\u8C61\u3068\u306A\u308B\u30CD\u30C3\u30C8\u4E88\u7D04\u306B\u3064\u3044\u3066\u5171\u901A\u30CD\u30C3\u30C8\u4E88\u7D04\u5229\u7528\u65991%\u304C\u5B9A\u3081\u3089\u308C\u3066\u3044\u307E\u3059\u3002",sources:["HPB_TERMS"],fallback:"\u30CD\u30C3\u30C8\u4E88\u7D04\u5229\u7528\u6599\u306E\u6761\u4EF6\u306F\u6700\u7D42\u78BA\u8A8D\u304B\u3089\u65E5\u304C\u7D4C\u3063\u3066\u3044\u307E\u3059\u3002\u6700\u65B0\u306E\u5229\u7528\u7D04\u6B3E\u3067\u518D\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002"},{text:"\u307E\u305A\u8A08\u7B97\u3059\u308B\u306E\u306F\u300C\u6708\u9593\u306E\u5A92\u4F53\u95A2\u9023\u8CBB \xF7 \u5A92\u4F53\u7D4C\u7531\u306E\u65B0\u898F\u6765\u5E97\u6570 \uFF1D \u65B0\u898F1\u4EBA\u3042\u305F\u308A\u7372\u5F97\u8CBB\uFF08CAC\uFF09\u300D\u3067\u3059\u3002\u305F\u3060\u3057CAC\u304C\u4F4E\u3051\u308C\u3070\u7D42\u308F\u308A\u3067\u306F\u306A\u304F\u3001\u521D\u56DE\u3067\u7D42\u308F\u308B\u306E\u304B\u534A\u5E74\u3067\u4F55\u56DE\u6765\u3066\u304F\u308C\u308B\u306E\u304B\u3067\u3082\u4FA1\u5024\u306F\u5909\u308F\u308A\u307E\u3059\u3002",sources:[]}],risk:["\u5A92\u4F53\u7D4C\u7531\u306E\u65B0\u898F\u5BA2\u304C\u591A\u3044\u3053\u3068\u81EA\u4F53\u306F\u60AA\u304F\u3042\u308A\u307E\u305B\u3093\u3002\u554F\u984C\u306F\u3001\u305D\u306E\u5A92\u4F53\u3092\u6B62\u3081\u305F\u3068\u304D\u306B\u4ED6\u306E\u96C6\u5BA2\u7D4C\u8DEF\u304C\u307B\u307C\u6B8B\u3089\u306A\u3044\u72B6\u614B\u304B\u3069\u3046\u304B\u3067\u3059\u3002","\u78BA\u8A8D\u3057\u305F\u3044\u306E\u306F\u3001Google\u30FB\u5E97\u540D\u691C\u7D22\u30FB\u76F4\u63A5\u4E88\u7D04\u30FBLINE\u30FB\u7D39\u4ECB\u30FB\u81EA\u793EWeb\u306A\u3069\u3001\u5A92\u4F53\u4EE5\u5916\u306E\u7D4C\u8DEF\u304C\u3069\u308C\u3060\u3051\u3042\u308B\u304B\u3067\u3059\u3002"],decisionRows:[{state:"USE_OR_TEST",label:"\u4F7F\u3046\u30FB\u8A66\u3059",fit:"\u958B\u696D\u76F4\u5F8C\u3067\u65B0\u898F\u5BA2\u304C\u5FC5\u8981\u3002\u76F4\u63A5\u96C6\u5BA2\u304C\u307E\u3060\u5F31\u3044\u3002",action:"\u6708\u306B\u6255\u3048\u308B\u4E0A\u9650\u3092\u6C7A\u3081\u3066\u8A66\u3059\u3002"},{state:"USE_AND_BUILD_OWN",label:"\u4F7F\u3044\u306A\u304C\u3089\u81EA\u524D\u306E\u5C0E\u7DDA\u3092\u80B2\u3066\u308B",fit:"\u6210\u679C\u306F\u51FA\u3066\u3044\u308B\u304C\u3001\u4F9D\u5B58\u5EA6\u304C\u9AD8\u3044\u3002",action:"\u7D9A\u3051\u306A\u304C\u3089Google\u30FB\u76F4\u63A5\u4E88\u7D04\u30FB\u7D39\u4ECB\u3092\u80B2\u3066\u308B\u3002"},{state:"MEASURE_FIRST",label:"\u307E\u305A\u6570\u5B57\u3092\u51FA\u3059",fit:"\u8CBB\u7528\u30FB\u65B0\u898F\u5BA2\u6570\u30FB\u518D\u6765\u7387\u3092\u628A\u63E1\u3057\u3066\u3044\u306A\u3044\u3002",action:"\u89E3\u7D04\u30FB\u7D99\u7D9A\u3088\u308A\u5148\u306B3\u301C6\u304B\u6708\u306E\u6570\u5B57\u3092\u51FA\u3059\u3002"},{state:"LOW_PRIORITY",label:"\u512A\u5148\u5EA6\u306F\u4F4E\u3044",fit:"\u7D39\u4ECB\u3084\u76F4\u63A5\u4E88\u7D04\u3067\u5341\u5206\u7A3C\u50CD\u3057\u3001\u8FFD\u52A0\u96C6\u5BA2\u306E\u5FC5\u8981\u6027\u304C\u4F4E\u3044\u3002",action:"\u53D7\u3051\u5165\u308C\u4F59\u529B\u304C\u3067\u304D\u305F\u3089\u518D\u691C\u8A0E\u3002"}],alternative:["\u300C\u4F7F\u308F\u306A\u3044\u300D\u3067\u7D42\u308F\u3089\u305B\u305A\u3001\u767A\u898B\u30FB\u4FE1\u983C\u30FB\u4E88\u7D04\u30FB\u518D\u6765\u3092\u4F55\u3067\u4EE3\u66FF\u3059\u308B\u304B\u3092\u6C7A\u3081\u307E\u3059\u3002","Google\u30D3\u30B8\u30CD\u30B9\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB\u3067\u306F\u3001\u6761\u4EF6\u306B\u5FDC\u3058\u3066\u4E88\u7D04\u30EA\u30F3\u30AF\u306A\u3069\u3092\u63B2\u8F09\u3067\u304D\u307E\u3059\u3002\u5E97\u540D\u691C\u7D22\u306E\u53D7\u3051\u76BF\u3092\u7121\u6599\u3067\u6574\u3048\u308B\u306E\u304C\u5148\u3067\u3059\u3002"],nextAction:["\u76F4\u8FD13\u301C6\u304B\u6708\u306E\u5A92\u4F53\u95A2\u9023\u8CBB\u30FB\u65B0\u898F\u5BA2\u6570\u30FB\u518D\u6765\u7387\u3092\u51FA\u3057\u3066\u304F\u3060\u3055\u3044\u3002\u6570\u5B57\u304C\u5206\u304B\u3089\u306A\u3044\u306A\u3089\u3001\u307E\u305A\u305D\u3053\u304C\u6700\u512A\u5148\u3067\u3059\u3002"],offerNote:"\u3053\u306E\u8A18\u4E8B\u306B\u53CE\u76CA\u30EA\u30F3\u30AF\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u63B2\u8F09\u306E\u554F\u3044\u5408\u308F\u305B\u306F\u516C\u5F0F\u30B5\u30A4\u30C8\u304B\u3089\u884C\u3063\u3066\u304F\u3060\u3055\u3044\u3002",related:["reservation-system","line-official"]},Qe={slug:"reservation-system",subject:"\u4E88\u7D04\u30B7\u30B9\u30C6\u30E0",area:"RESERVATION",title:"\u4E88\u7D04\u30B7\u30B9\u30C6\u30E0\u306F\u672C\u5F53\u306B\u5FC5\u8981\uFF1FLINE\u30FB\u96FB\u8A71\u30FBDM\u3067\u5341\u5206\u306A\u5E97\u3068\u306E\u9055\u3044",shortTitle:"\u4E88\u7D04\u30B7\u30B9\u30C6\u30E0\u306F\u672C\u5F53\u306B\u5FC5\u8981\uFF1F",description:"\u4E88\u7D04\u4EF6\u6570\u304C\u5C11\u306A\u304F\u53D7\u4ED8\u7D4C\u8DEF\u304C\u4E00\u3064\u306A\u3089\u3001\u6709\u6599\u306E\u4E88\u7D04\u30B7\u30B9\u30C6\u30E0\u3092\u6025\u3050\u5FC5\u8981\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u55B6\u696D\u6642\u9593\u5916\u30FB\u8907\u6570\u7D4C\u8DEF\u30FB\u8907\u6570\u30B9\u30BF\u30C3\u30D5\u30FB\u4E88\u7D04\u6F0F\u308C\u306E4\u70B9\u3067\u3001\u624B\u52D5\u3067\u5341\u5206\u306A\u5E97\u3068\u30B7\u30B9\u30C6\u30E0\u5316\u3059\u308B\u4FA1\u5024\u304C\u3042\u308B\u5E97\u3092\u5206\u3051\u307E\u3059\u3002",question:"\u4E88\u7D04\u30B7\u30B9\u30C6\u30E0\u3001\u96FB\u8A71\u3068LINE\u3067\u8DB3\u308A\u3066\u308B\u3051\u3069\u672C\u5F53\u306B\u5FC5\u8981\uFF1F",keywords:["\u4E88\u7D04\u30B7\u30B9\u30C6\u30E0 \u5FC5\u8981","\u4E88\u7D04\u30B7\u30B9\u30C6\u30E0 \u3044\u3089\u306A\u3044","\u4E88\u7D04\u7BA1\u7406 LINE \u96FB\u8A71","\u5C0F\u898F\u6A21\u5E97\u8217 \u4E88\u7D04"],publishedAt:"2026-10-06",reviewedAt:"2026-10-06",immediateAnswer:["\u4E88\u7D04\u4EF6\u6570\u304C\u5C11\u306A\u304F\u3001\u53D7\u4ED8\u7D4C\u8DEF\u304C\u4E00\u3064\u3067\u30011\u4EBA\u3067\u554F\u984C\u306A\u304F\u7BA1\u7406\u3067\u304D\u3066\u3044\u308B\u306A\u3089\u3001\u6709\u6599\u306E\u4E88\u7D04\u30B7\u30B9\u30C6\u30E0\u3092\u6025\u3050\u5FC5\u8981\u306F\u3042\u308A\u307E\u305B\u3093\u3002","\u4E00\u65B9\u3001\u55B6\u696D\u6642\u9593\u5916\u306E\u4E88\u7D04\u3001\u8907\u6570\u306E\u53D7\u4ED8\u7D4C\u8DEF\u3001\u8907\u6570\u30B9\u30BF\u30C3\u30D5\u3001\u4E88\u7D04\u6F0F\u308C\u3084\u4E8C\u91CD\u4E88\u7D04\u304C\u8CA0\u62C5\u306B\u306A\u3063\u3066\u3044\u308B\u306A\u3089\u3001\u30B7\u30B9\u30C6\u30E0\u5316\u3059\u308B\u4FA1\u5024\u304C\u9AD8\u304F\u306A\u308A\u307E\u3059\u3002"],whyUsed:["\u300C\u4E88\u7D04\u3092\u53D7\u3051\u308B\u300D\u3068\u300C\u4E88\u7D04\u3092\u7BA1\u7406\u3059\u308B\u300D\u306F\u5225\u3067\u3059\u3002\u96FB\u8A71\u30FBLINE\u30FBInstagram DM\u3067\u3082\u4E88\u7D04\u306F\u53D7\u3051\u3089\u308C\u307E\u3059\u3002","\u554F\u984C\u306F\u3001\u5909\u66F4\u30FB\u30AD\u30E3\u30F3\u30BB\u30EB\u30FB\u7A7A\u304D\u67A0\u30FB\u30B9\u30BF\u30C3\u30D5\u9593\u306E\u5171\u6709\u30FB\u30EA\u30DE\u30A4\u30F3\u30C9\u307E\u3067\u4EBA\u304C\u51E6\u7406\u3059\u308B\u3053\u3068\u3067\u3059\u3002\u4EF6\u6570\u3068\u7D4C\u8DEF\u304C\u5897\u3048\u308B\u307B\u3069\u3001\u3053\u306E\u51E6\u7406\u304C\u8CA0\u62C5\u306B\u306A\u308A\u307E\u3059\u3002"],costIntro:"\u7121\u6599\u304B\u3089\u8A66\u305B\u308B\u305F\u3081\u3001\u300C\u30B7\u30B9\u30C6\u30E0\u304C\u5FC5\u8981\u304B\u300D\u306E\u691C\u8A3C\u306B\u3082\u4F7F\u3048\u307E\u3059\u3002",costFacts:[{text:"freee\u4E88\u7D04\u306B\u306F Starter 0\u5186 \u306E\u73FE\u884C\u30D7\u30E9\u30F3\u304C\u3042\u308A\u307E\u3059\u3002\u4E88\u7D04\u30B5\u30A4\u30C8\u4F5C\u6210\u30FB\u4E88\u7D04\u7BA1\u7406\u306A\u3069\u3092\u8A66\u305B\u307E\u3059\u3002",sources:["FREEE_RES_PRICE"],fallback:"freee\u4E88\u7D04\u306E\u7121\u6599\u30D7\u30E9\u30F3\u306E\u6761\u4EF6\u306F\u6700\u7D42\u78BA\u8A8D\u304B\u3089\u65E5\u304C\u7D4C\u3063\u3066\u3044\u307E\u3059\u3002\u516C\u5F0F\u30B5\u30A4\u30C8\u3067\u518D\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002"},{text:"\u9867\u5BA2\u7BA1\u7406\u30FB\u4E88\u7D04\u6642\u30A2\u30F3\u30B1\u30FC\u30C8\u30FB\u30E1\u30FC\u30EB\u306E\u30AB\u30B9\u30BF\u30DE\u30A4\u30BA\u306A\u3069\u304C\u5FC5\u8981\u306B\u306A\u3063\u305F\u3089\u3001\u6709\u6599\u6A5F\u80FD\u306E\u4FA1\u5024\u3092\u78BA\u8A8D\u3057\u307E\u3059\u3002Business\u306E\u73FE\u884C\u6599\u91D1\u306F\u5E74\u6255\u30443,180\u5186/\u6708\u3001\u6708\u6255\u30443,980\u5186/\u6708\u3067\u3059\u3002",sources:["FREEE_RES_PRICE"],fallback:"\u6709\u6599\u30D7\u30E9\u30F3\u306E\u6599\u91D1\u306F\u6700\u7D42\u78BA\u8A8D\u304B\u3089\u65E5\u304C\u7D4C\u3063\u3066\u3044\u307E\u3059\u3002\u516C\u5F0F\u30B5\u30A4\u30C8\u3067\u518D\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002"}],risk:["\u6709\u6599\u30D7\u30E9\u30F3\u306B\u3057\u3066\u3082\u3001\u53D7\u4ED8\u7D4C\u8DEF\u304C\u96FB\u8A71\u30FBLINE\u30FBDM\u306E\u307E\u307E\u5206\u6563\u3057\u3066\u3044\u308C\u3070\u3001\u53F0\u5E33\u304C\u4E8C\u91CD\u306B\u306A\u3063\u3066\u624B\u9593\u306F\u6E1B\u308A\u307E\u305B\u3093\u3002\u7D4C\u8DEF\u3092\u3069\u3053\u306B\u5BC4\u305B\u308B\u304B\u3092\u5148\u306B\u6C7A\u3081\u307E\u3059\u3002","\u672C\u30B5\u30A4\u30C8\u306E\u53CE\u76CA\u30EB\u30FC\u30EB\uFF1Afreee\u4E88\u7D04\u306E\u7D39\u4ECB\u5236\u5EA6\u306B\u306F\u6709\u6599Business\u5951\u7D04\u6642\u306E\u5831\u916C\u304C\u3042\u308A\u307E\u3059\u304C\u3001Starter\u3067\u5341\u5206\u306A\u4EBA\u3092\u6709\u6599\u3078\u8A98\u5C0E\u3057\u307E\u305B\u3093\u3002"],decisionRows:[{state:"MANUAL_OK",label:"\u624B\u52D5\u3067\u5341\u5206",fit:"\u4E88\u7D04\u304C\u5C11\u306A\u3044\u30FB\u7D4C\u8DEF\u304C\u4E00\u3064\u30FB1\u4EBA\u904B\u55B6\u30FB\u55B6\u696D\u6642\u9593\u5916\u5BFE\u5FDC\u304C\u82E6\u306B\u306A\u3089\u306A\u3044\u30FB\u6F0F\u308C\u304C\u8D77\u304D\u3066\u3044\u306A\u3044\u3002",action:"\u4ECA\u306E\u65B9\u6CD5\u3092\u7D9A\u3051\u3001\u6F0F\u308C\u304C\u51FA\u305F\u3089\u898B\u76F4\u3059\u3002"},{state:"FREE_STARTER_FIT",label:"\u7121\u6599\u30D7\u30E9\u30F3\u3067\u8A66\u3059",fit:"\u55B6\u696D\u6642\u9593\u5916\u306E\u4E88\u7D04\u304C\u6B32\u3057\u3044\u3001\u307E\u305F\u306F\u7D4C\u8DEF\u304C\u5897\u3048\u3066\u304D\u305F\u3002",action:"\u7121\u6599\u30D7\u30E9\u30F3\u3067\u4E88\u7D04\u30DA\u30FC\u30B8\u3060\u3051\u4F5C\u308A\u30011\u304B\u6708\u898B\u308B\u3002"},{state:"SYSTEM_RECOMMENDED",label:"\u30B7\u30B9\u30C6\u30E0\u5316\u3059\u308B\u4FA1\u5024\u304C\u9AD8\u3044",fit:"\u8907\u6570\u30B9\u30BF\u30C3\u30D5\u30FB\u8907\u6570\u7D4C\u8DEF\u30FB\u6F0F\u308C\u3084\u4E8C\u91CD\u4E88\u7D04\u304C\u8D77\u304D\u3066\u3044\u308B\u3002",action:"\u53D7\u4ED8\u7D4C\u8DEF\u3092\u5BC4\u305B\u3001\u30EA\u30DE\u30A4\u30F3\u30C9\u3068\u7A7A\u304D\u67A0\u3092\u81EA\u52D5\u5316\u3059\u308B\u3002"},{state:"INTEGRATION_REVIEW",label:"\u7D4C\u8DEF\u306E\u4E00\u672C\u5316\u30FB\u9023\u643A\u3092\u898B\u76F4\u3059",fit:"\u7D4C\u8DEF\u304C\u5206\u6563\u3057\u3001\u6F0F\u308C\u304C\u51FA\u3066\u3044\u3066\u3001\u30B9\u30BF\u30C3\u30D5\u3082\u8907\u6570\u3002",action:"\u65B0\u898F\u5C0E\u5165\u306E\u524D\u306B\u3001\u53D7\u4ED8\u7D4C\u8DEF\u306E\u4E00\u672C\u5316\u3068\u65E2\u5B58\u30C4\u30FC\u30EB\u306E\u9023\u643A\u3092\u898B\u76F4\u3059\u3002"}],alternative:["\u96FB\u8A71\u30FBLINE\u30FBDM\u3067\u53D7\u3051\u3001\u7D19\u304B\u30B9\u30D7\u30EC\u30C3\u30C9\u30B7\u30FC\u30C8\u306E\u53F0\u5E33\u3067\u7BA1\u7406\u3057\u307E\u3059\u3002\u53D7\u4ED8\u7D4C\u8DEF\u30921\u3064\u306B\u6C7A\u3081\u308B\u3060\u3051\u3067\u3082\u3001\u6F0F\u308C\u306F\u6E1B\u308A\u307E\u3059\u3002","Google\u30D3\u30B8\u30CD\u30B9\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB\u306B\u96FB\u8A71\u756A\u53F7\u3068\u55B6\u696D\u6642\u9593\u3092\u6B63\u3057\u304F\u8F09\u305B\u308C\u3070\u3001\u691C\u7D22\u304B\u3089\u306E\u4E88\u7D04\u306F\u53D7\u3051\u3089\u308C\u307E\u3059\u3002"],nextAction:["\u76F4\u8FD11\u9031\u9593\u306E\u4E88\u7D04\u53D7\u4ED8\u306B\u4F55\u5206\u4F7F\u3063\u305F\u304B\u3001\u4F55\u7D4C\u8DEF\u304B\u3089\u4E88\u7D04\u304C\u6765\u305F\u304B\u3092\u6570\u3048\u3066\u304F\u3060\u3055\u3044\u3002"],offerNote:"Starter\u3067\u5341\u5206\u306A\u4EBA\u3092\u6709\u6599\u3078\u8A98\u5C0E\u3057\u307E\u305B\u3093\u3002\u7D39\u4ECB\u5236\u5EA6\u304C\u6709\u52B9\u306A\u3068\u304D\u3060\u3051 PR \u8868\u793A\u3092\u4ED8\u3051\u307E\u3059\u3002",related:["line-official","hotpepper-beauty"]},Ke={slug:"pos-register",subject:"POS\u30EC\u30B8",area:"POS",title:"POS\u30EC\u30B8\u306F\u672C\u5F53\u306B\u5FC5\u8981\uFF1F\u5C0F\u3055\u306A\u304A\u5E97\u3067\u5165\u308C\u308B\u5E97\u30FB\u307E\u3060\u4E0D\u8981\u306A\u5E97",shortTitle:"POS\u30EC\u30B8\u306F\u672C\u5F53\u306B\u5FC5\u8981\uFF1F",description:"POS\u306F\u300C\u5E97\u3092\u958B\u304F\u306A\u3089\u5FC5\u8981\u306A\u9AD8\u6027\u80FD\u30EC\u30B8\u300D\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u5728\u5EAB\u30FB\u5546\u54C1\u6570\u30FB\u30B9\u30BF\u30C3\u30D5\u30FB\u58F2\u4E0A\u5206\u6790\u30FB\u9023\u643A\u306E5\u70B9\u3067\u3001\u5165\u308C\u308B\u5E97\u3068\u307E\u3060\u4E0D\u8981\u306A\u5E97\u3092\u5206\u3051\u3001\u7121\u6599POS\u3068\u3044\u3046\u9078\u629E\u80A2\u3082\u542B\u3081\u3066\u5224\u65AD\u3057\u307E\u3059\u3002",question:"POS\u30EC\u30B8\u3063\u3066\u3001\u5C0F\u3055\u306A\u5E97\u3067\u3082\u5165\u308C\u306A\u3044\u3068\u30C0\u30E1\uFF1F",keywords:["POS\u30EC\u30B8 \u5FC5\u8981","POS\u30EC\u30B8 \u3044\u3089\u306A\u3044","\u5C0F\u3055\u306A\u304A\u5E97 \u30EC\u30B8","\u7121\u6599 POS"],publishedAt:"2026-10-06",reviewedAt:"2026-10-06",immediateAnswer:["POS\u306F\u300C\u5E97\u3092\u958B\u304F\u306A\u3089\u5FC5\u8981\u306A\u9AD8\u6027\u80FD\u30EC\u30B8\u300D\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u5728\u5EAB\u30FB\u5546\u54C1\u6570\u30FB\u30B9\u30BF\u30C3\u30D5\u30FB\u58F2\u4E0A\u5206\u6790\u30FB\u6C7A\u6E08\u3084\u4F1A\u8A08\u3068\u306E\u9023\u643A\u304C\u8907\u96D1\u306B\u306A\u3063\u305F\u3068\u304D\u306B\u4FA1\u5024\u304C\u51FA\u307E\u3059\u3002","\u30E1\u30CB\u30E5\u30FC\u304C\u5C11\u306A\u304F\u3001\u5728\u5EAB\u7BA1\u7406\u304C\u4E0D\u8981\u3067\u30011\u4EBA\u904B\u55B6\u306A\u3089\u3001\u9AD8\u5EA6\u306APOS\u6A5F\u80FD\u306E\u512A\u5148\u5EA6\u306F\u4F4E\u3044\u5834\u5408\u304C\u3042\u308A\u307E\u3059\u3002"],whyUsed:["\u58F2\u4E0A\u306E\u8A18\u9332\u30FB\u96C6\u8A08\u3001\u5546\u54C1\u5225\u30FB\u62C5\u5F53\u5225\u306E\u5206\u6790\u3001\u5728\u5EAB\u306E\u5897\u6E1B\u3001\u6C7A\u6E08\u3084\u4F1A\u8A08\u30BD\u30D5\u30C8\u3078\u306E\u9023\u643A\u3092\u3001\u7DE0\u3081\u4F5C\u696D\u306E\u305F\u3073\u306B\u4EBA\u304C\u3084\u3089\u306A\u304F\u3066\u6E08\u3080\u3088\u3046\u306B\u306A\u308A\u307E\u3059\u3002","\u9006\u306B\u8A00\u3048\u3070\u3001\u3053\u308C\u3089\u304C\u767A\u751F\u3057\u3066\u3044\u306A\u3044\u5E97\u3067\u306F\u3001POS\u306E\u4FA1\u5024\u306F\u307E\u3060\u51FA\u3066\u3044\u307E\u305B\u3093\u3002"],costIntro:"\u300CPOS\u3092\u5C0E\u5165\u3059\u308B\u304B\u300D\u3068\u300C\u9AD8\u984D\u306APOS\u3092\u5951\u7D04\u3059\u308B\u304B\u300D\u306F\u5225\u306E\u5224\u65AD\u3067\u3059\u3002",costFacts:[{text:"Square POS\u30EC\u30B8\u30A2\u30D7\u30EA\u306F\u73FE\u5728\u7121\u6599\u3067\u3001\u6C7A\u6E08\u7AEF\u672B\u306F\u5225\u8CBB\u7528\u3067\u3059\uFF08Reader 4,980\u5186\u3001Stand 29,980\u5186\u3001Terminal 39,980\u5186\uFF09\u3002",sources:["SQUARE_POS"],fallback:"Square \u306E\u6599\u91D1\u306F\u6700\u7D42\u78BA\u8A8D\u304B\u3089\u65E5\u304C\u7D4C\u3063\u3066\u3044\u307E\u3059\u3002\u516C\u5F0F\u30B5\u30A4\u30C8\u3067\u518D\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002"},{text:"Air\u30EC\u30B8\u3082\u30A2\u30D7\u30EA\u30FB\u521D\u671F\u8CBB\u7528\u30FB\u6708\u984D\u30FB\u57FA\u672C\u30B5\u30DD\u30FC\u30C8\u304C0\u5186\u3067\u3001\u5FC5\u8981\u306A\u5468\u8FBA\u6A5F\u5668\u306F\u5225\u9014\u3067\u3059\u3002",sources:["AIRREGI"],fallback:"Air\u30EC\u30B8\u306E\u6599\u91D1\u306F\u6700\u7D42\u78BA\u8A8D\u304B\u3089\u65E5\u304C\u7D4C\u3063\u3066\u3044\u307E\u3059\u3002\u516C\u5F0F\u30B5\u30A4\u30C8\u3067\u518D\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002"}],risk:["\u5468\u8FBA\u6A5F\u5668\uFF08iPad\u30FB\u30D7\u30EA\u30F3\u30BF\u30FC\u30FB\u30C9\u30ED\u30A2\u30FC\uFF09\u306E\u8CBB\u7528\u3068\u3001\u5C06\u6765\u306E\u6C7A\u6E08\u30FB\u4F1A\u8A08\u9023\u643A\u306E\u7BC4\u56F2\u3092\u5148\u306B\u78BA\u8A8D\u3057\u306A\u3044\u3068\u3001\u300C\u7121\u6599\u3067\u59CB\u3081\u305F\u306E\u306B\u5F8C\u304B\u3089\u8DB3\u3059\u300D\u3053\u3068\u306B\u306A\u308A\u307E\u3059\u3002","\u6BD4\u8F03\u65B9\u91DD\uFF1ASquare\u3060\u3051\u3092\u51FA\u3057\u307E\u305B\u3093\u3002Affiliate\u5BFE\u8C61\u3067\u306A\u304F\u3066\u3082Air\u30EC\u30B8\u306A\u3069\u306E\u516C\u5F0F\u306E\u9078\u629E\u80A2\u3092\u51FA\u3057\u3001\u9069\u5408\u6761\u4EF6\u3067\u6BD4\u8F03\u3057\u307E\u3059\u3002"],decisionRows:[{state:"SIMPLE_REGISTER_OK",label:"\u7C21\u6613\u306A\u30EC\u30B8\u3067\u5341\u5206",fit:"\u30E1\u30CB\u30E5\u30FC\u304C\u5C11\u306A\u3044\u30FB\u5728\u5EAB\u306A\u3057\u30FB1\u4EBA\u904B\u55B6\u3002",action:"\u7121\u6599\u30EC\u30B8\u30A2\u30D7\u30EA\u304B\u624B\u66F8\u304D\u4F1D\u7968\uFF0B\u8868\u8A08\u7B97\u3067\u58F2\u4E0A\u3060\u3051\u8A18\u9332\u3002"},{state:"FREE_POS_FIT",label:"\u7121\u6599POS\u3067\u59CB\u3081\u308B",fit:"\u58F2\u4E0A\u8A18\u9332\u3092\u697D\u306B\u3057\u305F\u3044\u304C\u3001\u9AD8\u5EA6\u306A\u6A5F\u80FD\u306F\u4E0D\u8981\u3002",action:"\u7121\u6599POS\u30A2\u30D7\u30EA\u3067\u5546\u54C1\u767B\u9332\u3057\u3001\u7DE0\u3081\u4F5C\u696D\u306E\u6642\u9593\u3092\u6E2C\u308B\u3002"},{state:"ADVANCED_POS_FIT",label:"\u9AD8\u6A5F\u80FDPOS\u306E\u4FA1\u5024\u304C\u3042\u308B",fit:"\u5728\u5EAB\u304C\u91CD\u8981\u30FB\u54C1\u76EE\u304C\u591A\u3044\u30FB\u8907\u6570\u30B9\u30BF\u30C3\u30D5\u30FB\u5206\u6790\u3057\u305F\u3044\u3002",action:"\u5728\u5EAB\u3068\u5206\u6790\u306E\u8981\u4EF6\u3092\u66F8\u304D\u51FA\u3057\u3001\u9023\u643A\u7BC4\u56F2\u3067\u9078\u3076\u3002"},{state:"INTEGRATION_REVIEW",label:"\u9023\u643A\u3092\u524D\u63D0\u306B\u9078\u3076",fit:"\u30AD\u30E3\u30C3\u30B7\u30E5\u30EC\u30B9\u3084\u4F1A\u8A08\u3068\u9023\u643A\u3057\u305F\u3044\u3002",action:"\u9023\u643A\u5148\u3092\u5148\u306B\u6C7A\u3081\u3001\u5BFE\u5FDC\u3059\u308BPOS\u304B\u3089\u9078\u3076\u3002"}],alternative:["\u7121\u6599\u306E\u30EC\u30B8\u30A2\u30D7\u30EA\u304B\u3001\u624B\u66F8\u304D\u4F1D\u7968\uFF0B\u8868\u8A08\u7B97\u3067\u58F2\u4E0A\u3060\u3051\u8A18\u9332\u3057\u307E\u3059\u3002\u7DE0\u3081\u4F5C\u696D\u306B\u6642\u9593\u304C\u304B\u304B\u308A\u59CB\u3081\u305F\u3089\u3001\u305D\u306E\u3068\u304D\u306BPOS\u3092\u691C\u8A0E\u3059\u308C\u3070\u5341\u5206\u3067\u3059\u3002"],nextAction:["\u5546\u54C1\u30FB\u30E1\u30CB\u30E5\u30FC\u6570\u3068\u5728\u5EAB\u306E\u7BA1\u7406\u65B9\u6CD5\u3092\u66F8\u304D\u51FA\u3057\u3001\u7DE0\u3081\u4F5C\u696D\u306B\u6BCE\u65E5\u4F55\u5206\u304B\u304B\u3063\u3066\u3044\u308B\u304B\u30921\u9031\u9593\u6E2C\u3063\u3066\u304F\u3060\u3055\u3044\u3002"],offerNote:"\u5FC5\u8981\u6027\u304C\u78BA\u5B9A\u3057\u305F\u3042\u3068\u3060\u3051\u5019\u88DC\u3092\u51FA\u3057\u307E\u3059\u3002\u53CE\u76CA\u30EA\u30F3\u30AF\u304C\u6709\u52B9\u306A\u3068\u304D\u3060\u3051 PR \u8868\u793A\u3092\u4ED8\u3051\u3001\u516C\u5F0F\u306E\u9078\u629E\u80A2\u3082\u540C\u3058\u6761\u4EF6\u3067\u4E26\u3079\u307E\u3059\u3002",related:["cashless-payment","reservation-system"]},Be={slug:"cashless-payment",subject:"\u30AD\u30E3\u30C3\u30B7\u30E5\u30EC\u30B9\u6C7A\u6E08",area:"CASHLESS",title:"\u30AD\u30E3\u30C3\u30B7\u30E5\u30EC\u30B9\u6C7A\u6E08\u306F\u672C\u5F53\u306B\u5FC5\u8981\uFF1F\u624B\u6570\u6599\u3092\u6255\u3046\u4FA1\u5024\u304C\u3042\u308B\u5E97\u30FB\u306A\u3044\u5E97",shortTitle:"\u30AD\u30E3\u30C3\u30B7\u30E5\u30EC\u30B9\u6C7A\u6E08\u306F\u672C\u5F53\u306B\u5FC5\u8981\uFF1F",description:"\u300C\u4ECA\u3069\u304D\u5FC5\u9808\u300D\u3067\u3082\u300C\u624B\u6570\u6599\u304C\u3082\u3063\u305F\u3044\u306A\u3044\u300D\u3067\u3082\u6C7A\u3081\u307E\u305B\u3093\u3002\u5E97\u982D\u6C7A\u6E08\u306E\u591A\u3055\u30FB\u5BA2\u5C64\u306E\u8981\u671B\u30FB\u5BA2\u5358\u4FA1\u30FB\u6708\u9593\u5E97\u982D\u58F2\u4E0A\u30FB\u73FE\u91D1\u7BA1\u7406\u306E\u8CA0\u8377\u304B\u3089\u3001\u624B\u6570\u6599\u3092\u6255\u3046\u4FA1\u5024\u304C\u3042\u308B\u5E97\u3068\u306A\u3044\u5E97\u3092\u5206\u3051\u307E\u3059\u3002",question:"\u30AD\u30E3\u30C3\u30B7\u30E5\u30EC\u30B9\u6C7A\u6E08\u3001\u624B\u6570\u6599\u3092\u6255\u3063\u3066\u307E\u3067\u5165\u308C\u308B\u4FA1\u5024\u3042\u308B\uFF1F",keywords:["\u30AD\u30E3\u30C3\u30B7\u30E5\u30EC\u30B9 \u5FC5\u8981","\u30AD\u30E3\u30C3\u30B7\u30E5\u30EC\u30B9 \u624B\u6570\u6599 \u3082\u3063\u305F\u3044\u306A\u3044","\u5C0F\u3055\u306A\u304A\u5E97 \u30AD\u30E3\u30C3\u30B7\u30E5\u30EC\u30B9","\u6C7A\u6E08 \u5C0E\u5165 \u5224\u65AD"],publishedAt:"2026-10-06",reviewedAt:"2026-10-06",immediateAnswer:["\u300C\u4ECA\u3069\u304D\u5FC5\u9808\u300D\u3060\u3051\u3067\u3082\u300C\u624B\u6570\u6599\u304C\u3082\u3063\u305F\u3044\u306A\u3044\u300D\u3060\u3051\u3067\u3082\u6C7A\u3081\u307E\u305B\u3093\u3002\u5BA2\u5C64\u3001\u5E97\u982D\u6C7A\u6E08\u306E\u591A\u3055\u3001\u5BA2\u5358\u4FA1\u3001\u7C97\u5229\u3001\u73FE\u91D1\u7BA1\u7406\u306E\u8CA0\u8377\u304B\u3089\u5224\u65AD\u3057\u307E\u3059\u3002","\u5E97\u982D\u6C7A\u6E08\u304C\u307B\u307C\u306A\u3044\u5E97\uFF08\u8ACB\u6C42\u66F8\u30FB\u632F\u8FBC\u30FB\u6708\u8B1D\u4E2D\u5FC3\uFF09\u3067\u306F\u3001\u512A\u5148\u5EA6\u306F\u4F4E\u304F\u306A\u308A\u307E\u3059\u3002"],whyUsed:["\u304A\u5BA2\u3055\u307E\u304C\u300C\u30AB\u30FC\u30C9\u304C\u4F7F\u3048\u306A\u3044\u306A\u3089\u5225\u306E\u5E97\u3078\u300D\u3068\u306A\u308B\u6A5F\u4F1A\u640D\u5931\u3092\u9632\u304E\u3001\u4F1A\u8A08\u3092\u901F\u304F\u3057\u3001\u73FE\u91D1\u306E\u7DE0\u3081\u4F5C\u696D\u3068\u91E3\u308A\u92AD\u306E\u7BA1\u7406\u3092\u6E1B\u3089\u3059\u305F\u3081\u3067\u3059\u3002","\u9006\u306B\u3001\u5E97\u982D\u6C7A\u6E08\u304C\u307B\u307C\u767A\u751F\u3057\u306A\u3044\u5E97\u3067\u306F\u3001\u3053\u308C\u3089\u306E\u4FA1\u5024\u306F\u307B\u3068\u3093\u3069\u51FA\u307E\u305B\u3093\u3002"],costIntro:"\u6708\u306E\u5B9F\u30B3\u30B9\u30C8\u306F\u300C\u30AD\u30E3\u30C3\u30B7\u30E5\u30EC\u30B9\u58F2\u4E0A \xD7 \u6C7A\u6E08\u624B\u6570\u6599\u7387 \uFF0B \u6708\u984D\u56FA\u5B9A\u8CBB\u300D\u3067\u8A08\u7B97\u3057\u307E\u3059\u3002\u4E0B\u306E\u8A08\u7B97\u6A5F\u3067\u8A66\u7B97\u3067\u304D\u307E\u3059\u3002",costFacts:[{text:"\u6599\u7387\u306F\u63D0\u4F9B\u4F1A\u793E\u30FB\u30D6\u30E9\u30F3\u30C9\u30FB\u5BE9\u67FB\u30FB\u30D7\u30ED\u30B0\u30E9\u30E0\u6761\u4EF6\u3067\u7570\u306A\u308A\u307E\u3059\u3002\u5FC5\u305A\u81EA\u5E97\u306B\u9069\u7528\u3055\u308C\u308B\u6700\u65B0\u306E\u6761\u4EF6\u3067\u8A08\u7B97\u3057\u3066\u304F\u3060\u3055\u3044\u3002",sources:[]},{text:"Square\u306FPOS\u30EC\u30B8\u30A2\u30D7\u30EA\u304C\u7121\u6599\u3067\u3001\u6C7A\u6E08\u7AEF\u672B\u306F\u5225\u8CBB\u7528\u3067\u3059\u3002\u6C7A\u6E08\u6599\u7387\u306F\u6761\u4EF6\u306B\u3088\u308A\u5909\u308F\u308B\u305F\u3081\u6700\u65B0\u78BA\u8A8D\u304C\u5FC5\u8981\u3067\u3059\u3002",sources:["SQUARE_POS"],fallback:"Square \u306E\u6599\u91D1\u306F\u6700\u7D42\u78BA\u8A8D\u304B\u3089\u65E5\u304C\u7D4C\u3063\u3066\u3044\u307E\u3059\u3002\u516C\u5F0F\u30B5\u30A4\u30C8\u3067\u518D\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002"},{text:"Air\u30DA\u30A4\u306F\u521D\u671F\u8CBB\u7528\u30FB\u4F7F\u7528\u6599\u30FB\u6708\u984D\u30FB\u632F\u8FBC\u624B\u6570\u65990\u5186\u306E\u73FE\u884C\u6848\u5185\u304C\u3042\u308A\u3001\u5225\u9014\u6C7A\u6E08\u624B\u6570\u6599\u304C\u767A\u751F\u3057\u307E\u3059\u3002",sources:["AIRPAY"],fallback:"Air\u30DA\u30A4\u306E\u6599\u91D1\u306F\u6700\u7D42\u78BA\u8A8D\u304B\u3089\u65E5\u304C\u7D4C\u3063\u3066\u3044\u307E\u3059\u3002\u516C\u5F0F\u30B5\u30A4\u30C8\u3067\u518D\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002"}],risk:["\u5165\u91D1\u30B5\u30A4\u30AF\u30EB\u304C\u8CC7\u91D1\u7E70\u308A\u306B\u5408\u3046\u304B\u3092\u5148\u306B\u78BA\u8A8D\u3057\u307E\u3059\u3002\u73FE\u91D1\u306A\u3089\u5F53\u65E5\u3001\u30AD\u30E3\u30C3\u30B7\u30E5\u30EC\u30B9\u306A\u3089\u6570\u65E5\u301C\u306E\u305A\u308C\u304C\u51FA\u307E\u3059\u3002","\u300C\u624B\u6570\u6599\u7387\u304C\u4F4E\u3044\u300D\u3060\u3051\u3067\u9078\u3076\u3068\u3001\u5BFE\u5FDC\u30D6\u30E9\u30F3\u30C9\u3084\u7AEF\u672B\u8CBB\u3067\u5F8C\u304B\u3089\u5DEE\u304C\u51FA\u307E\u3059\u3002"],decisionRows:[{state:"HIGH_FIT",label:"\u5C0E\u5165\u4FA1\u5024\u304C\u9AD8\u3044",fit:"\u5E97\u982D\u6C7A\u6E08\u304C\u591A\u3044\u30FB\u8981\u671B\u304C\u3042\u308B\u30FB\u5BA2\u5358\u4FA1\u304C\u9AD8\u3081\u30FB\u73FE\u91D1\u7BA1\u7406\u306E\u8CA0\u8377\u304C\u5927\u304D\u3044\u3002",action:"\u624B\u6570\u6599\u3092\u8A66\u7B97\u3057\u3001\u56FA\u5B9A\u8CBB\u30BC\u30ED\u306E\u5019\u88DC\u304B\u3089\u6BD4\u8F03\u3002"},{state:"CONDITIONAL",label:"\u6761\u4EF6\u4ED8\u304D",fit:"\u5E97\u982D\u6C7A\u6E08\u306F\u3042\u308B\u304C\u3001\u8981\u671B\u3084\u8CA0\u8377\u306F\u307E\u3060\u5C0F\u3055\u3044\u3002",action:"\u8981\u671B\u30921\u304B\u6708\u8A18\u9332\u3057\u3001\u7D9A\u304F\u306A\u3089\u8A66\u3059\u3002"},{state:"LOW_PRIORITY",label:"\u512A\u5148\u5EA6\u306F\u4F4E\u3044",fit:"\u5E97\u982D\u6C7A\u6E08\u304C\u307B\u307C\u306A\u3044\u30FB\u8ACB\u6C42\u66F8/\u632F\u8FBC\u4E2D\u5FC3\u30FB\u9867\u5BA2\u4E0D\u4FBF\u304C\u78BA\u8A8D\u3067\u304D\u306A\u3044\u3002",action:"\u4ECA\u306F\u5165\u308C\u306A\u3044\u3002\u8ACB\u6C42\u30FB\u632F\u8FBC\u306E\u65B9\u6CD5\u3092\u6574\u3048\u308B\u3002"}],alternative:["\u73FE\u91D1\u3068\u632F\u8FBC\u3067\u53D7\u3051\u3001\u300C\u30AB\u30FC\u30C9\u4F7F\u3048\u308B\uFF1F\u300D\u3068\u805E\u304B\u308C\u305F\u56DE\u6570\u3092\u8A18\u9332\u3057\u307E\u3059\u3002\u8981\u671B\u304C\u6708\u306B\u4F55\u4EF6\u3082\u7D9A\u304F\u306A\u3089\u3001\u305D\u306E\u3068\u304D\u306B\u56FA\u5B9A\u8CBB\u30BC\u30ED\u306E\u5019\u88DC\u3067\u8A66\u305B\u3070\u9045\u304F\u3042\u308A\u307E\u305B\u3093\u3002"],nextAction:["\u6708\u306E\u5E97\u982D\u58F2\u4E0A\u306E\u60F3\u5B9A\u984D\u3068\u3001\u60F3\u5B9A\u3055\u308C\u308B\u6599\u7387\u3067\u624B\u6570\u6599\u3092\u8A66\u7B97\u3057\u3066\u304F\u3060\u3055\u3044\u3002\u7C97\u5229\u306B\u5BFE\u3057\u3066\u8A31\u5BB9\u3067\u304D\u308B\u304B\u3067\u6C7A\u3081\u307E\u3059\u3002"],offerNote:"\u5FC5\u8981\u6027\u304C\u78BA\u5B9A\u3057\u305F\u3042\u3068\u3060\u3051\u3001\u53CE\u76CA\u30EA\u30F3\u30AF\u306E\u5019\u88DC\u3068\u516C\u5F0F\u306E\u5019\u88DC\u3092\u540C\u3058\u6761\u4EF6\u3067\u4E26\u3079\u307E\u3059\u3002\u53CE\u76CA\u30EA\u30F3\u30AF\u304C\u6709\u52B9\u306A\u3068\u304D\u3060\u3051 PR \u8868\u793A\u3092\u4ED8\u3051\u307E\u3059\u3002",related:["pos-register","reservation-system"]},$e={slug:"line-official",subject:"LINE\u516C\u5F0F\u30A2\u30AB\u30A6\u30F3\u30C8",area:"LINE",title:"LINE\u516C\u5F0F\u30A2\u30AB\u30A6\u30F3\u30C8\u306F\u672C\u5F53\u306B\u5FC5\u8981\uFF1F\u5C0F\u3055\u306A\u304A\u5E97\u304C\u4F5C\u308B\u524D\u306B\u8003\u3048\u305F\u3044\u3053\u3068",shortTitle:"LINE\u516C\u5F0F\u30A2\u30AB\u30A6\u30F3\u30C8\u306F\u672C\u5F53\u306B\u5FC5\u8981\uFF1F",description:"\u7121\u6599\u3060\u304B\u3089\u4F5C\u308B\u306E\u3067\u306F\u306A\u304F\u3001\u518D\u6765\u30FB\u901A\u77E5\u30FB\u4E88\u7D04\u5C0E\u7DDA\u306A\u3069\u660E\u78BA\u306A\u7528\u9014\u304C\u3042\u308B\u306A\u3089\u4F5C\u308B\u3002\u958B\u696D\u524D\u3067\u9867\u5BA2\u304C\u307B\u307C\u3044\u306A\u3044\u72B6\u614B\u3067\u306F\u3001\u65B0\u898F\u96C6\u5BA2\u3088\u308A\u5148\u306B\u3059\u3079\u304D\u3068\u306F\u9650\u308A\u307E\u305B\u3093\u3002\u4F5C\u308B\u524D\u306B\u8003\u3048\u308B5\u70B9\u3092\u307E\u3068\u3081\u307E\u3057\u305F\u3002",question:"LINE\u516C\u5F0F\u30A2\u30AB\u30A6\u30F3\u30C8\u3001\u7121\u6599\u3060\u3057\u3068\u308A\u3042\u3048\u305A\u4F5C\u308B\u3079\u304D\uFF1F",keywords:["LINE\u516C\u5F0F\u30A2\u30AB\u30A6\u30F3\u30C8 \u5FC5\u8981","LINE\u516C\u5F0F \u3044\u3089\u306A\u3044","LINE\u516C\u5F0F \u5C0F\u3055\u306A\u304A\u5E97","LINE\u516C\u5F0F \u6599\u91D1"],publishedAt:"2026-10-06",reviewedAt:"2026-10-06",immediateAnswer:["\u7121\u6599\u3060\u304B\u3089\u4F5C\u308B\u306E\u3067\u306F\u306A\u304F\u3001\u518D\u6765\u30FB\u901A\u77E5\u30FB\u4E88\u7D04\u5C0E\u7DDA\u306A\u3069\u660E\u78BA\u306A\u7528\u9014\u304C\u3042\u308B\u306A\u3089\u4F5C\u308B\u3001\u304C\u7B54\u3048\u3067\u3059\u3002","\u958B\u696D\u524D\u3067\u9867\u5BA2\u304C\u307B\u307C\u3044\u306A\u3044\u72B6\u614B\u3067\u306F\u3001\u65B0\u898F\u96C6\u5BA2\u3084\u55B6\u696D\u6E96\u5099\u3088\u308A\u5148\u306B\u3059\u3079\u304D\u3068\u306F\u9650\u308A\u307E\u305B\u3093\u3002"],whyUsed:["LINE\u304C\u5F97\u610F\u306A\u306E\u306F\u3001\u3059\u3067\u306B\u63A5\u70B9\u306E\u3042\u308B\u304A\u5BA2\u3055\u307E\u3068\u306E\u7D99\u7D9A\u7684\u306A\u63A5\u70B9\u3092\u4F5C\u308B\u3053\u3068\u3067\u3059\u3002\u518D\u6765\u306E\u6848\u5185\u30FB\u4E88\u7D04\u306E\u78BA\u8A8D\u30FB\u304A\u77E5\u3089\u305B\u304C\u5C4A\u304D\u3084\u3059\u304F\u306A\u308A\u307E\u3059\u3002","\u65B0\u898F\u96C6\u5BA2\u306E\u5A92\u4F53\u3068\u3001\u518D\u6765\u306E\u305F\u3081\u306E\u65BD\u7B56\u3092\u6DF7\u540C\u3057\u306A\u3044\u3053\u3068\u304C\u5927\u5207\u3067\u3059\u3002LINE\u306F\u5F8C\u8005\u3067\u3059\u3002"],costIntro:"\u7121\u6599\u3067\u8DB3\u308A\u308B\u304B\u3092\u5148\u306B\u898B\u307E\u3059\u3002\u300C\u53CB\u3060\u3061\u6570 \xD7 \u6708\u306E\u914D\u4FE1\u56DE\u6570\u300D\u304B\u3089\u5FC5\u8981\u306A\u901A\u6570\u3092\u6982\u7B97\u3057\u307E\u3059\u3002",costFacts:[{text:"LINE\u516C\u5F0F\u30A2\u30AB\u30A6\u30F3\u30C8\u306F\u3001\u30B3\u30DF\u30E5\u30CB\u30B1\u30FC\u30B7\u30E7\u30F3 0\u5186/200\u901A\u3001\u30E9\u30A4\u30C8 5,000\u5186\uFF08\u7A0E\u5225\uFF09/5,000\u901A\u3001\u30B9\u30BF\u30F3\u30C0\u30FC\u30C9 15,000\u5186\uFF08\u7A0E\u5225\uFF09/30,000\u901A \u306E\u73FE\u884C\u6848\u5185\u3067\u3059\u3002",sources:["LINE_PLAN"],fallback:"LINE\u516C\u5F0F\u30A2\u30AB\u30A6\u30F3\u30C8\u306E\u6599\u91D1\u306F\u6700\u7D42\u78BA\u8A8D\u304B\u3089\u65E5\u304C\u7D4C\u3063\u3066\u3044\u307E\u3059\u3002\u516C\u5F0F\u30B5\u30A4\u30C8\u3067\u518D\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002"},{text:"2026\u5E7410\u67081\u65E5\u306B\u8FFD\u52A0\u30E1\u30C3\u30BB\u30FC\u30B8\u306E\u6599\u91D1\u6539\u5B9A\u304C\u3042\u308A\u307E\u3059\u3002\u5F93\u91CF\u90E8\u5206\u306E\u6761\u4EF6\u306F\u6700\u65B0\u3092\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002",sources:["LINE_PLAN_CHANGE"],fallback:"\u8FFD\u52A0\u30E1\u30C3\u30BB\u30FC\u30B8\u306E\u6599\u91D1\u6761\u4EF6\u306F\u6700\u7D42\u78BA\u8A8D\u304B\u3089\u65E5\u304C\u7D4C\u3063\u3066\u3044\u307E\u3059\u3002\u516C\u5F0F\u30B5\u30A4\u30C8\u3067\u518D\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002"},{text:"\u305F\u3060\u3057\u3001\u914D\u4FE1\u3067\u304D\u308B\u304B\u3089\u4FA1\u5024\u304C\u3042\u308B\u308F\u3051\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u4F55\u3092\u9001\u308A\u3001\u3069\u306E\u884C\u52D5\u306B\u3064\u306A\u3052\u308B\u304B\u3092\u5148\u306B\u6C7A\u3081\u307E\u3059\u3002",sources:[]}],risk:["\u76EE\u7684\u3068\u62C5\u5F53\u304C\u6C7A\u307E\u3063\u3066\u3044\u306A\u3044\u307E\u307E\u59CB\u3081\u308B\u3068\u3001\u914D\u4FE1\u304C\u6B62\u307E\u308A\u3001\u30D6\u30ED\u30C3\u30AF\u3060\u3051\u5897\u3048\u307E\u3059\u3002","LINE\u3092\u4E88\u7D04\u7A93\u53E3\u306B\u3057\u305F\u3044\u5834\u5408\u3001\u4E88\u7D04\u30B7\u30B9\u30C6\u30E0\u3068\u7D44\u307F\u5408\u308F\u305B\u308B\u9078\u629E\u80A2\u3082\u3042\u308A\u307E\u3059\u3002LINE\u3092\u4F5C\u3063\u305F\u3060\u3051\u3067\u4E88\u7D04\u7BA1\u7406\u306E\u554F\u984C\u304C\u89E3\u6C7A\u3059\u308B\u3068\u306F\u9650\u308A\u307E\u305B\u3093\u3002"],decisionRows:[{state:"START_FREE",label:"\u7121\u6599\u3067\u5C0F\u3055\u304F\u59CB\u3081\u308B",fit:"\u518D\u6765\u306F\u3042\u308B\u304C\u3001\u76EE\u7684\u3084\u62C5\u5F53\u304C\u307E\u3060\u66D6\u6627\u3002",action:"\u7121\u6599\u30D7\u30E9\u30F3\u3067\u4F5C\u308A\u3001\u300C\u4F55\u3092\u30FB\u8AB0\u306B\u30FB\u6708\u4F55\u56DE\u300D\u3092\u6C7A\u3081\u3066\u304B\u3089\u6848\u5185\u3002"},{state:"USE_WITH_PURPOSE",label:"\u76EE\u7684\u3092\u6C7A\u3081\u3066\u4F7F\u3046",fit:"\u518D\u6765\u304C\u4E2D\u5FC3\u3067\u3001\u9001\u308B\u5185\u5BB9\u3068\u62C5\u5F53\u304C\u6C7A\u307E\u3063\u3066\u3044\u308B\u3002",action:"\u4E88\u7D04\u30FB\u518D\u6765\u306B\u3064\u306A\u3052\u308B\u914D\u4FE1\u3060\u3051\u306B\u7D5E\u3063\u3066\u904B\u7528\u3002"},{state:"SCALE_AFTER_VALUE",label:"\u6210\u679C\u304C\u51FA\u3066\u304B\u3089\u5E83\u3052\u308B",fit:"\u9867\u5BA2\u6570\u304C\u591A\u304F\u3001\u7121\u6599\u67A0\u3092\u8D85\u3048\u305D\u3046\u3002",action:"\u4E88\u7D04\u30FB\u518D\u6765\u3078\u306E\u52B9\u679C\u3092\u6E2C\u3063\u3066\u304B\u3089\u6709\u6599\u30D7\u30E9\u30F3\u3078\u3002"},{state:"NOT_PRIORITY",label:"\u4ECA\u306F\u512A\u5148\u3057\u306A\u3044",fit:"\u518D\u6765\u304C\u5C11\u306A\u3044\u3001\u307E\u305F\u306F\u9867\u5BA2\u304C\u307E\u3060\u3044\u306A\u3044\u3002",action:"\u307E\u305A\u6765\u5E97\u5BA2\u3092\u5897\u3084\u3057\u3001\u518D\u6765\u5BA2\u304C\u898B\u3048\u305F\u3089\u4F5C\u308B\u3002"}],alternative:["\u518D\u6765\u306E\u304A\u793C\u3084\u6B21\u56DE\u4E88\u7D04\u306E\u6848\u5185\u306F\u3001\u4F1A\u8A08\u6642\u306E\u4E00\u8A00\u3068\u540D\u523A\u30FB\u30B7\u30E7\u30C3\u30D7\u30AB\u30FC\u30C9\u3067\u5341\u5206\u306A\u3053\u3068\u304C\u591A\u3044\u3067\u3059\u3002\u518D\u6765\u5BA2\u304C\u898B\u3048\u3066\u304D\u3066\u304B\u3089\u4F5C\u3063\u3066\u3082\u9045\u304F\u3042\u308A\u307E\u305B\u3093\u3002"],nextAction:["\u53CB\u3060\u3061\u6570\u306E\u898B\u8FBC\u307F \xD7 \u6708\u306E\u914D\u4FE1\u56DE\u6570\u3067\u5FC5\u8981\u901A\u6570\u3092\u51FA\u3057\u3001\u9001\u308B\u5185\u5BB9\u30921\u3064\u6C7A\u3081\u3066\u304F\u3060\u3055\u3044\u3002\u6C7A\u307E\u3089\u306A\u3044\u306A\u3089\u3001\u307E\u3060\u4F5C\u308B\u6BB5\u968E\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002"],offerNote:"\u3053\u306E\u8A18\u4E8B\u306B\u53CE\u76CA\u30EA\u30F3\u30AF\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u958B\u8A2D\u306F\u516C\u5F0F\u30B5\u30A4\u30C8\u304B\u3089\u884C\u3063\u3066\u304F\u3060\u3055\u3044\u3002",related:["reservation-system","hotpepper-beauty"]},M=[Ve,Qe,Ke,Be,$e];function ce(e){return M.find(t=>t.slug===e)}var je={"hotpepper-beauty":{lead:"5\u3064\u7B54\u3048\u308B\u3068\u3001\u3044\u307E\u306E\u304A\u5E97\u306B\u8FD1\u3044\u5224\u65AD\u304C\u51FA\u307E\u3059\u3002",questions:[{id:"need_new",text:"\u65B0\u898F\u306E\u304A\u5BA2\u3055\u307E\u306F\u3001\u3044\u307E\u5FC5\u8981\u3067\u3059\u304B\uFF1F",options:[{value:"NEED_MORE",label:"\u3082\u3063\u3068\u5FC5\u8981"},{value:"ENOUGH",label:"\u8DB3\u308A\u3066\u3044\u308B"},{value:"CAPACITY_FULL",label:"\u53D7\u3051\u5165\u308C\u304C\u9650\u754C\u306B\u8FD1\u3044"}],prefill:{key:"new_customer_state",map:{NEED_MORE:"NEED_MORE",ENOUGH:"ENOUGH",CAPACITY_FULL:"CAPACITY_FULL"}}},{id:"dependency",text:"\u65B0\u898F\u5BA2\u306E\u3046\u3061\u3001\u5A92\u4F53\u7D4C\u7531\u306F\u3069\u306E\u304F\u3089\u3044\u3067\u3059\u304B\uFF1F",options:[{value:"NOT_USING",label:"\u307E\u3060\u4F7F\u3063\u3066\u3044\u306A\u3044"},{value:"HIGH",label:"\u5927\u534A\u304C\u5A92\u4F53\u7D4C\u7531"},{value:"MEDIUM",label:"\u534A\u5206\u304F\u3089\u3044"},{value:"LOW",label:"\u5C11\u306A\u3044"}],prefill:{key:"platform_dependency",map:{HIGH:"HIGH",MEDIUM:"MEDIUM",LOW:"LOW"}}},{id:"cost_known",text:"\u6708\u306E\u5A92\u4F53\u95A2\u9023\u8CBB\uFF08\u63B2\u8F09\u8CBB\uFF0B\u4E88\u7D04\u5229\u7528\u6599\u306A\u3069\uFF09\u3092\u628A\u63E1\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F",options:[{value:"YES",label:"\u628A\u63E1\u3057\u3066\u3044\u308B"},{value:"NO",label:"\u628A\u63E1\u3057\u3066\u3044\u306A\u3044"}]},{id:"count_known",text:"\u5A92\u4F53\u7D4C\u7531\u306E\u65B0\u898F\u6765\u5E97\u6570\u3092\u3001\u6708\u3054\u3068\u306B\u628A\u63E1\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F",options:[{value:"YES",label:"\u628A\u63E1\u3057\u3066\u3044\u308B"},{value:"NO",label:"\u628A\u63E1\u3057\u3066\u3044\u306A\u3044"}]},{id:"direct",text:"\u5A92\u4F53\u4EE5\u5916\u306E\u4E88\u7D04\u5C0E\u7DDA\uFF08Google\u30FB\u96FB\u8A71\u30FBLINE\u30FB\u81EA\u793E\u30B5\u30A4\u30C8\uFF09\u306F\u3042\u308A\u307E\u3059\u304B\uFF1F",options:[{value:"YES",label:"\u3042\u308B"},{value:"NO",label:"\u307B\u307C\u306A\u3044"}]}],states:[{id:"USE_OR_TEST",label:"\u4F7F\u3046\u30FB\u8A66\u3059\u5408\u7406\u6027\u304C\u3042\u308B",summary:"\u65B0\u898F\u5BA2\u304C\u5FC5\u8981\u3067\u3001\u307E\u3060\u5A92\u4F53\u3092\u4F7F\u3063\u3066\u3044\u306A\u3044\u72B6\u614B\u3067\u3059\u3002\u6708\u306B\u6255\u3048\u308B\u4E0A\u9650\u3068\u3001\u898B\u308B\u6570\u5B57\uFF08\u65B0\u898F\u6570\u30FBCAC\u30FB\u518D\u6765\u7387\uFF09\u3092\u6C7A\u3081\u3066\u304B\u3089\u554F\u3044\u5408\u308F\u305B\u3066\u304F\u3060\u3055\u3044\u3002",next:"\u63B2\u8F09\u6761\u4EF6\u3092\u554F\u3044\u5408\u308F\u305B\u308B\u524D\u306B\u3001\u6708\u306E\u4E0A\u9650\u984D\u3068\u6E2C\u308B\u6570\u5B57\u3092\u66F8\u304D\u51FA\u3059\u3002",need:"CONFIRMED"},{id:"USE_AND_BUILD_OWN",label:"\u4F7F\u3044\u306A\u304C\u3089\u3001\u81EA\u524D\u306E\u5C0E\u7DDA\u3092\u80B2\u3066\u308B",summary:"\u6210\u679C\u306F\u51FA\u3066\u3044\u3066\u3082\u3001\u5A92\u4F53\u3092\u6B62\u3081\u308B\u3068\u96C6\u5BA2\u304C\u6B62\u307E\u308B\u72B6\u614B\u3067\u3059\u3002\u7D9A\u3051\u306A\u304C\u3089\u3001Google\u30FB\u76F4\u63A5\u4E88\u7D04\u30FB\u7D39\u4ECB\u3092\u80B2\u3066\u308B\u6BB5\u968E\u3067\u3059\u3002",next:"Google\u30D3\u30B8\u30CD\u30B9\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB\u3068\u76F4\u63A5\u4E88\u7D04\u306E\u5C0E\u7DDA\u3092\u3001\u4ECA\u6708\u4E2D\u306B1\u3064\u5897\u3084\u3059\u3002",need:"CONDITIONAL"},{id:"MEASURE_FIRST",label:"\u307E\u305A\u6570\u5B57\u3092\u51FA\u3059",summary:"\u8CBB\u7528\u304B\u65B0\u898F\u6570\u3092\u628A\u63E1\u3057\u3066\u3044\u306A\u3044\u305F\u3081\u3001\u7D9A\u3051\u308B\u30FB\u3084\u3081\u308B\u3092\u5224\u65AD\u3067\u304D\u308B\u72B6\u614B\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u76F4\u8FD13\u301C6\u304B\u6708\u306E\u6570\u5B57\u3092\u51FA\u3059\u306E\u304C\u6700\u512A\u5148\u3067\u3059\u3002",next:"\u76F4\u8FD13\u301C6\u304B\u6708\u306E\u5A92\u4F53\u95A2\u9023\u8CBB\u30FB\u65B0\u898F\u6570\u30FB\u518D\u6765\u7387\u3092\u51FA\u3059\u3002",need:"CONDITIONAL"},{id:"LOW_PRIORITY",label:"\u512A\u5148\u5EA6\u306F\u4F4E\u3044",summary:"\u65B0\u898F\u5BA2\u304C\u8DB3\u308A\u3066\u3044\u308B\u3001\u307E\u305F\u306F\u53D7\u3051\u5165\u308C\u304C\u9650\u754C\u306B\u8FD1\u3044\u72B6\u614B\u3067\u3059\u3002\u8FFD\u52A0\u306E\u96C6\u5BA2\u306B\u304A\u91D1\u3092\u304B\u3051\u308B\u6BB5\u968E\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002",next:"\u53D7\u3051\u5165\u308C\u4F59\u529B\u3068\u518D\u6765\u7387\u3092\u898B\u306A\u304C\u3089\u3001\u5FC5\u8981\u306B\u306A\u3063\u305F\u3089\u518D\u691C\u8A0E\u3059\u308B\u3002",need:"NOT_NOW"}],resolve:e=>{let t=e.dependency!==void 0&&e.dependency!=="NOT_USING";return t&&(e.cost_known==="NO"||e.count_known==="NO")?"MEASURE_FIRST":t&&e.dependency==="HIGH"?"USE_AND_BUILD_OWN":e.need_new==="NEED_MORE"?t?"USE_AND_BUILD_OWN":"USE_OR_TEST":"LOW_PRIORITY"}},"reservation-system":{lead:"5\u3064\u7B54\u3048\u308B\u3068\u3001\u3044\u307E\u306E\u4E88\u7D04\u7BA1\u7406\u306E\u8CA0\u8377\u306B\u8FD1\u3044\u5224\u65AD\u304C\u51FA\u307E\u3059\u3002",questions:[{id:"model",text:"\u6765\u5E97\u306F\u4E88\u7D04\u304C\u4E2D\u5FC3\u3067\u3059\u304B\uFF1F",options:[{value:"APPOINTMENT",label:"\u307B\u307C\u4E88\u7D04\u5236"},{value:"MIXED",label:"\u4E88\u7D04\u3068\u98DB\u3073\u8FBC\u307F\u304C\u534A\u3005"},{value:"WALKIN",label:"\u307B\u307C\u98DB\u3073\u8FBC\u307F"}],prefill:{key:"reservation_model",map:{APPOINTMENT:"APPOINTMENT_DOMINANT",MIXED:"MIXED",WALKIN:"WALKIN_DOMINANT"}}},{id:"channels",text:"\u4E88\u7D04\u306E\u53D7\u4ED8\u7D4C\u8DEF\u306F\u3044\u304F\u3064\u3042\u308A\u307E\u3059\u304B\uFF1F",options:[{value:"ONE",label:"1\u3064\uFF08\u96FB\u8A71\u3060\u3051\u3001\u306A\u3069\uFF09"},{value:"TWO_PLUS",label:"2\u3064\u4EE5\u4E0A\uFF08\u96FB\u8A71\uFF0BLINE\uFF0BDM \u306A\u3069\uFF09"}]},{id:"after_hours",text:"\u55B6\u696D\u6642\u9593\u5916\u306B\u4E88\u7D04\u3092\u53D7\u3051\u305F\u3044\u3001\u307E\u305F\u306F\u53D6\u308A\u3053\u307C\u3057\u3066\u3044\u307E\u3059\u304B\uFF1F",options:[{value:"YES",label:"\u3042\u308B"},{value:"NO",label:"\u306A\u3044"}]},{id:"trouble",text:"\u4E88\u7D04\u6F0F\u308C\u30FB\u4E8C\u91CD\u4E88\u7D04\u30FB\u5909\u66F4\u306E\u30DF\u30B9\u304C\u8D77\u304D\u305F\u3053\u3068\u306F\uFF1F",options:[{value:"YES",label:"\u3042\u308B"},{value:"NO",label:"\u306A\u3044"}]},{id:"staff",text:"\u4E88\u7D04\u3092\u6271\u3046\u30B9\u30BF\u30C3\u30D5\u306E\u4EBA\u6570\u306F\uFF1F",options:[{value:"SOLO",label:"\u81EA\u5206\u3072\u3068\u308A"},{value:"SMALL",label:"2\u301C3\u4EBA"},{value:"TEAM",label:"4\u4EBA\u4EE5\u4E0A"}],prefill:{key:"staff_count",map:{SOLO:"SOLO",SMALL:"SMALL_2_3",TEAM:"TEAM_4_PLUS"}}}],states:[{id:"MANUAL_OK",label:"\u624B\u52D5\u3067\u5341\u5206",summary:"\u3044\u307E\u306E\u53D7\u4ED8\u65B9\u6CD5\u3067\u56F0\u3063\u3066\u3044\u306A\u3044\u72B6\u614B\u3067\u3059\u3002\u6709\u6599\u306E\u4E88\u7D04\u30B7\u30B9\u30C6\u30E0\u3092\u6025\u3050\u5FC5\u8981\u306F\u3042\u308A\u307E\u305B\u3093\u3002",next:"\u4E88\u7D04\u6F0F\u308C\u3084\u55B6\u696D\u6642\u9593\u5916\u306E\u53D6\u308A\u3053\u307C\u3057\u304C\u51FA\u305F\u3089\u3001\u305D\u306E\u3068\u304D\u306B\u898B\u76F4\u3059\u3002",need:"NOT_NOW"},{id:"FREE_STARTER_FIT",label:"\u7121\u6599\u30D7\u30E9\u30F3\u3067\u8A66\u3059\u4FA1\u5024\u304C\u3042\u308B",summary:"\u55B6\u696D\u6642\u9593\u5916\u306E\u4E88\u7D04\u3084\u7D4C\u8DEF\u306E\u5897\u52A0\u304C\u898B\u3048\u3066\u3044\u308B\u72B6\u614B\u3067\u3059\u3002\u307E\u305A\u7121\u6599\u30D7\u30E9\u30F3\u3067\u4E88\u7D04\u30DA\u30FC\u30B8\u3092\u4F5C\u308A\u3001\u5FC5\u8981\u304B\u3069\u3046\u304B\u30921\u304B\u6708\u3067\u78BA\u304B\u3081\u307E\u3059\u3002",next:"\u7121\u6599\u30D7\u30E9\u30F3\u3067\u4E88\u7D04\u30DA\u30FC\u30B8\u3060\u3051\u4F5C\u308A\u3001\u55B6\u696D\u6642\u9593\u5916\u306E\u4E88\u7D04\u6570\u3092\u6570\u3048\u308B\u3002",need:"CONFIRMED"},{id:"SYSTEM_RECOMMENDED",label:"\u30B7\u30B9\u30C6\u30E0\u5316\u3059\u308B\u4FA1\u5024\u304C\u9AD8\u3044",summary:"\u8907\u6570\u7D4C\u8DEF\u30FB\u8907\u6570\u30B9\u30BF\u30C3\u30D5\u30FB\u6F0F\u308C\u3084\u4E8C\u91CD\u4E88\u7D04\u306E\u3044\u305A\u308C\u304B\u304C\u91CD\u306A\u3063\u3066\u3044\u307E\u3059\u3002\u53D7\u4ED8\u7D4C\u8DEF\u3092\u5BC4\u305B\u3066\u3001\u30EA\u30DE\u30A4\u30F3\u30C9\u3068\u7A7A\u304D\u67A0\u3092\u81EA\u52D5\u5316\u3059\u308B\u6BB5\u968E\u3067\u3059\u3002",next:"\u53D7\u4ED8\u7D4C\u8DEF\u3092\u3069\u3053\u306B\u5BC4\u305B\u308B\u304B\u6C7A\u3081\u3001\u7121\u6599\u30D7\u30E9\u30F3\u304B\u3089\u59CB\u3081\u3066\u5FC5\u8981\u306A\u6A5F\u80FD\u3060\u3051\u8DB3\u3059\u3002",need:"CONFIRMED"},{id:"INTEGRATION_REVIEW",label:"\u7D4C\u8DEF\u306E\u4E00\u672C\u5316\u3068\u9023\u643A\u3092\u898B\u76F4\u3059",summary:"\u7D4C\u8DEF\u304C\u5206\u6563\u3057\u3066\u6F0F\u308C\u304C\u8D77\u304D\u3001\u30B9\u30BF\u30C3\u30D5\u3082\u8907\u6570\u3067\u3059\u3002\u65B0\u3057\u3044\u30B7\u30B9\u30C6\u30E0\u3092\u8DB3\u3059\u524D\u306B\u3001\u53D7\u4ED8\u7D4C\u8DEF\u306E\u4E00\u672C\u5316\u3068\u65E2\u5B58\u30C4\u30FC\u30EB\u306E\u9023\u643A\u3092\u898B\u76F4\u3057\u307E\u3059\u3002",next:"\u53D7\u4ED8\u7D4C\u8DEF\u30921\u3064\u306B\u6C7A\u3081\u3001\u65E2\u5B58\u306ELINE\u30FB\u53F0\u5E33\u3068\u306E\u9023\u643A\u53EF\u5426\u3092\u78BA\u8A8D\u3059\u308B\u3002",need:"CONDITIONAL"}],resolve:e=>{if(e.model==="WALKIN")return"MANUAL_OK";if(e.channels==="TWO_PLUS"&&e.trouble==="YES"&&e.staff!=="SOLO")return"INTEGRATION_REVIEW";let t=0;return t+=e.model==="APPOINTMENT"?2:e.model==="MIXED"?1:0,t+=e.channels==="TWO_PLUS"?1:0,t+=e.after_hours==="YES"?1:0,t+=e.trouble==="YES"?2:0,t+=e.staff==="SMALL"?1:e.staff==="TEAM"?2:0,t>=5?"SYSTEM_RECOMMENDED":t>=2?"FREE_STARTER_FIT":"MANUAL_OK"}},"pos-register":{lead:"5\u3064\u7B54\u3048\u308B\u3068\u3001\u3044\u307E\u306E\u304A\u5E97\u306B\u8FD1\u3044\u5224\u65AD\u304C\u51FA\u307E\u3059\u3002",questions:[{id:"items",text:"\u5546\u54C1\u30FB\u30E1\u30CB\u30E5\u30FC\u306E\u6570\u306F\uFF1F",options:[{value:"FEW",label:"\u5C11\u306A\u3044\uFF0820\u672A\u6E80\uFF09"},{value:"MANY",label:"\u591A\u3044\uFF0820\u4EE5\u4E0A\uFF09"}]},{id:"inventory",text:"\u5728\u5EAB\u306E\u7BA1\u7406\u306F\uFF1F",options:[{value:"NONE",label:"\u4E0D\u8981"},{value:"LIGHT",label:"\u8EFD\u3044\uFF08\u305F\u307E\u306B\u6570\u3048\u308B\u7A0B\u5EA6\uFF09"},{value:"IMPORTANT",label:"\u91CD\u8981\uFF08\u6B20\u54C1\u30FB\u30ED\u30B9\u304C\u58F2\u4E0A\u306B\u76F4\u7D50\uFF09"}],prefill:{key:"ops_complexity",map:{NONE:"SIMPLE",LIGHT:"MULTI_LOW_INVENTORY",IMPORTANT:"INVENTORY_IMPORTANT"}}},{id:"staff",text:"\u30EC\u30B8\u3092\u6271\u3046\u30B9\u30BF\u30C3\u30D5\u306E\u4EBA\u6570\u306F\uFF1F",options:[{value:"SOLO",label:"\u81EA\u5206\u3072\u3068\u308A"},{value:"SMALL",label:"2\u301C3\u4EBA"},{value:"TEAM",label:"4\u4EBA\u4EE5\u4E0A"}],prefill:{key:"staff_count",map:{SOLO:"SOLO",SMALL:"SMALL_2_3",TEAM:"TEAM_4_PLUS"}}},{id:"analysis",text:"\u5546\u54C1\u5225\u30FB\u62C5\u5F53\u5225\u306E\u58F2\u4E0A\u3092\u898B\u305F\u3044\u3067\u3059\u304B\uFF1F",options:[{value:"YES",label:"\u898B\u305F\u3044"},{value:"NO",label:"\u4ECA\u306F\u4E0D\u8981"}]},{id:"integration",text:"\u30AD\u30E3\u30C3\u30B7\u30E5\u30EC\u30B9\u6C7A\u6E08\u3084\u4F1A\u8A08\u30BD\u30D5\u30C8\u3068\u9023\u643A\u3057\u305F\u3044\u3067\u3059\u304B\uFF1F",options:[{value:"YES",label:"\u3057\u305F\u3044"},{value:"NO",label:"\u4ECA\u306F\u4E0D\u8981"}]}],states:[{id:"SIMPLE_REGISTER_OK",label:"\u7C21\u6613\u306A\u30EC\u30B8\u3067\u5341\u5206",summary:"\u30E1\u30CB\u30E5\u30FC\u304C\u5C11\u306A\u304F\u3001\u5728\u5EAB\u7BA1\u7406\u304C\u4E0D\u8981\u3067\u30011\u4EBA\u904B\u55B6\u3067\u3059\u3002\u9AD8\u5EA6\u306APOS\u306E\u4FA1\u5024\u306F\u307E\u3060\u51FA\u3066\u3044\u307E\u305B\u3093\u3002",next:"\u7121\u6599\u306E\u30EC\u30B8\u30A2\u30D7\u30EA\u304B\u624B\u66F8\u304D\u4F1D\u7968\uFF0B\u8868\u8A08\u7B97\u3067\u3001\u58F2\u4E0A\u3060\u3051\u8A18\u9332\u3059\u308B\u3002",need:"NOT_NOW"},{id:"FREE_POS_FIT",label:"\u7121\u6599POS\u3067\u59CB\u3081\u308B",summary:"\u58F2\u4E0A\u8A18\u9332\u3092\u697D\u306B\u3059\u308B\u4FA1\u5024\u306F\u3042\u308A\u307E\u3059\u304C\u3001\u9AD8\u5EA6\u306A\u6A5F\u80FD\u306F\u4E0D\u8981\u3067\u3059\u3002\u7121\u6599\u306EPOS\u30A2\u30D7\u30EA\u3067\u5341\u5206\u3067\u3059\u3002",next:"\u7121\u6599POS\u30A2\u30D7\u30EA\u3067\u5546\u54C1\u3092\u767B\u9332\u3057\u3001\u7DE0\u3081\u4F5C\u696D\u306E\u6642\u9593\u304C\u3069\u308C\u3060\u3051\u6E1B\u308B\u304B\u6E2C\u308B\u3002",need:"CONFIRMED"},{id:"ADVANCED_POS_FIT",label:"\u9AD8\u6A5F\u80FDPOS\u306E\u4FA1\u5024\u304C\u3042\u308B",summary:"\u5728\u5EAB\u30FB\u54C1\u76EE\u30FB\u30B9\u30BF\u30C3\u30D5\u30FB\u5206\u6790\u306E\u3044\u305A\u308C\u304B\u304C\u91CD\u306A\u3063\u3066\u3044\u307E\u3059\u3002\u7DE0\u3081\u4F5C\u696D\u3068\u8EE2\u8A18\u3092\u624B\u3067\u3084\u308B\u8CA0\u62C5\u304C\u5927\u304D\u3044\u72B6\u614B\u3067\u3059\u3002",next:"\u5728\u5EAB\u3068\u5206\u6790\u306E\u8981\u4EF6\u3092\u66F8\u304D\u51FA\u3057\u3001\u9023\u643A\u7BC4\u56F2\u3067\u5019\u88DC\u3092\u6BD4\u3079\u308B\u3002",need:"CONFIRMED"},{id:"INTEGRATION_REVIEW",label:"\u9023\u643A\u3092\u524D\u63D0\u306B\u9078\u3076",summary:"\u6C7A\u6E08\u3084\u4F1A\u8A08\u3068\u9023\u643A\u3057\u305F\u3044\u72B6\u614B\u3067\u3059\u3002POS\u5358\u4F53\u3067\u306F\u306A\u304F\u3001\u9023\u643A\u5148\u3092\u5148\u306B\u6C7A\u3081\u3066\u304B\u3089\u9078\u3073\u307E\u3059\u3002",next:"\u9023\u643A\u3057\u305F\u3044\u6C7A\u6E08\u30FB\u4F1A\u8A08\u30BD\u30D5\u30C8\u3092\u5148\u306B\u6C7A\u3081\u3001\u5BFE\u5FDC\u3059\u308BPOS\u304B\u3089\u9078\u3076\u3002",need:"CONDITIONAL"}],resolve:e=>{if(e.items==="FEW"&&e.inventory==="NONE"&&e.staff==="SOLO")return"SIMPLE_REGISTER_OK";let t=0;return t+=e.items==="MANY"?2:0,t+=e.inventory==="LIGHT"?1:e.inventory==="IMPORTANT"?3:0,t+=e.staff==="SMALL"?1:e.staff==="TEAM"?2:0,t+=e.analysis==="YES"?1:0,t+=e.integration==="YES"?1:0,t>=5?"ADVANCED_POS_FIT":e.integration==="YES"?"INTEGRATION_REVIEW":"FREE_POS_FIT"}},"cashless-payment":{lead:"5\u3064\u7B54\u3048\u308B\u3068\u3001\u624B\u6570\u6599\u3092\u6255\u3046\u4FA1\u5024\u304C\u3042\u308B\u304B\u306E\u76EE\u5B89\u304C\u51FA\u307E\u3059\u3002",questions:[{id:"onsite",text:"\u5E97\u982D\u3067\u306E\u652F\u6255\u3044\u306F\u3001\u3069\u306E\u304F\u3089\u3044\u3042\u308A\u307E\u3059\u304B\uFF1F",options:[{value:"MOST",label:"\u307B\u3068\u3093\u3069\u304C\u5E97\u982D"},{value:"SOME",label:"\u5E97\u982D\u3068\u632F\u8FBC\u30FB\u8ACB\u6C42\u304C\u6DF7\u3056\u308B"},{value:"LITTLE",label:"\u5E97\u982D\u306F\u307B\u307C\u306A\u3044"}],prefill:{key:"onsite_payment",map:{MOST:"MOST",SOME:"SOME",LITTLE:"LITTLE"}}},{id:"requests",text:"\u304A\u5BA2\u3055\u307E\u304B\u3089\u300C\u30AB\u30FC\u30C9\u4F7F\u3048\u308B\uFF1F\u300D\u3068\u805E\u304B\u308C\u308B\u983B\u5EA6\u306F\uFF1F",options:[{value:"OFTEN",label:"\u3088\u304F\u3042\u308B"},{value:"SOMETIMES",label:"\u305F\u307E\u306B\u3042\u308B"},{value:"NEVER",label:"\u307B\u307C\u306A\u3044"}]},{id:"ticket",text:"\u5BA2\u5358\u4FA1\u306E\u76EE\u5B89\u306F\uFF1F",options:[{value:"HIGH",label:"5,000\u5186\u4EE5\u4E0A"},{value:"MID",label:"2,000\u301C5,000\u5186"},{value:"LOW",label:"2,000\u5186\u672A\u6E80"}]},{id:"monthly",text:"\u6708\u306E\u5E97\u982D\u58F2\u4E0A\u306E\u76EE\u5B89\u306F\uFF1F",options:[{value:"LARGE",label:"50\u4E07\u5186\u4EE5\u4E0A"},{value:"MID",label:"20\u301C50\u4E07\u5186"},{value:"SMALL",label:"20\u4E07\u5186\u672A\u6E80"}]},{id:"cash",text:"\u73FE\u91D1\u306E\u7DE0\u3081\u30FB\u91E3\u308A\u92AD\u30FB\u4E21\u66FF\u306E\u8CA0\u62C5\u306F\uFF1F",options:[{value:"HEAVY",label:"\u5927\u304D\u3044"},{value:"LIGHT",label:"\u5C0F\u3055\u3044"}]}],states:[{id:"HIGH_FIT",label:"\u5C0E\u5165\u4FA1\u5024\u304C\u9AD8\u3044",summary:"\u5E97\u982D\u6C7A\u6E08\u304C\u591A\u304F\u3001\u8981\u671B\u3084\u73FE\u91D1\u7BA1\u7406\u306E\u8CA0\u62C5\u3082\u898B\u3048\u3066\u3044\u307E\u3059\u3002\u624B\u6570\u6599\u3092\u6255\u3063\u3066\u3082\u3001\u4F1A\u8A08\u306E\u901F\u3055\u3068\u8CA0\u62C5\u6E1B\u3067\u5143\u304C\u53D6\u308C\u3084\u3059\u3044\u72B6\u614B\u3067\u3059\u3002",next:"\u6708\u306E\u5E97\u982D\u58F2\u4E0A\u306E\u60F3\u5B9A\u984D\u3067\u624B\u6570\u6599\u3092\u8A66\u7B97\u3057\u3001\u56FA\u5B9A\u8CBB\u30BC\u30ED\u306E\u5019\u88DC\u304B\u3089\u6BD4\u3079\u308B\u3002",need:"CONFIRMED"},{id:"CONDITIONAL",label:"\u6761\u4EF6\u4ED8\u304D\u3067\u691C\u8A0E",summary:"\u5E97\u982D\u6C7A\u6E08\u306F\u3042\u308A\u307E\u3059\u304C\u3001\u8981\u671B\u3084\u8CA0\u62C5\u306F\u307E\u3060\u5C0F\u3055\u3044\u72B6\u614B\u3067\u3059\u3002\u8981\u671B\u304C\u7D9A\u304F\u304B\u3001\u5E97\u982D\u6C7A\u6E08\u304C\u5897\u3048\u308B\u304B\u3092\u898B\u3066\u304B\u3089\u6C7A\u3081\u307E\u3059\u3002",next:"\u300C\u30AB\u30FC\u30C9\u4F7F\u3048\u308B\uFF1F\u300D\u3068\u805E\u304B\u308C\u305F\u56DE\u6570\u30921\u304B\u6708\u8A18\u9332\u3059\u308B\u3002",need:"CONDITIONAL"},{id:"LOW_PRIORITY",label:"\u512A\u5148\u5EA6\u306F\u4F4E\u3044",summary:"\u5E97\u982D\u6C7A\u6E08\u304C\u307B\u307C\u306A\u3044\u3001\u307E\u305F\u306F\u8981\u671B\u304C\u78BA\u8A8D\u3067\u304D\u306A\u3044\u72B6\u614B\u3067\u3059\u3002\u6C7A\u6E08\u624B\u6570\u6599\u3092\u6255\u3046\u4FA1\u5024\u304C\u51FA\u306B\u304F\u3044\u305F\u3081\u3001\u4ECA\u306F\u5165\u308C\u306A\u3044\u5224\u65AD\u3067\u554F\u984C\u3042\u308A\u307E\u305B\u3093\u3002",next:"\u8ACB\u6C42\u66F8\u30FB\u632F\u8FBC\u306E\u53D7\u3051\u65B9\u3092\u6574\u3048\u3001\u5E97\u982D\u6C7A\u6E08\u304C\u5897\u3048\u305F\u3089\u518D\u691C\u8A0E\u3059\u308B\u3002",need:"NOT_NOW"}],resolve:e=>{if(e.onsite==="LITTLE")return"LOW_PRIORITY";let t=0;return t+=e.onsite==="MOST"?3:e.onsite==="SOME"?1:0,t+=e.requests==="OFTEN"?2:e.requests==="SOMETIMES"?1:0,t+=e.ticket==="HIGH"?1:0,t+=e.monthly==="LARGE"?1:0,t+=e.cash==="HEAVY"?1:0,t>=5?"HIGH_FIT":t>=2?"CONDITIONAL":"LOW_PRIORITY"}},"line-official":{lead:"5\u3064\u7B54\u3048\u308B\u3068\u3001\u4F5C\u308B\u524D\u306B\u6C7A\u3081\u308B\u3079\u304D\u3053\u3068\u304C\u5206\u304B\u308A\u307E\u3059\u3002",questions:[{id:"repeat",text:"\u540C\u3058\u304A\u5BA2\u3055\u307E\u304C\u7E70\u308A\u8FD4\u3057\u6765\u308B\u5272\u5408\u306F\uFF1F",options:[{value:"HIGH",label:"\u9AD8\u3044\uFF08\u518D\u6765\u304C\u4E2D\u5FC3\uFF09"},{value:"MEDIUM",label:"\u3075\u3064\u3046"},{value:"LOW",label:"\u4F4E\u3044\uFF08\u4E00\u898B\u5BA2\u304C\u4E2D\u5FC3\uFF09"}],prefill:{key:"repeat_rate",map:{HIGH:"HIGH",MEDIUM:"MEDIUM",LOW:"LOW"}}},{id:"customers",text:"\u3044\u307E\u306E\u9867\u5BA2\uFF08\u6765\u5E97\u3057\u305F\u3053\u3068\u306E\u3042\u308B\u4EBA\uFF09\u306E\u6570\u306F\uFF1F",options:[{value:"NONE_YET",label:"\u307E\u3060\u3044\u306A\u3044\uFF08\u958B\u696D\u524D\uFF09"},{value:"FEW",label:"100\u4EBA\u672A\u6E80"},{value:"MANY",label:"100\u4EBA\u4EE5\u4E0A"}]},{id:"purpose",text:"\u9001\u308B\u5185\u5BB9\uFF08\u4E88\u7D04\u78BA\u8A8D\u30FB\u518D\u6765\u6848\u5185\u30FB\u304A\u77E5\u3089\u305B\uFF09\u306F\u6C7A\u307E\u3063\u3066\u3044\u307E\u3059\u304B\uFF1F",options:[{value:"CLEAR",label:"\u6C7A\u307E\u3063\u3066\u3044\u308B"},{value:"VAGUE",label:"\u307E\u3060\u66D6\u6627"}]},{id:"owner",text:"\u914D\u4FE1\u3092\u62C5\u5F53\u3059\u308B\u4EBA\u306F\u6C7A\u307E\u3063\u3066\u3044\u307E\u3059\u304B\uFF1F",options:[{value:"YES",label:"\u6C7A\u307E\u3063\u3066\u3044\u308B"},{value:"NO",label:"\u6C7A\u307E\u3063\u3066\u3044\u306A\u3044"}]},{id:"funnel",text:"\u4E88\u7D04\u3084\u518D\u6765\u306E\u5C0E\u7DDA\u3068\u3057\u3066LINE\u3092\u4F7F\u3044\u305F\u3044\u3067\u3059\u304B\uFF1F",options:[{value:"YES",label:"\u4F7F\u3044\u305F\u3044"},{value:"NO",label:"\u304A\u77E5\u3089\u305B\u3060\u3051"}]}],states:[{id:"START_FREE",label:"\u7121\u6599\u3067\u5C0F\u3055\u304F\u59CB\u3081\u308B",summary:"\u518D\u6765\u306F\u3042\u308B\u3082\u306E\u306E\u3001\u76EE\u7684\u3084\u62C5\u5F53\u304C\u307E\u3060\u66D6\u6627\u3067\u3059\u3002\u7121\u6599\u30D7\u30E9\u30F3\u3067\u4F5C\u308A\u3001\u300C\u4F55\u3092\u30FB\u8AB0\u306B\u30FB\u6708\u4F55\u56DE\u300D\u3092\u6C7A\u3081\u3066\u304B\u3089\u6848\u5185\u3092\u59CB\u3081\u307E\u3059\u3002",next:"\u9001\u308B\u5185\u5BB9\u30921\u3064\u306B\u7D5E\u308A\u3001\u62C5\u5F53\u8005\u3092\u6C7A\u3081\u3066\u304B\u3089\u7121\u6599\u30D7\u30E9\u30F3\u3067\u4F5C\u308B\u3002",need:"CONDITIONAL"},{id:"USE_WITH_PURPOSE",label:"\u76EE\u7684\u3092\u6C7A\u3081\u3066\u4F7F\u3046",summary:"\u518D\u6765\u304C\u4E2D\u5FC3\u3067\u3001\u9001\u308B\u5185\u5BB9\u3068\u62C5\u5F53\u304C\u6C7A\u307E\u3063\u3066\u3044\u307E\u3059\u3002\u4E88\u7D04\u30FB\u518D\u6765\u306B\u3064\u306A\u3052\u308B\u914D\u4FE1\u306B\u7D5E\u3063\u3066\u904B\u7528\u3059\u308B\u6BB5\u968E\u3067\u3059\u3002",next:"\u7121\u6599\u30D7\u30E9\u30F3\u3067\u59CB\u3081\u3001\u53CB\u3060\u3061\u6570\u3068\u6708\u306E\u914D\u4FE1\u56DE\u6570\u304B\u3089\u5FC5\u8981\u901A\u6570\u3092\u6E2C\u308B\u3002",need:"CONFIRMED"},{id:"SCALE_AFTER_VALUE",label:"\u6210\u679C\u304C\u51FA\u3066\u304B\u3089\u5E83\u3052\u308B",summary:"\u9867\u5BA2\u6570\u304C\u591A\u304F\u3001\u7121\u6599\u67A0\u3092\u8D85\u3048\u308B\u53EF\u80FD\u6027\u304C\u3042\u308A\u307E\u3059\u3002\u4E88\u7D04\u30FB\u518D\u6765\u3078\u306E\u52B9\u679C\u3092\u6E2C\u3063\u3066\u304B\u3089\u3001\u6709\u6599\u30D7\u30E9\u30F3\u306B\u4E0A\u3052\u308B\u304B\u3092\u6C7A\u3081\u307E\u3059\u3002",next:"\u7121\u6599\u67A0\u30672\u304B\u6708\u904B\u7528\u3057\u3001\u4E88\u7D04\u30FB\u518D\u6765\u306B\u3064\u306A\u304C\u3063\u305F\u6570\u3092\u6570\u3048\u3066\u304B\u3089\u30D7\u30E9\u30F3\u3092\u6C7A\u3081\u308B\u3002",need:"CONFIRMED"},{id:"NOT_PRIORITY",label:"\u4ECA\u306F\u512A\u5148\u3057\u306A\u3044",summary:"\u518D\u6765\u304C\u5C11\u306A\u3044\u3001\u307E\u305F\u306F\u9867\u5BA2\u304C\u307E\u3060\u3044\u306A\u3044\u72B6\u614B\u3067\u3059\u3002\u9001\u308B\u76F8\u624B\u304C\u5C11\u306A\u3044\u3046\u3061\u306F\u3001\u6765\u5E97\u5BA2\u3092\u5897\u3084\u3059\u3053\u3068\u306E\u307B\u3046\u304C\u5148\u3067\u3059\u3002",next:"\u307E\u305A\u6765\u5E97\u5BA2\u3092\u5897\u3084\u3057\u3001\u518D\u6765\u5BA2\u304C\u898B\u3048\u3066\u304D\u305F\u3089\u4F5C\u308B\u3002",need:"NOT_NOW"}],resolve:e=>e.repeat==="LOW"||e.customers==="NONE_YET"?"NOT_PRIORITY":e.purpose==="CLEAR"&&e.owner==="YES"?e.customers==="MANY"?"SCALE_AFTER_VALUE":"USE_WITH_PURPOSE":"START_FREE"}};function ue(e){return je[e]}var Ne={_note:"06_EVIDENCE_FRESHNESS.md: \u6599\u91D1/\u5831\u916C/\u5951\u7D04\u6761\u4EF6 30\u65E5\u3001\u6A5F\u80FD 90\u65E5\u3001\u6CD5\u4EE4/\u5E83\u544APolicy 90\u65E5\u3002\u8D85\u904E\u6642\u306F\u6570\u5024claim\u3092\u975E\u8868\u793A\uFF08fail closed\uFF09\u3002",days:{PRICING:30,FEATURE:90,POLICY:90}};var D={verified_at:"2026-10-06",_note:"\u56FA\u6709\u540D\u306E\u6570\u5024claim\u306F\u5FC5\u305A\u3053\u3053\u306B\u6839\u62E0\u3092\u7F6E\u304F\uFF08A18/A19\uFF09\u3002kind \u306B\u3088\u308A\u9BAE\u5EA6\u671F\u9650\u304C\u6C7A\u307E\u308B\uFF08config/freshness.json\uFF09\u3002",sources:[{id:"HPB_TERMS",domain:"cdn.p.recruit.co.jp",kind:"PRICING",label:"HOT PEPPER Beauty \u5229\u7528\u7D04\u6B3E",fact:"\u5171\u901A\u30CD\u30C3\u30C8\u4E88\u7D04\u5229\u7528\u65991%",verified_at:"2026-10-06"},{id:"HPB_LISTING",domain:"beauty.hotpepper.jp",kind:"POLICY",label:"HOT PEPPER Beauty \u63B2\u8F09\u6848\u5185",fact:"\u63B2\u8F09\u306F\u554F\u3044\u5408\u308F\u305B\u65B9\u5F0F",verified_at:"2026-10-06"},{id:"LINE_PLAN",domain:"lycbiz.com",kind:"PRICING",label:"LINE\u516C\u5F0F\u30A2\u30AB\u30A6\u30F3\u30C8 \u6599\u91D1\u30D7\u30E9\u30F3",fact:"0\u5186/200\u901A;5000\u5186/5000\u901A;15000\u5186/30000\u901A\u7A0E\u5225",verified_at:"2026-10-06"},{id:"LINE_PLAN_CHANGE",domain:"lycbiz.com",kind:"POLICY",label:"LINE\u516C\u5F0F\u30A2\u30AB\u30A6\u30F3\u30C8 \u8FFD\u52A0\u30E1\u30C3\u30BB\u30FC\u30B8\u6599\u91D1\u6539\u5B9A",fact:"2026-10-01 \u8FFD\u52A0\u30E1\u30C3\u30BB\u30FC\u30B8\u6599\u91D1\u6539\u5B9A",verified_at:"2026-10-06"},{id:"FREEE_RES_PRICE",domain:"freee.co.jp",kind:"PRICING",label:"freee\u4E88\u7D04 \u6599\u91D1",fact:"Starter0\u5186;Business3180/\u6708\u5E74\u6255\u3044,3980/\u6708\u6708\u6255\u3044",verified_at:"2026-10-06"},{id:"FREEE_RES_PARTNER",domain:"freee.co.jp",kind:"PRICING",label:"freee\u4E88\u7D04 \u7D39\u4ECB\u30D7\u30ED\u30B0\u30E9\u30E0",fact:"\u6708\u6255\u30445000\u5186/\u4EF6;\u5E74\u6255\u304420000\u5186/\u4EF6",verified_at:"2026-10-06"},{id:"SQUARE_POS",domain:"squareup.com",kind:"PRICING",label:"Square POS\u30EC\u30B8 / \u6C7A\u6E08\u7AEF\u672B",fact:"POS app\u7121\u6599; reader4980; stand29980; terminal39980",verified_at:"2026-10-06"},{id:"SQUARE_AFF",domain:"squareup.com",kind:"POLICY",label:"Square \u30A2\u30D5\u30A3\u30EA\u30A8\u30A4\u30C8",fact:"\u3082\u3057\u3082\u30A2\u30D5\u30A3\u30EA\u30A8\u30A4\u30C8\u306E\u307F\u53C2\u52A0\u53EF\u80FD",verified_at:"2026-10-06"},{id:"AIRREGI",domain:"airregi.jp",kind:"PRICING",label:"Air\u30EC\u30B8 \u6599\u91D1",fact:"\u30A2\u30D7\u30EA/\u521D\u671F/\u6708\u984D/\u30B5\u30DD\u30FC\u30C80\u5186;hardware\u5225\u9014",verified_at:"2026-10-06"},{id:"AIRPAY",domain:"airregi.jp",kind:"PRICING",label:"Air\u30DA\u30A4 \u6599\u91D1",fact:"\u521D\u671F/\u4F7F\u7528/\u6708\u984D/\u632F\u8FBC\u624B\u6570\u65990\u5186;\u6761\u4EF6\u3042\u308A",verified_at:"2026-10-06"},{id:"FREEE_AFF",domain:"freee.co.jp",kind:"POLICY",label:"freee\u4F1A\u8A08 \u30A2\u30D5\u30A3\u30EA\u30A8\u30A4\u30C8",fact:"A8.net/\u3082\u3057\u3082Affiliate\u516C\u5F0F\u6848\u5185",verified_at:"2026-10-06"},{id:"GOOGLE_LINKS",domain:"support.google.com",kind:"FEATURE",label:"Google \u30D3\u30B8\u30CD\u30B9\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB \u30EA\u30F3\u30AF",fact:"\u4E88\u7D04\u7B49\u306Elocal business links\u8FFD\u52A0\u53EF\u80FD;\u9069\u683C\u6027\u6761\u4EF6\u3042\u308A",verified_at:"2026-10-06"}]};var Oe=Ne.days,Te=D.sources,ze=new Map(Te.map(e=>[e.id,e])),Ze=24*60*60*1e3,pe=D.verified_at;function Ie(){return Te}function et(e){let[t,i,n]=e.split("-").map(Number);return new Date(Date.UTC(t??1970,(i??1)-1,n??1))}function tt(e,t){return Math.floor((t.getTime()-et(e).getTime())/Ze)}function Ae(e){return Oe[e]}function it(e,t){let i=tt(e.verified_at,t);return i>=0&&i<=Oe[e.kind]}function fe(e,t){let i=ze.get(e);return{fresh:i!==void 0&&it(i,t),verified_at:i?.verified_at??null}}function Se(e){let[t,i,n]=e.split("-");return`${t}\u5E74${Number(i)}\u6708${Number(n)}\u65E5`}var de={version:"0.1",_note:"05_REVENUE_OFFER_RULES.md\u3002Need\u6C7A\u5B9A\u3068\u306F\u5B8C\u5168\u5206\u96E2\u3002display_order \u306F\u56FA\u5B9A\uFF08\u5831\u916C\u9806\u30E9\u30F3\u30AD\u30F3\u30B0\u7981\u6B62\uFF09\u3002affiliate_url \u304C\u7A7A / status \u304C ACTIVE \u4EE5\u5916 / enrollment \u304C APPROVED \u4EE5\u5916 / flag \u304C false / \u9BAE\u5EA6\u5207\u308C \u306E\u3044\u305A\u308C\u304B\u3067 fail closed\uFF08official_url \u306B\u843D\u3061\u308B\uFF09\u3002 status \u306F\u53CE\u76CA\u30D7\u30ED\u30B0\u30E9\u30E0\u306E\u72B6\u614B\u3002UNVERIFIED/PAUSED \u306E\u53CE\u76CA Offer \u306F official_fallback \u304C true \u306E\u3068\u304D\u3060\u3051\u516C\u5F0F\u30EA\u30F3\u30AF\u306E\u30AB\u30FC\u30C9\u3068\u3057\u3066\u51FA\u3057\u3001EXPIRED \u306F\u5E38\u306B\u975E\u8868\u793A\u3002",max_offers_per_area:3,offers:[{offer_id:"freee_reservation",categories:["RESERVATION"],provider_name:"freee\u4E88\u7D04",program_type:"PARTNER",flag:"partner_freee_reservation_enabled",affiliate_url:null,official_url:"https://www.freee.co.jp/reservation/",status:"UNVERIFIED",smask_enrollment:"NOT_EXECUTED",display_order:10,audience_fit:["\u4E88\u7D04\u4E2D\u5FC3\u3067\u3001\u307E\u305A\u7121\u6599\u3067\u4E88\u7D04\u30DA\u30FC\u30B8\u3068\u4E88\u7D04\u53F0\u5E33\u3092\u8A66\u3057\u305F\u3044","\u5C06\u6765\u3001\u9867\u5BA2\u7BA1\u7406\u3084\u30A2\u30F3\u30B1\u30FC\u30C8\u306A\u3069\u6709\u6599\u6A5F\u80FD\u304C\u5FC5\u8981\u306B\u306A\u308B\u304B\u898B\u6975\u3081\u305F\u3044"],audience_misfit:["\u4E88\u7D04\u4EF6\u6570\u304C\u5C11\u306A\u304F\u3001\u96FB\u8A71\u3084DM\u3067\u56F0\u3063\u3066\u3044\u306A\u3044","Starter\u3067\u8DB3\u308A\u308B\u306E\u306B\u6709\u6599\u3078\u6025\u3050\u5FC5\u8981\u306F\u306A\u3044"],fee_summary:"Starter 0\u5186\u3002Business \u306F\u5E74\u6255\u30443,180\u5186/\u6708\u30FB\u6708\u6255\u30443,980\u5186/\u6708",free_plan:"Starter\uFF080\u5186\uFF09",initial_equipment:"\u4E0D\u8981\uFF08\u30B9\u30DE\u30DB\u30FBPC\u3067\u5229\u7528\uFF09",transaction_fee:"\u4E88\u7D04\u81EA\u4F53\u306B\u624B\u6570\u6599\u306A\u3057\uFF08\u6C7A\u6E08\u6A5F\u80FD\u5229\u7528\u6642\u306F\u5225\u9014\u6761\u4EF6\u3092\u78BA\u8A8D\uFF09",integration:"freee\u4F1A\u8A08\u306A\u3069freee\u88FD\u54C1\u3068\u306E\u9023\u643A\u3092\u78BA\u8A8D",cancel_check:"\u6709\u6599\u30D7\u30E9\u30F3\u306E\u5951\u7D04\u671F\u9593\u30FB\u89E3\u7D04\u30BF\u30A4\u30DF\u30F3\u30B0\u30FB\u30C7\u30FC\u30BF\u306E\u30A8\u30AF\u30B9\u30DD\u30FC\u30C8\u53EF\u5426",conversion_condition:"\u6709\u6599Business\u5951\u7D04\uFF08\u6708\u6255\u30445,000\u5186/\u4EF6\u30FB\u5E74\u6255\u304420,000\u5186/\u4EF6\uFF09",verified_at:"2026-10-06",valid_until:"2026-11-05",disclosure_type:"PR",evidence:["FREEE_RES_PRICE","FREEE_RES_PARTNER"],official_fallback:!0},{offer_id:"square",categories:["CASHLESS","POS"],provider_name:"Square",program_type:"AFFILIATE",flag:"affiliate_square_enabled",affiliate_url:null,official_url:"https://squareup.com/jp/ja",status:"UNVERIFIED",smask_enrollment:"NOT_EXECUTED",display_order:20,audience_fit:["POS\u30A2\u30D7\u30EA\u3092\u7121\u6599\u3067\u59CB\u3081\u3001\u6C7A\u6E08\u7AEF\u672B\u3060\u3051\u8CB7\u3044\u8DB3\u3057\u305F\u3044","\u30AD\u30E3\u30C3\u30B7\u30E5\u30EC\u30B9\u3068\u30EC\u30B8\u3092\u4E00\u3064\u306B\u307E\u3068\u3081\u305F\u3044"],audience_misfit:["\u5E97\u982D\u6C7A\u6E08\u304C\u307B\u3068\u3093\u3069\u306A\u3044","\u6C7A\u6E08\u6599\u7387\u3088\u308A\u56FA\u5B9A\u8CBB\u30BC\u30ED\u3092\u91CD\u8996\u3057\u3001\u65E2\u306B\u5225\u306E\u6C7A\u6E08\u304C\u5165\u3063\u3066\u3044\u308B"],fee_summary:"POS\u30A2\u30D7\u30EA\u7121\u6599\u3002Reader 4,980\u5186\u30FBStand 29,980\u5186\u30FBTerminal 39,980\u5186\uFF08\u7AEF\u672B\uFF09",free_plan:"POS\u30A2\u30D7\u30EA\uFF08\u7121\u6599\uFF09",initial_equipment:"\u6C7A\u6E08\u7AEF\u672B\uFF08Reader / Stand / Terminal\uFF09",transaction_fee:"\u6C7A\u6E08\u6599\u7387\u306F\u6761\u4EF6\uFF08\u30D6\u30E9\u30F3\u30C9\u30FB\u5BE9\u67FB\u30FB\u30D7\u30ED\u30B0\u30E9\u30E0\uFF09\u3067\u5909\u308F\u308B\u305F\u3081\u6700\u65B0\u306E\u81EA\u5E97\u6761\u4EF6\u3092\u78BA\u8A8D",integration:"\u4F1A\u8A08\u30BD\u30D5\u30C8\u9023\u643A\u30FBEC\u3068\u306E\u5728\u5EAB\u9023\u643A\u306E\u5BFE\u5FDC\u7BC4\u56F2\u3092\u78BA\u8A8D",cancel_check:"\u7AEF\u672B\u306E\u8FD4\u54C1\u6761\u4EF6\u30FB\u5165\u91D1\u30B5\u30A4\u30AF\u30EB\u30FB\u30A2\u30AB\u30A6\u30F3\u30C8\u505C\u6B62\u6761\u4EF6",conversion_condition:"ASP\uFF08\u3082\u3057\u3082\u30A2\u30D5\u30A3\u30EA\u30A8\u30A4\u30C8\uFF09\u5185\u3067\u8981\u78BA\u8A8D",verified_at:"2026-10-06",valid_until:"2026-11-05",disclosure_type:"PR",evidence:["SQUARE_POS","SQUARE_AFF"],official_fallback:!0},{offer_id:"freee_accounting",categories:["ACCOUNTING"],provider_name:"freee\u4F1A\u8A08",program_type:"AFFILIATE",flag:"affiliate_freee_accounting_enabled",affiliate_url:null,official_url:"https://www.freee.co.jp/accounting/",status:"UNVERIFIED",smask_enrollment:"NOT_EXECUTED",display_order:30,audience_fit:["\u5E33\u7C3F\u4ED8\u3051\u3092\u81EA\u5206\u3067\u3084\u308B\u524D\u63D0\u3067\u3001\u9280\u884C\u30FB\u30AB\u30FC\u30C9\u660E\u7D30\u306E\u81EA\u52D5\u53D6\u308A\u8FBC\u307F\u3092\u3057\u305F\u3044","freee\u4E88\u7D04\u306A\u3069\u540C\u3058\u4F1A\u793E\u306E\u88FD\u54C1\u3068\u7D44\u307F\u5408\u308F\u305B\u305F\u3044"],audience_misfit:["\u7A0E\u7406\u58EB\u306B\u3059\u3079\u3066\u4EFB\u305B\u3066\u3044\u3066\u81EA\u5206\u3067\u306F\u89E6\u3089\u306A\u3044","\u53D6\u5F15\u304C\u6975\u7AEF\u306B\u5C11\u306A\u304F\u3001\u8868\u8A08\u7B97\u3067\u5341\u5206"],fee_summary:"\u6599\u91D1\u306F\u516C\u5F0F\u30B5\u30A4\u30C8\u3067\u8981\u78BA\u8A8D\uFF08\u672C\u30B5\u30A4\u30C8\u3067\u306F\u672A\u691C\u8A3C\u306E\u305F\u3081\u8868\u793A\u3057\u307E\u305B\u3093\uFF09",free_plan:"\u8981\u78BA\u8A8D",initial_equipment:"\u4E0D\u8981",transaction_fee:"\u306A\u3057",integration:"\u9280\u884C\u53E3\u5EA7\u30FB\u30AF\u30EC\u30B8\u30C3\u30C8\u30AB\u30FC\u30C9\u30FB\u6C7A\u6E08\u30B5\u30FC\u30D3\u30B9\u306E\u660E\u7D30\u9023\u643A",cancel_check:"\u5E74\u6255\u3044\u6642\u306E\u8FD4\u91D1\u6761\u4EF6\u30FB\u30C7\u30FC\u30BF\u306E\u30A8\u30AF\u30B9\u30DD\u30FC\u30C8\u53EF\u5426",conversion_condition:"ASP\uFF08A8.net / \u3082\u3057\u3082\uFF09\u5185\u3067\u8981\u78BA\u8A8D",verified_at:"2026-10-06",valid_until:"2026-11-05",disclosure_type:"PR",evidence:["FREEE_AFF"],official_fallback:!1},{offer_id:"airregi",categories:["POS"],provider_name:"Air\u30EC\u30B8",program_type:"OFFICIAL",flag:null,affiliate_url:null,official_url:"https://airregi.jp/",status:"ACTIVE",smask_enrollment:"NOT_APPLICABLE",display_order:25,audience_fit:["\u30EC\u30B8\u6A5F\u80FD\u3060\u3051\u7121\u6599\u3067\u4F7F\u3044\u59CB\u3081\u305F\u3044","Air\u30DA\u30A4\u306A\u3069\u540C\u3058\u7CFB\u5217\u306E\u30B5\u30FC\u30D3\u30B9\u3068\u307E\u3068\u3081\u305F\u3044"],audience_misfit:["\u5728\u5EAB\u3084EC\u9023\u643A\u306A\u3069\u9AD8\u5EA6\u306A\u6A5F\u80FD\u304C\u6700\u521D\u304B\u3089\u5FC5\u8981"],fee_summary:"\u30A2\u30D7\u30EA\u30FB\u521D\u671F\u8CBB\u7528\u30FB\u6708\u984D\u30FB\u57FA\u672C\u30B5\u30DD\u30FC\u30C8 0\u5186\uFF08\u5468\u8FBA\u6A5F\u5668\u306F\u5225\u9014\uFF09",free_plan:"\u3042\u308A\uFF08\u30A2\u30D7\u30EA\u7121\u6599\uFF09",initial_equipment:"iPad / iPhone\u3001\u5FC5\u8981\u306B\u5FDC\u3058\u3066\u30D7\u30EA\u30F3\u30BF\u30FC\u30FB\u30AD\u30E3\u30C3\u30B7\u30E5\u30C9\u30ED\u30A2\u30FC",transaction_fee:"\u306A\u3057\uFF08\u6C7A\u6E08\u306F\u5225\u30B5\u30FC\u30D3\u30B9\uFF09",integration:"Air\u30DA\u30A4\u30FB\u4F1A\u8A08\u30BD\u30D5\u30C8\u9023\u643A\u306E\u7BC4\u56F2\u3092\u78BA\u8A8D",cancel_check:"\u5468\u8FBA\u6A5F\u5668\u306E\u8CFC\u5165\u6761\u4EF6\u30FB\u30C7\u30FC\u30BF\u306E\u4FDD\u6301\u671F\u9593",conversion_condition:null,verified_at:"2026-10-06",valid_until:"2026-11-05",disclosure_type:"NONE",evidence:["AIRREGI"],official_fallback:!0},{offer_id:"airpay",categories:["CASHLESS"],provider_name:"Air\u30DA\u30A4",program_type:"OFFICIAL",flag:null,affiliate_url:null,official_url:"https://airregi.jp/payment/",status:"ACTIVE",smask_enrollment:"NOT_APPLICABLE",display_order:21,audience_fit:["\u56FA\u5B9A\u8CBB\u3092\u6291\u3048\u3066\u30AB\u30FC\u30C9\u30FB\u96FB\u5B50\u30DE\u30CD\u30FC\u30FBQR\u3092\u307E\u3068\u3081\u3066\u53D7\u3051\u305F\u3044","Air\u30EC\u30B8\u3068\u7D44\u307F\u5408\u308F\u305B\u305F\u3044"],audience_misfit:["iPad / iPhone \u3092\u5E97\u8217\u306B\u7F6E\u3051\u306A\u3044","\u6C7A\u6E08\u304C\u307B\u307C\u767A\u751F\u3057\u306A\u3044"],fee_summary:"\u521D\u671F\u8CBB\u7528\u30FB\u4F7F\u7528\u6599\u30FB\u6708\u984D\u30FB\u632F\u8FBC\u624B\u6570\u6599 0\u5186\u306E\u73FE\u884C\u6848\u5185\uFF08\u6761\u4EF6\u3042\u308A\uFF09",free_plan:"\u56FA\u5B9A\u8CBB0\u5186\uFF08\u6C7A\u6E08\u624B\u6570\u6599\u306F\u5225\u9014\uFF09",initial_equipment:"iPad / iPhone \u3068\u30AB\u30FC\u30C9\u30EA\u30FC\u30C0\u30FC",transaction_fee:"\u6C7A\u6E08\u624B\u6570\u6599\u306F\u30D6\u30E9\u30F3\u30C9\u30FB\u5BE9\u67FB\u30FB\u30D7\u30ED\u30B0\u30E9\u30E0\u6761\u4EF6\u3067\u7570\u306A\u308B\u305F\u3081\u6700\u65B0\u78BA\u8A8D",integration:"Air\u30EC\u30B8\u3068\u306E\u9023\u643A",cancel_check:"\u5BE9\u67FB\u6761\u4EF6\u30FB\u5165\u91D1\u30B5\u30A4\u30AF\u30EB\u30FB\u7AEF\u672B\u306E\u6271\u3044",conversion_condition:null,verified_at:"2026-10-06",valid_until:"2026-11-05",disclosure_type:"NONE",evidence:["AIRPAY"],official_fallback:!0},{offer_id:"google_business_profile",categories:["GOOGLE_FOUNDATION"],provider_name:"Google \u30D3\u30B8\u30CD\u30B9\u30D7\u30ED\u30D5\u30A3\u30FC\u30EB",program_type:"OFFICIAL",flag:null,affiliate_url:null,official_url:"https://www.google.com/intl/ja_jp/business/",status:"ACTIVE",smask_enrollment:"NOT_APPLICABLE",display_order:1,audience_fit:["\u5E97\u540D\u30FB\u5730\u57DF\u3067\u691C\u7D22\u3055\u308C\u305F\u3068\u304D\u306B\u6B63\u3057\u3044\u60C5\u5831\u3092\u51FA\u3057\u305F\u3044","\u7121\u6599\u3067\u55B6\u696D\u6642\u9593\u30FB\u5199\u771F\u30FB\u53E3\u30B3\u30DF\u30FB\u4E88\u7D04\u30EA\u30F3\u30AF\u3092\u6574\u3048\u305F\u3044"],audience_misfit:["\u5B9F\u5E97\u8217\u3084\u8A2A\u554F\u30A8\u30EA\u30A2\u3092\u6301\u305F\u306A\u3044\u4E8B\u696D"],fee_summary:"\u7121\u6599",free_plan:"\u7121\u6599",initial_equipment:"\u4E0D\u8981",transaction_fee:"\u306A\u3057",integration:"\u4E88\u7D04\u30EA\u30F3\u30AF\u306A\u3069\u306E\u30ED\u30FC\u30AB\u30EB\u30D3\u30B8\u30CD\u30B9\u30EA\u30F3\u30AF\uFF08\u9069\u683C\u6027\u6761\u4EF6\u3042\u308A\uFF09",cancel_check:"\u30AA\u30FC\u30CA\u30FC\u78BA\u8A8D\u306E\u65B9\u6CD5\u30FB\u4F4F\u6240\u975E\u516C\u958B\u8A2D\u5B9A",conversion_condition:null,verified_at:"2026-10-06",valid_until:"2027-01-04",disclosure_type:"NONE",evidence:["GOOGLE_LINKS"],official_fallback:!0},{offer_id:"line_official",categories:["LINE"],provider_name:"LINE\u516C\u5F0F\u30A2\u30AB\u30A6\u30F3\u30C8",program_type:"OFFICIAL",flag:null,affiliate_url:null,official_url:"https://www.lycbiz.com/jp/service/line-official-account/",status:"ACTIVE",smask_enrollment:"NOT_APPLICABLE",display_order:40,audience_fit:["\u518D\u6765\u5BA2\u306B\u4E88\u7D04\u30FB\u304A\u77E5\u3089\u305B\u3092\u5C4A\u3051\u305F\u3044","\u307E\u305A\u7121\u6599\u67A0\u3067\u59CB\u3081\u3066\u5FC5\u8981\u901A\u6570\u3092\u6E2C\u308A\u305F\u3044"],audience_misfit:["\u518D\u6765\u304C\u307B\u3068\u3093\u3069\u306A\u3044\u696D\u614B","\u914D\u4FE1\u62C5\u5F53\u3092\u6C7A\u3081\u3089\u308C\u306A\u3044"],fee_summary:"\u30B3\u30DF\u30E5\u30CB\u30B1\u30FC\u30B7\u30E7\u30F3 0\u5186/200\u901A\u3001\u30E9\u30A4\u30C8 5,000\u5186/5,000\u901A\u3001\u30B9\u30BF\u30F3\u30C0\u30FC\u30C9 15,000\u5186/30,000\u901A\uFF08\u7A0E\u5225\uFF09",free_plan:"\u30B3\u30DF\u30E5\u30CB\u30B1\u30FC\u30B7\u30E7\u30F3\u30D7\u30E9\u30F3\uFF080\u5186\u30FB200\u901A/\u6708\uFF09",initial_equipment:"\u4E0D\u8981",transaction_fee:"\u306A\u3057\uFF08\u8FFD\u52A0\u30E1\u30C3\u30BB\u30FC\u30B8\u306F\u5F93\u91CF\u30012026-10-01\u306B\u6599\u91D1\u6539\u5B9A\u3042\u308A\uFF09",integration:"\u4E88\u7D04\u30B7\u30B9\u30C6\u30E0\u3068\u306E\u9023\u643A\u53EF\u5426\u3092\u78BA\u8A8D",cancel_check:"\u30D7\u30E9\u30F3\u5909\u66F4\u306E\u30BF\u30A4\u30DF\u30F3\u30B0\u30FB\u8FFD\u52A0\u30E1\u30C3\u30BB\u30FC\u30B8\u306E\u4E0A\u9650\u8A2D\u5B9A",conversion_condition:null,verified_at:"2026-10-06",valid_until:"2026-11-05",disclosure_type:"NONE",evidence:["LINE_PLAN","LINE_PLAN_CHANGE"],official_fallback:!0}]};var Re={brand_name:"\u304A\u5E97\u306E\u5224\u65AD\u5BA4",state:"WORKING_CANDIDATE",descriptor:"\u5C0F\u3055\u306A\u304A\u5E97\u306E\u958B\u696D\u30FB\u904B\u55B6\u30B5\u30FC\u30D3\u30B9\u5224\u65AD\u30AC\u30A4\u30C9",core_message:"\u307F\u3093\u306A\u4F7F\u3063\u3066\u3044\u308B\u3001\u3067\u306F\u6C7A\u3081\u306A\u3044\u3002\u5FC5\u8981\u306A\u3082\u306E\u3060\u3051\u3001\u5FC5\u8981\u306A\u9806\u756A\u3067\u3002",trademark_clearance:"PENDING",domain_purchase:"NOT_EXECUTED",public_release:!1,site_url:"https://omise-handanshitsu.example",operator_name:"\u682A\u5F0F\u4F1A\u793E\u30B9\u30DE\u30B9\u30AF",operator_name_short:"\u30B9\u30DE\u30B9\u30AF",contact_note:"\u516C\u958B\u524D\u306B\u904B\u55B6\u8005\u60C5\u5831\uFF08\u6240\u5728\u5730\u30FB\u9023\u7D61\u5148\uFF09\u3092\u8A18\u5165\u3059\u308B"};var rt=de.offers,at=Re;return Me(ot);})();
+</script>
+<script>/* お店の判断室 プレビュー版（単一ページ）。判断エンジン・記事・候補データは本体のコードを束ねた OHS をそのまま使う */
+(function () {
+  const O = window.OHS;
+  const app = document.getElementById("app");
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  const now = new Date();
+
+  const ss = {
+    get(k) { try { const v = sessionStorage.getItem(k); return v ? JSON.parse(v) : null; } catch { return null; } },
+    set(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch { /* unavailable */ } },
+    del(k) { try { sessionStorage.removeItem(k); } catch { /* unavailable */ } },
+  };
+
+  /* ---------------- state ---------------- */
+  const W = { answers: {}, prefilled: new Set(), step: 0, fromReview: false, entry: null, error: null, interacted: false };
+  let result = ss.get("ohs.preview.result");
+  if (result) {
+    try { result = O.decide(result.answers); } catch { result = null; }
+  }
+
+  const isAnswered = (a, key) => Array.isArray(a[key]) ? a[key].length > 0 : typeof a[key] === "string";
+
+  /* ---------------- small renderers ---------------- */
+  const badge = (status) => `<span class="status status--${status}">${esc(O.STATUS_META[status].label)}</span>`;
+
+  function decisionCard(d, highlight) {
+    const meta = O.AREA_META[d.area];
+    const sub = [];
+    if (d.review_points.length) sub.push(`<div><dt>見直す観点</dt><dd><ul>${d.review_points.map((p) => `<li>${esc(p)}</li>`).join("")}</ul></dd></div>`);
+    if (d.alternative) sub.push(`<div><dt>代わりに</dt><dd>${esc(d.alternative)}</dd></div>`);
+    if (d.next_action) sub.push(`<div><dt>次にやること</dt><dd>${esc(d.next_action)}</dd></div>`);
+    if (d.measure.length) sub.push(`<div><dt>導入後に測るもの</dt><dd>${esc(d.measure.join("・"))}</dd></div>`);
+    const article = O.ARTICLES.find((a) => a.area === d.area);
+    const href = article ? `#need-${article.slug}` : "#guide";
+    return `<article class="card decision decision--${d.status}" data-area="${d.area}" data-status="${d.status}">
+      <div class="decision__head">${badge(d.status)}<h3>${esc(meta.name)}</h3>${highlight ? '<span class="entry-mark">気になっていたもの</span>' : ""}</div>
+      ${d.reasons.length ? `<ul class="decision__reasons">${d.reasons.map((r) => `<li>${esc(r)}</li>`).join("")}</ul>` : ""}
+      <dl class="decision__sub">${sub.join("")}</dl>
+      <p class="decision__link"><a href="${href}">${esc(meta.name)}の判断基準を読む →</a></p>
+    </article>`;
+  }
+
+  const listed = (o) => o.status !== "EXPIRED" && (o.program_type === "OFFICIAL" || o.status === "ACTIVE" || o.official_fallback);
+  const offersFor = (area) => O.OFFERS.filter((o) => o.categories.includes(area) && listed(o)).sort((a, b) => a.display_order - b.display_order || a.offer_id.localeCompare(b.offer_id)).slice(0, 3);
+  const offerFresh = (o) => o.evidence.every((id) => O.checkSource(id, now).fresh) && new Date(o.valid_until + "T00:00:00Z") >= now;
+
+  function offerCard(o) {
+    const fresh = offerFresh(o);
+    const row = (dt, dd) => (dd ? `<dt>${dt}</dt><dd>${esc(dd)}</dd>` : "");
+    return `<article class="card offer" data-offer-id="${o.offer_id}">
+      <div class="offer__head"><span class="offer__name">${esc(o.provider_name)}</span></div>
+      ${fresh ? "" : '<p class="offer__stale">料金・条件の最終確認日から日が経っているため、数値は表示していません。公式サイトで最新の条件をご確認ください。</p>'}
+      <dl>
+        <dt>向く人</dt><dd><ul>${o.audience_fit.map((t) => `<li>${esc(t)}</li>`).join("")}</ul></dd>
+        <dt>向かない人</dt><dd><ul>${o.audience_misfit.map((t) => `<li>${esc(t)}</li>`).join("")}</ul></dd>
+        ${fresh ? row("主な料金", o.fee_summary) + row("無料プラン", o.free_plan) : ""}
+        ${row("初期機器", o.initial_equipment)}
+        ${fresh ? row("手数料", o.transaction_fee) : ""}
+        ${row("連携", o.integration)}${row("解約・変更の確認点", o.cancel_check)}
+      </dl>
+      <a class="btn btn--ghost" href="${esc(o.official_url)}" target="_blank" rel="noopener noreferrer">公式サイトで確認する</a>
+      <p class="offer__meta">最終確認日：${esc(O.formatDateJa(o.verified_at))}</p>
+    </article>`;
+  }
+
+  function offerSection(area, heading, note) {
+    const cards = offersFor(area);
+    if (!cards.length) return "";
+    return `<section class="offers"><h3 class="offers__head">${esc(heading)}</h3>${note ? `<p class="offers__note">${esc(note)}</p>` : ""}<div class="card-grid card-grid--2">${cards.map(offerCard).join("")}</div></section>`;
+  }
+
+  const articleCard = (a) => `<a href="#need-${a.slug}" class="card article-card"><span class="article-card__kicker">本当に必要？</span><h3>${esc(a.subject)}</h3><p>${esc(a.immediateAnswer[0])}</p><span class="article-card__more">判断基準を読む →</span></a>`;
+
+  /* ---------------- views ---------------- */
+  function viewHome() {
+    const tiers = [
+      ["now", "今", O.STATUS_META.NOW.label, "例：Googleの店舗情報（無料）／予約の受け方を1つに決める"],
+      ["next", "次", O.STATUS_META.NEXT.label, "例：キャッシュレス（要望が続いたら）／会計の記録方法"],
+      ["not", "未", "今はいらない", "例：高機能POS（ひとり・在庫なし）／開業前のLINE公式"],
+    ];
+    return `
+    <section class="hero"><div class="container hero__grid">
+      <div>
+        <h1>そのサービス、本当に今のお店に必要ですか？</h1>
+        <p class="hero__lead">HOT PEPPER Beauty、LINE、予約システム、POS、キャッシュレス。お店を始めると「入れるのが普通」と言われるものが増えます。でも、予約の取り方、支払い方、人数、集客方法によって、必要なものも順番も違います。</p>
+        <p class="hero__lead">${esc(O.BRAND.brand_name)}は「必要」「あとでいい」「今はいらない」を整理します。</p>
+        <div class="hero__cta"><a href="#check" class="btn btn--primary">8問で、今入れるものを確認する</a><p class="btn-support">無料・登録不要・営業連絡なし</p></div>
+        <p class="hero__secondary"><a href="#need">気になるサービスから確認する →</a></p>
+      </div>
+      <div><ol class="tiers">${tiers.map(([m, mark, t, i]) => `<li class="tier tier--${m}"><span class="tier__mark" aria-hidden="true">${mark}</span><div><p class="tier__title">${esc(t)}</p><p class="tier__items">${esc(i)}</p></div></li>`).join("")}</ol><p class="tiers__caption">※ 例はあくまで一例です。実際の結果は、あなたの8問の回答で変わります。</p></div>
+    </div></section>
+    <section class="section"><div class="container">
+      <div class="section-head"><span class="eyebrow">気になるサービスから</span><h2>「本当に必要？」を、お店の条件で答える</h2><p>それぞれの記事は、結論 → 使われる理由 → 費用の事実 → 判断表 → 5問のミニチェック → 代替案 → 次の行動、の順に進みます。サービスを勧めるための記事ではなく、入れない判断もできる記事です。</p></div>
+      <div class="card-grid card-grid--3">${O.ARTICLES.map(articleCard).join("")}<a href="#guide" class="card article-card"><span class="article-card__kicker">順番</span><h3>開業の順番</h3><p>無料で整える土台から、連携の見直しまで。何を・いつ決めるかを8ステップで。</p><span class="article-card__more">順番を見る →</span></a></div>
+    </div></section>
+    <section class="section" style="background:var(--paper-2)"><div class="container">
+      <div class="section-head"><span class="eyebrow">このサイトの考え方</span><h2>${esc(O.BRAND.core_message)}</h2></div>
+      <dl class="principles">
+        <div><dt>点数ではなく、理由で判断</dt><dd>8問の回答から、予約の取り方・支払い方・人数・再来の割合をもとに「今」「次」「まだ不要」を決めます。結果には理由を添え、点数は見せません。</dd></div>
+        <div><dt>紹介報酬は、判断に影響しない</dt><dd>必要かどうかの判断と、サービス候補の表示は別の仕組みです。報酬の額で順位を変えず、報酬のない公式の選択肢も同じ条件で並べます。</dd></div>
+        <div><dt>入れない判断にも、代わりがある</dt><dd>「今はいらない」で終わらせず、何で代替するか、いつ見直すか、導入後に何を測るかまで添えます。</dd></div>
+      </dl>
+    </div></section>`;
+  }
+
+  function viewCheck() {
+    const questions = O.visibleQuestions(W.answers);
+    const total = questions.length;
+    const atReview = W.step >= total;
+    const err = W.error ? `<p class="wizard__error" role="alert">${esc(W.error)}</p>` : "";
+    const head = `<div class="page-title"><h1>8問｜お店に今必要なものチェック</h1><p>1画面に1問、約2分。結果は「無料で先に整える」「今、整える（最大3）」「次に考える（最大2）」「今は優先しない」「既存サービスの見直し」に分かれ、理由と次の行動を添えます。無料・登録不要・営業連絡なし。回答は保存されず、この画面の中にだけあります。</p></div>`;
+    if (atReview) {
+      return `<div class="container narrow check-page">${head}<section class="section section--tight"><div class="wizard">
+        <div class="wizard__progress"><span>回答の確認</span><div class="wizard__bar" aria-hidden="true"><span style="width:100%"></span></div><span>${total} / ${total}</span></div>
+        <section class="wizard__card"><h2 id="review-heading" class="wizard__title" tabindex="-1">この内容で判断します</h2>
+        <p class="wizard__help">間違いがあれば「直す」で戻れます。回答は保存されません。</p>
+        <ul class="review-list">${questions.map((q) => `<li><div><span class="q">${esc(q.title)}</span>${esc(O.answerLabel(q.key, W.answers[q.key], "未回答"))}</div><button type="button" data-edit="${q.key}" aria-label="「${esc(q.title)}」を直す">直す</button></li>`).join("")}</ul>
+        ${err}
+        <div class="wizard__nav"><button type="button" class="btn btn--ghost" data-act="back">戻る</button><button type="button" class="btn btn--primary" data-act="submit">結果を見る</button></div>
+        </section></div></section></div>`;
+    }
+    const q = questions[W.step];
+    const multi = q.type === "multi";
+    const prefilled = W.prefilled.has(q.key) && isAnswered(W.answers, q.key);
+    const progress = Math.round(((W.step + 1) / (total + 1)) * 100);
+    const options = q.options.map((o) => {
+      const id = `${q.key}-${o.value}`;
+      const checked = multi ? (W.answers.existing_services || []).includes(o.value) : W.answers[q.key] === o.value;
+      return `<li class="option${multi ? " option--multi" : ""}"><input type="${multi ? "checkbox" : "radio"}" id="${id}" name="${q.key}" value="${o.value}" ${checked ? "checked" : ""}><label for="${id}"><span class="option__mark" aria-hidden="true"></span><span>${esc(o.label)}</span>${o.hint ? `<span class="option__hint">${esc(o.hint)}</span>` : ""}</label></li>`;
+    }).join("");
+    return `<div class="container narrow check-page">${head}<section class="section section--tight"><div class="wizard">
+      <div class="wizard__progress" aria-live="polite"><span>質問 ${W.step + 1} / ${total}</span><div class="wizard__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}" aria-label="進み具合"><span style="width:${progress}%"></span></div>${W.entry ? "<span>記事から</span>" : ""}</div>
+      <section class="wizard__card"><fieldset><legend><h2 class="wizard__title" tabindex="-1">${esc(q.title)}</h2></legend>
+      ${prefilled ? '<span class="wizard__prefilled">記事の回答から入力済み（変更できます）</span>' : ""}
+      ${q.help ? `<p class="wizard__help">${esc(q.help)}</p>` : ""}
+      <ul class="option-list" data-qkey="${q.key}" data-multi="${multi}">${options}</ul></fieldset>
+      ${err}
+      <div class="wizard__nav"><button type="button" class="btn btn--ghost" data-act="back" ${W.step === 0 && !W.fromReview ? "disabled" : ""}>戻る</button><button type="button" class="btn btn--primary" data-act="next">${W.step + 1 >= total ? "回答を確認する" : "次へ"}</button></div>
+      </section></div></section></div>`;
+  }
+
+  function viewResult() {
+    if (!result) {
+      return `<div class="container narrow"><div class="page-title"><h1>回答が足りません</h1><p>まだ8問チェックに答えていないか、画面を閉じて回答が消えています。もう一度、8問チェックから始めてください。所要時間は約2分です。</p><a href="#check" class="btn btn--primary">8問チェックを始める</a></div></div>`;
+    }
+    const g = result.groups;
+    const notNow = [...g.not_priority, ...g.later];
+    const entry = W.entry;
+    const entryDecision = entry ? result.decisions.find((d) => d.area === entry) : null;
+    const groups = [
+      { id: "free", heading: `1. ${O.STATUS_META.FREE_FOUNDATION.label}`, desc: O.STATUS_META.FREE_FOUNDATION.description, items: g.free_foundation, empty: "無料の土台はすでに整っています。「既存サービスの見直し」で状態を確認してください。" },
+      { id: "now", tone: "now", heading: `2. ${O.STATUS_META.NOW.label}`, desc: O.STATUS_META.NOW.description, items: g.now, empty: "いま急いで整えるものはありません。無料の土台と「次に考える」から進めてください。" },
+      { id: "next", tone: "next", heading: `3. ${O.STATUS_META.NEXT.label}`, desc: O.STATUS_META.NEXT.description, items: g.next, empty: "次に検討するものは、いまのところありません。" },
+      { id: "not", tone: "not", heading: `4. ${O.STATUS_META.NOT_PRIORITY.label}・${O.STATUS_META.LATER.label}`, desc: `入れない判断で問題ないもの（${O.STATUS_META.NOT_PRIORITY.label}）と、あとで見直せば十分なもの（${O.STATUS_META.LATER.label}）。`, items: notNow, empty: "優先しないと判断したものはありません。", twoCol: true },
+      { id: "review", heading: `5. ${O.STATUS_META.REVIEW_EXISTING.label}`, desc: O.STATUS_META.REVIEW_EXISTING.description, items: g.review_existing, empty: null, twoCol: true },
+    ];
+    const sections = groups.map((grp) => {
+      if (!grp.items.length && grp.empty === null) return "";
+      const body = grp.items.length ? `<div class="card-grid${grp.twoCol && grp.items.length >= 2 ? " card-grid--2" : ""}">${grp.items.map((d) => decisionCard(d, d.area === entry)).join("")}</div>` : `<p class="result-group__empty">${esc(grp.empty)}</p>`;
+      return `<section class="result-group${grp.tone ? ` result-group--${grp.tone}` : ""}"><div class="result-group__head"><h2>${esc(grp.heading)}</h2><p>${esc(grp.desc)}</p></div>${body}</section>`;
+    }).join("");
+    const confirmed = result.decisions.filter((d) => O.isNeedConfirmed(d.status) && offersFor(d.area).length);
+    const offers = confirmed.length ? `<section style="margin-top:24px"><h2 style="font-size:1.2rem">必要と判断した領域の候補</h2><p class="offers__note">判断結果が先、候補はその下です。並び順は固定で、紹介報酬の額では並べ替えません。収益リンクが有効なものだけ PR 表示を付け、無効なときは公式サイトへの通常リンクになります（プレビュー版では収益リンクはすべて無効です）。</p>${confirmed.map((d) => offerSection(d.area, `${O.AREA_META[d.area].name}の候補`)).join("")}</section>` : "";
+    const answers = result.answers;
+    return `<div class="container">
+      <div class="page-title"><h1>いまのお店に必要なもの、必要な順番</h1><p>点数ではなく理由で読んでください。これは絶対の判定ではなく、あなたの回答をもとにした「いまの優先順位」です。状況が変われば結果も変わります。</p></div>
+      ${entryDecision ? `<div class="result-entry" role="note"><p><strong>気になっていた「${esc(O.AREA_META[entryDecision.area].name)}」は：</strong> ${esc(O.STATUS_META[entryDecision.status].label)}。下の一覧に理由があります。</p></div>` : ""}
+      ${sections}
+      <section class="result-summary"><h2 style="font-size:1.1rem;margin-bottom:10px">あなたの回答</h2><dl>${O.visibleQuestions(answers).map((q) => `<div style="display:contents"><dt>${esc(q.title)}</dt><dd>${esc(O.answerLabel(q.key, answers[q.key]))}</dd></div>`).join("")}</dl>
+        <div class="btn-row" style="margin-top:14px"><button type="button" class="btn btn--ghost" data-act="edit-answers">回答を直す</button><button type="button" class="btn btn--ghost" data-act="restart">最初からやり直す</button></div>
+        <p class="btn-support">ルール版 ${esc(result.rule_version)}。同じ回答なら、いつ開いても同じ結果になります。本体サイトでは結果は URL だけに含まれ、検索エンジンには登録されません。</p></section>
+      ${offers}
+    </div>`;
+  }
+
+  function viewNeed() {
+    return `<div class="container"><div class="page-title"><h1>「本当に必要？」を、お店の条件で答える</h1><p>どの記事も、サービスを勧めるためではなく、入れる・入れないを自分の店の条件で決めるためのものです。結論 → 使われる理由 → 費用の事実 → 判断表 → 5問のミニチェック → 代替案 → 次の行動、の順に進みます。</p></div>
+      <section class="section section--tight"><h2 style="font-size:1.2rem;margin-bottom:16px">5つの記事</h2><div class="card-grid card-grid--2">${O.ARTICLES.map(articleCard).join("")}</div><p style="margin-top:24px">どれから読むか迷うなら、<a href="#check">8問チェック</a>で全体の優先順位を先に出すのが早いです。</p></section></div>`;
+  }
+
+  const mini = {}; // slug → { answers, state }
+
+  function fact(f) {
+    if (!f.sources.length) return `<p>${esc(f.text)}</p>`;
+    const checks = f.sources.map((id) => O.checkSource(id, now));
+    if (!checks.every((c) => c.fresh)) return `<p class="fact fact--stale">${esc(f.fallback || "この項目の数値は最終確認から日が経っているため表示していません。公式サイトで再確認してください。")}</p>`;
+    const latest = checks.map((c) => c.verified_at).sort().at(-1);
+    return `<p class="fact">${esc(f.text)}<span class="fact__src">確認 ${esc(O.formatDateJa(latest))}</span></p>`;
+  }
+
+  function viewArticle(slug) {
+    const a = O.getArticle(slug);
+    if (!a) return viewNotFound();
+    const mc = O.getMiniCheck(slug);
+    const m = mini[slug] || (mini[slug] = { answers: {}, state: null });
+    const stateObj = m.state ? mc.states.find((s) => s.id === m.state) : null;
+    const tone = !stateObj ? "" : stateObj.need === "CONFIRMED" ? "" : stateObj.need === "CONDITIONAL" ? " result-card--conditional" : " result-card--not";
+    const complete = mc.questions.every((q) => m.answers[q.id] !== undefined);
+    const calc = slug === "cashless-payment" ? `<div class="calc"><h3 style="margin-bottom:12px">月の実コスト計算機</h3><div class="calc__grid">
+      <div><label for="calc-sales">月のキャッシュレス売上（円）</label><input id="calc-sales" inputmode="numeric" placeholder="例：300000"></div>
+      <div><label for="calc-rate">決済手数料率（%）</label><input id="calc-rate" inputmode="decimal" placeholder="自店に適用される料率"></div>
+      <div><label for="calc-fixed">月額固定費（円）</label><input id="calc-fixed" inputmode="numeric" value="0"></div></div>
+      <div class="calc__out" aria-live="polite"><p id="calc-out" style="margin:0;color:var(--muted)">売上と料率を入れると、月のコストが出ます。</p><p class="calc__note">料率は提供会社・ブランド・審査で異なります。必ず自店に適用される最新の条件を入れてください。計算結果は保存されません。</p></div></div>` : "";
+    return `<article class="container">
+      <nav class="breadcrumbs" aria-label="現在地"><ol><li><a href="#home">トップ</a></li><li><a href="#need">本当に必要？</a></li><li><span aria-current="page">${esc(a.shortTitle)}</span></li></ol></nav>
+      <header class="article-header"><p class="question">検索の質問：「${esc(a.question)}」</p><h1>${esc(a.title)}</h1><div class="article-meta"><span>最終確認日：${esc(O.formatDateJa(a.reviewedAt))}</span><span>公開日：${esc(O.formatDateJa(a.publishedAt))}</span><span>執筆：${esc(O.BRAND.brand_name)} 編集部</span></div></header>
+      <div class="prose">
+        <section class="answer-box"><span class="answer-box__label">結論</span>${a.immediateAnswer.map((p) => `<p>${esc(p)}</p>`).join("")}</section>
+        <h2>なぜ使われるのか</h2>${a.whyUsed.map((p) => `<p>${esc(p)}</p>`).join("")}
+        <h2>費用と負担の事実</h2><p>${esc(a.costIntro)}</p>${a.costFacts.map(fact).join("")}${calc}
+        <h2>見落としやすいリスクと依存</h2>${a.risk.map((p) => `<p>${esc(p)}</p>`).join("")}
+        <h2>判断表：向く店・向かない店</h2>
+        <table class="decision-table"><thead><tr><th scope="col">判断</th><th scope="col">当てはまる店</th><th scope="col">次の行動</th></tr></thead><tbody>${a.decisionRows.map((r) => `<tr><td data-label="判断">${esc(r.label)}</td><td data-label="当てはまる店">${esc(r.fit)}</td><td data-label="次の行動">${esc(r.action)}</td></tr>`).join("")}</tbody></table>
+        <h2>5問のミニチェック：あなたの店ではどうか</h2>
+        <div class="minicheck" id="mini-check"><form data-mini="${slug}"><p class="minicheck__lead">${esc(mc.lead)}</p>
+          ${mc.questions.map((q, i) => `<fieldset><legend>${i + 1}. ${esc(q.text)}</legend><div class="choice-row">${q.options.map((o) => { const id = `${slug}-${q.id}-${o.value}`; return `<label class="choice" for="${id}"><input type="radio" id="${id}" name="${slug}-${q.id}" value="${o.value}" data-q="${q.id}" ${m.answers[q.id] === o.value ? "checked" : ""}><span>${esc(o.label)}</span></label>`; }).join("")}</div></fieldset>`).join("")}
+          <button type="submit" class="btn btn--secondary" ${complete ? "" : "disabled"}>判断を見る</button></form>
+          ${stateObj ? `<div class="result-card${tone}" role="status" data-state="${stateObj.id}"><span class="result-card__label">あなたのお店に近い判断</span><h3>${esc(stateObj.label)}</h3><p>${esc(stateObj.summary)}</p><p class="result-card__next">次にやること：${esc(stateObj.next)}</p><div class="btn-row"><button type="button" class="btn btn--primary" data-act="to-check" data-slug="${slug}">8問で、ほかに今必要なものも確認する</button></div><p class="btn-support">ここで答えた内容は引き継がれ、同じ質問は出ません。</p></div>` : ""}
+          ${stateObj && stateObj.need === "CONFIRMED" ? offerSection(a.area, `必要と判断した人向け：${O.AREA_META[a.area].name}の候補`, a.offerNote) : ""}
+        </div>
+        <h2>使わないなら、何で代替するか</h2>${a.alternative.map((p) => `<p>${esc(p)}</p>`).join("")}
+        <h2>今日やること</h2><div class="next-action">${a.nextAction.map((p) => `<p>${esc(p)}</p>`).join("")}</div>
+        <h2>導入したら測るもの</h2><ul class="measure-list">${O.AREA_META[a.area].measure.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
+        <section class="related"><h2 style="margin-top:0">次に読む</h2><ul>${a.related.map((s) => { const r = O.getArticle(s); return r ? `<li><a href="#need-${s}">${esc(r.shortTitle)}</a></li>` : ""; }).join("")}<li><a href="#check">8問｜お店に今必要なものチェック</a></li><li><a href="#guide">開業の順番</a></li></ul></section>
+      </div></article>`;
+  }
+
+  const STEPS = [
+    ["Googleビジネスプロフィールを整える", "FREE_FOUNDATION", "開業日が決まったらすぐ。営業中なら今日。", "無料。店名・地域で検索されたときの受け皿になる。営業時間・写真・説明文・電話番号を埋め、口コミに返信する。どの業態でも先に整えて損がない。", null],
+    ["予約の「受け方」を1つに決める", "NOW", "開業30日前まで。", "電話・LINE・DM・予約ページのうち、どこに寄せるかを決める。システムを入れるかより先に、経路を分散させないことが大事。予約中心なら無料プランで予約ページを試す。", "reservation-system"],
+    ["支払い方法を決める", "NEXT", "開業30日前まで。", "まず現金と振込。店頭決済が多い・要望がある・客単価が高めなら、固定費ゼロの候補で試算してキャッシュレスを足す。店頭決済がほぼないなら今は入れない。", "cashless-payment"],
+    ["売上の記録方法（レジ）を決める", "NEXT", "開業前。", "ひとり・在庫なし・メニュー少なめなら、無料レジアプリか手書きで十分。在庫・品目・スタッフ・分析が増えたらPOSを検討する。", "pos-register"],
+    ["帳簿の方法を決める", "NEXT", "開業30日前まで。", "自分で記帳するか税理士に任せるかを決める。自分でやるなら、銀行・カード明細を自動で取り込めるソフトを選ぶ。取引が増える前に決めると後が楽。", null],
+    ["再来の接点（LINE公式など）を作る", "LATER", "再来客が見えてきてから（開業後）。", "無料だから作るのではなく、何を・誰に・月何回送るかが決まってから。開業前で顧客がいない段階では、新規集客や営業準備が先。", "line-official"],
+    ["外部の集客媒体を検討する", "LATER", "新規客の不足が数字で見えてから。", "媒体は「新規客を買う」手段。月に払える上限、測る数字（新規数・CAC・再来率）、依存度の上限を決めてから問い合わせる。先にGoogleと直接の導線を整える。", "hotpepper-beauty"],
+    ["サービス間の連携を見直す", "LATER", "3つ以上のサービスを使い、二重入力が出てきたら。", "新しいサービスを足す前に、手で入力し直している項目を書き出す。既製サービス同士の連携で消せるものから試し、消えないものだけ仕組みづくりを検討する。", null],
+  ];
+  function viewGuide() {
+    return `<div class="container"><div class="page-title"><h1>開業の順番｜何を・いつ決めるか</h1><p>「入れるのが普通」と言われる順ではなく、お店が回る順です。上から順に、無料で整えるものから。各ステップの「いつ」「判断の基準」は目安で、あなたの店の条件は<a href="#check">8問チェック</a>で確かめられます。</p></div>
+      <section class="section section--tight"><ol class="steps">${STEPS.map(([t, s, w, r, slug]) => `<li><div><h2>${esc(t)}<span class="step__status">${badge(s)}</span></h2><p><strong>いつ：</strong>${esc(w)}</p><p><strong>判断の基準：</strong>${esc(r)}</p>${slug ? `<p><a href="#need-${slug}">この判断の記事を読む →</a></p>` : ""}</div></li>`).join("")}</ol>
+      <div class="notice notice--muted" style="margin-top:28px">順番のラベルは一般的な目安です。例えば予約中心でスタッフが複数なら予約システムが「今」に、飛び込み中心なら「今は優先しない」になります。</div>
+      <div class="btn-row" style="margin-top:24px"><a href="#check" class="btn btn--primary">8問で、自分の店の順番を出す</a><a href="#need" class="btn btn--secondary">気になるサービスから確認する</a></div></section></div>`;
+  }
+
+  function viewPolicy() {
+    const rows = O.listSources().map((s) => `<tr><td data-label="項目">${esc(s.label)}</td><td data-label="確認した内容">${esc(s.fact)}（${esc(s.domain)}）</td><td data-label="確認日">${esc(O.formatDateJa(s.verified_at))}</td></tr>`).join("");
+    return `<div class="container narrow"><div class="page-title"><h1>運営方針（プレビュー版の要約）</h1><p>本体サイトには「このサイトについて」「編集方針」「広告・収益の方針」「プライバシー」「運営者情報」の5ページがあります。ここでは要点だけ載せています。</p></div>
+      <div class="prose section section--tight">
+        <h2>判断と収益は分ける</h2><p>必要かどうかの判断（8問チェック・ミニチェック）は、紹介報酬の有無や額を一切参照しません。候補の並び順は固定で、報酬のない公式の選択肢も同じ条件で並べます。候補は、必要と判断された領域にだけ表示します。現在、有効な紹介リンクはありません。</p>
+        <h2>固有名の数値には根拠を置く</h2><p>料金・報酬・契約条件は確認日から${O.freshnessDays("PRICING")}日、機能は${O.freshnessDays("FEATURE")}日、法令・広告方針は${O.freshnessDays("POLICY")}日を過ぎると自動的に非表示になります。</p>
+        <h2>個人情報は求めない</h2><p>登録・ログインはありません。回答はサーバーに保存せず、本体サイトでは結果ページの URL にだけ含まれます。</p>
+        <h2>確認している根拠（${esc(O.formatDateJa(O.REGISTRY_VERIFIED_AT))}時点）</h2>
+        <table class="decision-table"><thead><tr><th scope="col">項目</th><th scope="col">確認した内容</th><th scope="col">確認日</th></tr></thead><tbody>${rows}</tbody></table>
+      </div></div>`;
+  }
+
+  function viewNotFound() {
+    return `<div class="container narrow not-found"><h1>ページが見つかりません</h1><p style="color:var(--ink-2)">トップか、8問チェックからどうぞ。</p><div class="btn-row" style="justify-content:center"><a href="#home" class="btn btn--secondary">トップへ</a><a href="#check" class="btn btn--primary">8問チェックを始める</a></div></div>`;
+  }
+
+  /* ---------------- routing ---------------- */
+  function render() {
+    const h = (location.hash || "#home").slice(1);
+    let html;
+    if (h === "home" || h === "") html = viewHome();
+    else if (h === "check") html = viewCheck();
+    else if (h === "result") html = viewResult();
+    else if (h === "need") html = viewNeed();
+    else if (h.startsWith("need-")) html = viewArticle(h.slice(5));
+    else if (h === "guide") html = viewGuide();
+    else if (h === "policy") html = viewPolicy();
+    else html = viewNotFound();
+    app.innerHTML = html;
+    document.querySelectorAll(".site-nav a").forEach((a) => a.setAttribute("aria-current", a.getAttribute("href") === `#${h.split("-")[0]}` ? "page" : "false"));
+    if (h === "check" && W.interacted) { const t = app.querySelector(".wizard__title"); if (t) t.focus(); }
+    else window.scrollTo({ top: 0 });
+  }
+
+  /* ---------------- wizard actions ---------------- */
+  function startCheck(entry, prefill) {
+    W.answers = {}; W.prefilled = new Set(); W.step = 0; W.fromReview = false; W.error = null; W.entry = entry || null; W.interacted = false;
+    if (prefill && Object.keys(prefill).length) {
+      W.answers = { ...prefill };
+      W.prefilled = new Set(Object.keys(prefill));
+      const vis = O.visibleQuestions(W.answers);
+      const first = vis.findIndex((q) => !isAnswered(W.answers, q.key));
+      W.step = first === -1 ? vis.length : first;
+    }
+  }
+
+  app.addEventListener("change", (e) => {
+    const list = e.target.closest(".option-list");
+    if (list) {
+      const key = list.dataset.qkey;
+      W.error = null;
+      if (list.dataset.multi === "true") {
+        const v = e.target.value; const cur = W.answers.existing_services || [];
+        W.answers.existing_services = v === "NONE" ? (cur.includes("NONE") ? [] : ["NONE"]) : cur.includes(v) ? cur.filter((x) => x !== v) : [...cur.filter((x) => x !== "NONE"), v];
+      } else W.answers[key] = e.target.value;
+      render();
+      return;
+    }
+    const miniInput = e.target.closest("form[data-mini] input[data-q]");
+    if (miniInput) {
+      const slug = miniInput.closest("form").dataset.mini;
+      const m = mini[slug]; m.answers[miniInput.dataset.q] = miniInput.value; m.state = null;
+      render();
+    }
+  });
+
+  app.addEventListener("input", (e) => {
+    if (!e.target.id || !e.target.id.startsWith("calc-")) return;
+    const num = (id) => Number((document.getElementById(id).value || "").replace(/[^\d.]/g, ""));
+    const s = num("calc-sales"), r = num("calc-rate"), f = num("calc-fixed");
+    const out = document.getElementById("calc-out");
+    if (s > 0 && r >= 0 && f >= 0 && isFinite(s + r + f)) { const cost = Math.round((s * r) / 100 + f); out.style.color = ""; out.innerHTML = `月のコストは約 <strong>${cost.toLocaleString("ja-JP")}円</strong>（キャッシュレス売上の ${((cost / s) * 100).toFixed(2)}%）`; }
+    else { out.style.color = "var(--muted)"; out.textContent = "売上と料率を入れると、月のコストが出ます。"; }
+  });
+
+  app.addEventListener("submit", (e) => {
+    const form = e.target.closest("form[data-mini]");
+    if (!form) return;
+    e.preventDefault();
+    const slug = form.dataset.mini; const mc = O.getMiniCheck(slug); const m = mini[slug];
+    if (!mc.questions.every((q) => m.answers[q.id] !== undefined)) return;
+    m.state = mc.resolve(m.answers);
+    render();
+    const card = app.querySelector(".result-card"); if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  app.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-act],[data-edit]");
+    if (!btn) return;
+    const questions = O.visibleQuestions(W.answers); const total = questions.length;
+    if (btn.dataset.edit) { W.interacted = true; W.fromReview = true; W.step = questions.findIndex((q) => q.key === btn.dataset.edit); W.error = null; render(); return; }
+    const act = btn.dataset.act;
+    if (act === "next") {
+      W.interacted = true;
+      const cur = questions[W.step];
+      if (!isAnswered(W.answers, cur.key)) { W.error = "ひとつ選んでください。"; render(); return; }
+      const rest = questions.slice(W.step + 1);
+      const target = rest.findIndex((q) => !isAnswered(W.answers, q.key) || (!W.fromReview && !W.prefilled.has(q.key)));
+      if (target === -1) { W.fromReview = false; W.step = total; } else W.step = W.step + 1 + target;
+      W.error = null; render();
+    } else if (act === "back") {
+      W.interacted = true; W.error = null;
+      if (W.fromReview && W.step < total) { W.fromReview = false; W.step = total; } else W.step = Math.max(0, W.step - 1);
+      render();
+    } else if (act === "submit") {
+      try {
+        result = O.decide(W.answers);
+        ss.set("ohs.preview.result", { answers: result.answers });
+        location.hash = "#result";
+      } catch {
+        W.error = "未回答の質問があります。戻って答えてください。";
+        const first = questions.findIndex((q) => !isAnswered(W.answers, q.key)); if (first !== -1) W.step = first; render();
+      }
+    } else if (act === "edit-answers") {
+      W.answers = { ...result.answers }; W.prefilled = new Set(); W.fromReview = false; W.step = O.visibleQuestions(W.answers).length; W.interacted = false; W.error = null;
+      location.hash = "#check";
+    } else if (act === "restart") {
+      startCheck(null, null); result = null; ss.del("ohs.preview.result"); location.hash = "#check";
+    } else if (act === "to-check") {
+      const slug = btn.dataset.slug; const mc = O.getMiniCheck(slug); const m = mini[slug]; const a = O.getArticle(slug);
+      const prefill = {};
+      for (const q of mc.questions) { const v = m.answers[q.id]; const mapped = q.prefill && v !== undefined ? q.prefill.map[v] : undefined; if (q.prefill && mapped !== undefined) prefill[q.prefill.key] = mapped; }
+      startCheck(a.area, prefill);
+      location.hash = "#check";
+    }
+  });
+
+  window.addEventListener("hashchange", render);
+  render();
+})();
+</script>
+</body>
+</html>
