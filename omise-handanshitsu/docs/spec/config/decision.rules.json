@@ -1,0 +1,44 @@
+{
+  "version": "0.1",
+  "statuses": [
+    "FREE_FOUNDATION",
+    "NOW",
+    "NEXT",
+    "LATER",
+    "NOT_PRIORITY",
+    "REVIEW_EXISTING",
+    "HIDDEN"
+  ],
+  "max_now": 3,
+  "max_next": 2,
+  "affiliate_influences_need_decision": false,
+  "hard_rules": {
+    "reservation_walkin": "NOT_PRIORITY",
+    "cashless_little_onsite": "NOT_PRIORITY",
+    "pos_solo_simple": "NOT_PRIORITY",
+    "line_low_repeat": "NOT_PRIORITY",
+    "external_platform_new_max": "NEXT",
+    "integration_min_existing_services": 3
+  },
+  "thresholds": {
+    "RESERVATION": {
+      "NOW": 6,
+      "NEXT": 3
+    },
+    "CASHLESS": {
+      "NOW": 5,
+      "NEXT": 3
+    },
+    "POS": {
+      "NOW": 6,
+      "NEXT": 3
+    },
+    "LINE": {
+      "NOW": 6,
+      "NEXT": 3
+    },
+    "EXTERNAL_PLATFORM": {
+      "NEXT": 5
+    }
+  }
+}

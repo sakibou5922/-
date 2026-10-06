@@ -1,0 +1,46 @@
+[
+  {
+    "page": "article",
+    "perf": 90,
+    "a11y": 100,
+    "bp": 96,
+    "seo": 66,
+    "lcp": "3.2 s",
+    "tbt": "120 ms",
+    "cls": "0.001",
+    "seoFails": "is-crawlable"
+  },
+  {
+    "page": "check",
+    "perf": 74,
+    "a11y": 100,
+    "bp": 96,
+    "seo": 66,
+    "lcp": "4.4 s",
+    "tbt": "0 ms",
+    "cls": "0.108",
+    "seoFails": "is-crawlable"
+  },
+  {
+    "page": "result",
+    "perf": 80,
+    "a11y": 100,
+    "bp": 96,
+    "seo": 63,
+    "lcp": "4.1 s",
+    "tbt": "0 ms",
+    "cls": "0.001",
+    "seoFails": "is-crawlable"
+  },
+  {
+    "page": "top",
+    "perf": 96,
+    "a11y": 100,
+    "bp": 96,
+    "seo": 66,
+    "lcp": "2.6 s",
+    "tbt": "100 ms",
+    "cls": "0.001",
+    "seoFails": "is-crawlable"
+  }
+]

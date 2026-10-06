@@ -1,0 +1,92 @@
+[
+  {
+    "url": "/",
+    "width": 375,
+    "violations": []
+  },
+  {
+    "url": "/check",
+    "width": 375,
+    "violations": []
+  },
+  {
+    "url": "/check/result?st=OPERATING&bt=FOOD&rm=MIXED&op=MOST&oc=INVENTORY_IMPORTANT&sc=TEAM_4_PLUS&rr=MEDIUM&ex=LINE,POS,CASHLESS&md=YES&nc=NEED_MORE",
+    "width": 375,
+    "violations": []
+  },
+  {
+    "url": "/need",
+    "width": 375,
+    "violations": []
+  },
+  {
+    "url": "/need/pos-register",
+    "width": 375,
+    "violations": []
+  },
+  {
+    "url": "/need/line-official",
+    "width": 375,
+    "violations": []
+  },
+  {
+    "url": "/guide/opening-order",
+    "width": 375,
+    "violations": []
+  },
+  {
+    "url": "/editorial-policy",
+    "width": 375,
+    "violations": []
+  },
+  {
+    "url": "/operator",
+    "width": 375,
+    "violations": []
+  },
+  {
+    "url": "/",
+    "width": 1440,
+    "violations": []
+  },
+  {
+    "url": "/check",
+    "width": 1440,
+    "violations": []
+  },
+  {
+    "url": "/check/result?st=OPERATING&bt=FOOD&rm=MIXED&op=MOST&oc=INVENTORY_IMPORTANT&sc=TEAM_4_PLUS&rr=MEDIUM&ex=LINE,POS,CASHLESS&md=YES&nc=NEED_MORE",
+    "width": 1440,
+    "violations": []
+  },
+  {
+    "url": "/need",
+    "width": 1440,
+    "violations": []
+  },
+  {
+    "url": "/need/pos-register",
+    "width": 1440,
+    "violations": []
+  },
+  {
+    "url": "/need/line-official",
+    "width": 1440,
+    "violations": []
+  },
+  {
+    "url": "/guide/opening-order",
+    "width": 1440,
+    "violations": []
+  },
+  {
+    "url": "/editorial-policy",
+    "width": 1440,
+    "violations": []
+  },
+  {
+    "url": "/operator",
+    "width": 1440,
+    "violations": []
+  }
+]

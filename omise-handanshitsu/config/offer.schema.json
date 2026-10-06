@@ -1,0 +1,53 @@
+{
+  "_note": "config/offers.json の各 Offer が持つフィールド。tests/offers.test.ts で検証する。",
+  "fields": [
+    "offer_id",
+    "categories",
+    "provider_name",
+    "program_type",
+    "flag",
+    "affiliate_url",
+    "official_url",
+    "status",
+    "smask_enrollment",
+    "official_fallback",
+    "display_order",
+    "audience_fit",
+    "audience_misfit",
+    "fee_summary",
+    "free_plan",
+    "initial_equipment",
+    "transaction_fee",
+    "integration",
+    "cancel_check",
+    "conversion_condition",
+    "verified_at",
+    "valid_until",
+    "disclosure_type",
+    "evidence"
+  ],
+  "program_type": [
+    "AFFILIATE",
+    "PARTNER",
+    "OFFICIAL"
+  ],
+  "status": [
+    "ACTIVE",
+    "PAUSED",
+    "EXPIRED",
+    "UNVERIFIED"
+  ],
+  "enrollment": [
+    "NOT_EXECUTED",
+    "APPLIED",
+    "APPROVED",
+    "REJECTED",
+    "NOT_APPLICABLE"
+  ],
+  "disclosure_type": [
+    "PR",
+    "NONE"
+  ],
+  "fail_closed": true,
+  "max_offers": 3
+}

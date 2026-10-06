@@ -1,0 +1,245 @@
+[
+  {
+    "page": "top",
+    "url": "/",
+    "width": 375,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/top-sp-375.png"
+  },
+  {
+    "page": "check",
+    "url": "/check",
+    "width": 375,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/check-sp-375.png"
+  },
+  {
+    "page": "result",
+    "url": "/check/result?st=OPERATING&bt=BEAUTY_SALON&rm=APPOINTMENT_DOMINANT&op=MOST&oc=SIMPLE&sc=SMALL_2_3&rr=HIGH&ex=GOOGLE_BUSINESS&nc=NEED_MORE&from=RESERVATION",
+    "width": 375,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/result-sp-375.png"
+  },
+  {
+    "page": "need-index",
+    "url": "/need",
+    "width": 375,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/need-index-sp-375.png"
+  },
+  {
+    "page": "article-reservation",
+    "url": "/need/reservation-system",
+    "width": 375,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/article-reservation-sp-375.png"
+  },
+  {
+    "page": "article-cashless",
+    "url": "/need/cashless-payment",
+    "width": 375,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/article-cashless-sp-375.png"
+  },
+  {
+    "page": "opening-order",
+    "url": "/guide/opening-order",
+    "width": 375,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/opening-order-sp-375.png"
+  },
+  {
+    "page": "advertising-policy",
+    "url": "/advertising-policy",
+    "width": 375,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/advertising-policy-sp-375.png"
+  },
+  {
+    "page": "not-found",
+    "url": "/this-page-does-not-exist",
+    "width": 375,
+    "status": 404,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/not-found-sp-375.png"
+  },
+  {
+    "page": "top",
+    "url": "/",
+    "width": 768,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/top-tb-768.png"
+  },
+  {
+    "page": "check",
+    "url": "/check",
+    "width": 768,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/check-tb-768.png"
+  },
+  {
+    "page": "result",
+    "url": "/check/result?st=OPERATING&bt=BEAUTY_SALON&rm=APPOINTMENT_DOMINANT&op=MOST&oc=SIMPLE&sc=SMALL_2_3&rr=HIGH&ex=GOOGLE_BUSINESS&nc=NEED_MORE&from=RESERVATION",
+    "width": 768,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/result-tb-768.png"
+  },
+  {
+    "page": "need-index",
+    "url": "/need",
+    "width": 768,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/need-index-tb-768.png"
+  },
+  {
+    "page": "article-reservation",
+    "url": "/need/reservation-system",
+    "width": 768,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/article-reservation-tb-768.png"
+  },
+  {
+    "page": "article-cashless",
+    "url": "/need/cashless-payment",
+    "width": 768,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/article-cashless-tb-768.png"
+  },
+  {
+    "page": "opening-order",
+    "url": "/guide/opening-order",
+    "width": 768,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/opening-order-tb-768.png"
+  },
+  {
+    "page": "advertising-policy",
+    "url": "/advertising-policy",
+    "width": 768,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/advertising-policy-tb-768.png"
+  },
+  {
+    "page": "not-found",
+    "url": "/this-page-does-not-exist",
+    "width": 768,
+    "status": 404,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/not-found-tb-768.png"
+  },
+  {
+    "page": "top",
+    "url": "/",
+    "width": 1440,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/top-pc-1440.png"
+  },
+  {
+    "page": "check",
+    "url": "/check",
+    "width": 1440,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/check-pc-1440.png"
+  },
+  {
+    "page": "result",
+    "url": "/check/result?st=OPERATING&bt=BEAUTY_SALON&rm=APPOINTMENT_DOMINANT&op=MOST&oc=SIMPLE&sc=SMALL_2_3&rr=HIGH&ex=GOOGLE_BUSINESS&nc=NEED_MORE&from=RESERVATION",
+    "width": 1440,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/result-pc-1440.png"
+  },
+  {
+    "page": "need-index",
+    "url": "/need",
+    "width": 1440,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/need-index-pc-1440.png"
+  },
+  {
+    "page": "article-reservation",
+    "url": "/need/reservation-system",
+    "width": 1440,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/article-reservation-pc-1440.png"
+  },
+  {
+    "page": "article-cashless",
+    "url": "/need/cashless-payment",
+    "width": 1440,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/article-cashless-pc-1440.png"
+  },
+  {
+    "page": "opening-order",
+    "url": "/guide/opening-order",
+    "width": 1440,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/opening-order-pc-1440.png"
+  },
+  {
+    "page": "advertising-policy",
+    "url": "/advertising-policy",
+    "width": 1440,
+    "status": 200,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/advertising-policy-pc-1440.png"
+  },
+  {
+    "page": "not-found",
+    "url": "/this-page-does-not-exist",
+    "width": 1440,
+    "status": 404,
+    "horizontalOverflow": false,
+    "offenders": [],
+    "file": "docs/qa/screenshots/not-found-pc-1440.png"
+  }
+]

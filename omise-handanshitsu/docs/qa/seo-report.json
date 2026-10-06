@@ -1,0 +1,221 @@
+{
+  "base": "http://localhost:3000",
+  "pages": [
+    {
+      "route": "/",
+      "status": 200,
+      "title": "お店の判断室｜小さなお店の開業・運営サービス判断ガイド",
+      "description": "そのサービス、本当に今のお店に必要ですか？ HOT PEPPER Beauty・LINE・予約システム・POS・キャッシ",
+      "canonical": "https://omise-handanshitsu.example",
+      "robots": "noindex, nofollow",
+      "h1": 1,
+      "jsonld": [
+        "Organization+WebSite"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/check",
+      "status": 200,
+      "title": "8問｜お店に今必要なものチェック｜お店の判断室",
+      "description": "予約の取り方・支払い方・人数・再来の割合など8問に答えると、予約システム・POS・キャッシュレス・LINE・集客媒体を「",
+      "canonical": "https://omise-handanshitsu.example/check",
+      "robots": "noindex, nofollow",
+      "h1": 1,
+      "jsonld": [
+        "BreadcrumbList"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/need",
+      "status": 200,
+      "title": "「本当に必要？」記事一覧｜お店の判断室",
+      "description": "ホットペッパービューティー・予約システム・POSレジ・キャッシュレス決済・LINE公式アカウント。小さなお店に本当に必要",
+      "canonical": "https://omise-handanshitsu.example/need",
+      "robots": "noindex, nofollow",
+      "h1": 1,
+      "jsonld": [
+        "BreadcrumbList"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/need/hotpepper-beauty",
+      "status": 200,
+      "title": "ホットペッパービューティーは本当に必要？掲載する店・しない店の判断基準｜お店の判断室",
+      "description": "HOT PEPPER Beautyはすべてのサロンに必須ではありません。新規客の必要性・依存度・獲得単価・再来率の4点で",
+      "canonical": "https://omise-handanshitsu.example/need/hotpepper-beauty",
+      "robots": "noindex, nofollow",
+      "h1": 1,
+      "jsonld": [
+        "Article",
+        "BreadcrumbList"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/need/reservation-system",
+      "status": 200,
+      "title": "予約システムは本当に必要？LINE・電話・DMで十分な店との違い｜お店の判断室",
+      "description": "予約件数が少なく受付経路が一つなら、有料の予約システムを急ぐ必要はありません。営業時間外・複数経路・複数スタッフ・予約漏",
+      "canonical": "https://omise-handanshitsu.example/need/reservation-system",
+      "robots": "noindex, nofollow",
+      "h1": 1,
+      "jsonld": [
+        "Article",
+        "BreadcrumbList"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/need/pos-register",
+      "status": 200,
+      "title": "POSレジは本当に必要？小さなお店で入れる店・まだ不要な店｜お店の判断室",
+      "description": "POSは「店を開くなら必要な高性能レジ」ではありません。在庫・商品数・スタッフ・売上分析・連携の5点で、入れる店とまだ不",
+      "canonical": "https://omise-handanshitsu.example/need/pos-register",
+      "robots": "noindex, nofollow",
+      "h1": 1,
+      "jsonld": [
+        "Article",
+        "BreadcrumbList"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/need/cashless-payment",
+      "status": 200,
+      "title": "キャッシュレス決済は本当に必要？手数料を払う価値がある店・ない店｜お店の判断室",
+      "description": "「今どき必須」でも「手数料がもったいない」でも決めません。店頭決済の多さ・客層の要望・客単価・月間店頭売上・現金管理の負",
+      "canonical": "https://omise-handanshitsu.example/need/cashless-payment",
+      "robots": "noindex, nofollow",
+      "h1": 1,
+      "jsonld": [
+        "Article",
+        "BreadcrumbList"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/need/line-official",
+      "status": 200,
+      "title": "LINE公式アカウントは本当に必要？小さなお店が作る前に考えたいこと｜お店の判断室",
+      "description": "無料だから作るのではなく、再来・通知・予約導線など明確な用途があるなら作る。開業前で顧客がほぼいない状態では、新規集客よ",
+      "canonical": "https://omise-handanshitsu.example/need/line-official",
+      "robots": "noindex, nofollow",
+      "h1": 1,
+      "jsonld": [
+        "Article",
+        "BreadcrumbList"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/guide/opening-order",
+      "status": 200,
+      "title": "開業の順番｜何を・いつ決めるか｜お店の判断室",
+      "description": "小さなお店の開業で、サービスを入れる順番。無料で先に整えるGoogleの店舗情報から、予約の受け方、支払い、レジ、帳簿、",
+      "canonical": "https://omise-handanshitsu.example/guide/opening-order",
+      "robots": "noindex, nofollow",
+      "h1": 1,
+      "jsonld": [
+        "Article",
+        "BreadcrumbList"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/about",
+      "status": 200,
+      "title": "このサイトについて｜お店の判断室",
+      "description": "お店の判断室は、小規模店舗・対面サービスの事業者が、予約・POS・キャッシュレス・LINE・集客媒体などを「本当に必要か",
+      "canonical": "https://omise-handanshitsu.example/about",
+      "robots": "noindex, nofollow",
+      "h1": 1,
+      "jsonld": [
+        "BreadcrumbList"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/editorial-policy",
+      "status": 200,
+      "title": "編集方針｜お店の判断室",
+      "description": "お店の判断室の編集方針。記事の構成、料金・条件の確認と期限、固有名の数値の根拠、訂正の方法。",
+      "canonical": "https://omise-handanshitsu.example/editorial-policy",
+      "robots": "noindex, nofollow",
+      "h1": 1,
+      "jsonld": [
+        "BreadcrumbList"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/advertising-policy",
+      "status": 200,
+      "title": "広告・収益の方針｜お店の判断室",
+      "description": "お店の判断室の広告・収益の方針。紹介報酬は判断に影響させない、PR表示、rel=sponsored、公式の選択肢の扱い、",
+      "canonical": "https://omise-handanshitsu.example/advertising-policy",
+      "robots": "noindex, nofollow",
+      "h1": 1,
+      "jsonld": [
+        "BreadcrumbList"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/privacy",
+      "status": 200,
+      "title": "プライバシー｜お店の判断室",
+      "description": "お店の判断室のプライバシーの方針。登録不要、個人情報を求めない、診断の回答を保存しない、計測の範囲。",
+      "canonical": "https://omise-handanshitsu.example/privacy",
+      "robots": "noindex, nofollow",
+      "h1": 1,
+      "jsonld": [
+        "BreadcrumbList"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/operator",
+      "status": 200,
+      "title": "運営者情報｜お店の判断室",
+      "description": "お店の判断室の運営者情報と、お問い合わせ・相談窓口について。",
+      "canonical": "https://omise-handanshitsu.example/operator",
+      "robots": "noindex, nofollow",
+      "h1": 1,
+      "jsonld": [
+        "BreadcrumbList"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/check/result?st=OPERATING&bt=FOOD&rm=MIXED&op=MOST&oc=SIMPLE&sc=SOLO&rr=MEDIUM&ex=NONE&nc=ENOUGH",
+      "status": 200,
+      "title": "判断結果｜お店に今必要なものチェック｜お店の判断室",
+      "description": "予約システム・POS・キャッシュレス・LINE公式・集客媒体。小さなお店に本当に必要なものを、必要な順番で判断するガイド",
+      "canonical": null,
+      "robots": "noindex, nofollow",
+      "h1": 1,
+      "jsonld": [],
+      "issues": []
+    }
+  ],
+  "sitemap": [
+    "https://omise-handanshitsu.example",
+    "https://omise-handanshitsu.example/check",
+    "https://omise-handanshitsu.example/need",
+    "https://omise-handanshitsu.example/need/hotpepper-beauty",
+    "https://omise-handanshitsu.example/need/reservation-system",
+    "https://omise-handanshitsu.example/need/pos-register",
+    "https://omise-handanshitsu.example/need/cashless-payment",
+    "https://omise-handanshitsu.example/need/line-official",
+    "https://omise-handanshitsu.example/guide/opening-order",
+    "https://omise-handanshitsu.example/about",
+    "https://omise-handanshitsu.example/editorial-policy",
+    "https://omise-handanshitsu.example/advertising-policy",
+    "https://omise-handanshitsu.example/privacy",
+    "https://omise-handanshitsu.example/operator"
+  ],
+  "robots": "User-Agent: *\nDisallow: /\n\nSitemap: https://omise-handanshitsu.example/sitemap.xml\n"
+}

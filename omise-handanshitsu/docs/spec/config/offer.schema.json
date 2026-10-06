@@ -1,0 +1,33 @@
+{
+  "fields": [
+    "offer_id",
+    "category",
+    "provider_name",
+    "program_type",
+    "affiliate_url",
+    "official_url",
+    "status",
+    "smask_enrollment",
+    "audience_fit",
+    "audience_misfit",
+    "fee_summary",
+    "conversion_condition",
+    "verified_at",
+    "valid_until",
+    "disclosure_type"
+  ],
+  "status": [
+    "ACTIVE",
+    "PAUSED",
+    "EXPIRED",
+    "UNVERIFIED"
+  ],
+  "enrollment": [
+    "NOT_EXECUTED",
+    "APPLIED",
+    "APPROVED",
+    "REJECTED"
+  ],
+  "fail_closed": true,
+  "max_offers": 3
+}

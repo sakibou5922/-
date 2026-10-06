@@ -1,0 +1,18 @@
+{
+  "verified_at": "2026-10-06",
+  "_note": "固有名の数値claimは必ずここに根拠を置く（A18/A19）。kind により鮮度期限が決まる（config/freshness.json）。",
+  "sources": [
+    { "id": "HPB_TERMS", "domain": "cdn.p.recruit.co.jp", "kind": "PRICING", "label": "HOT PEPPER Beauty 利用約款", "fact": "共通ネット予約利用料1%", "verified_at": "2026-10-06" },
+    { "id": "HPB_LISTING", "domain": "beauty.hotpepper.jp", "kind": "POLICY", "label": "HOT PEPPER Beauty 掲載案内", "fact": "掲載は問い合わせ方式", "verified_at": "2026-10-06" },
+    { "id": "LINE_PLAN", "domain": "lycbiz.com", "kind": "PRICING", "label": "LINE公式アカウント 料金プラン", "fact": "0円/200通;5000円/5000通;15000円/30000通税別", "verified_at": "2026-10-06" },
+    { "id": "LINE_PLAN_CHANGE", "domain": "lycbiz.com", "kind": "POLICY", "label": "LINE公式アカウント 追加メッセージ料金改定", "fact": "2026-10-01 追加メッセージ料金改定", "verified_at": "2026-10-06" },
+    { "id": "FREEE_RES_PRICE", "domain": "freee.co.jp", "kind": "PRICING", "label": "freee予約 料金", "fact": "Starter0円;Business3180/月年払い,3980/月月払い", "verified_at": "2026-10-06" },
+    { "id": "FREEE_RES_PARTNER", "domain": "freee.co.jp", "kind": "PRICING", "label": "freee予約 紹介プログラム", "fact": "月払い5000円/件;年払い20000円/件", "verified_at": "2026-10-06" },
+    { "id": "SQUARE_POS", "domain": "squareup.com", "kind": "PRICING", "label": "Square POSレジ / 決済端末", "fact": "POS app無料; reader4980; stand29980; terminal39980", "verified_at": "2026-10-06" },
+    { "id": "SQUARE_AFF", "domain": "squareup.com", "kind": "POLICY", "label": "Square アフィリエイト", "fact": "もしもアフィリエイトのみ参加可能", "verified_at": "2026-10-06" },
+    { "id": "AIRREGI", "domain": "airregi.jp", "kind": "PRICING", "label": "Airレジ 料金", "fact": "アプリ/初期/月額/サポート0円;hardware別途", "verified_at": "2026-10-06" },
+    { "id": "AIRPAY", "domain": "airregi.jp", "kind": "PRICING", "label": "Airペイ 料金", "fact": "初期/使用/月額/振込手数料0円;条件あり", "verified_at": "2026-10-06" },
+    { "id": "FREEE_AFF", "domain": "freee.co.jp", "kind": "POLICY", "label": "freee会計 アフィリエイト", "fact": "A8.net/もしもAffiliate公式案内", "verified_at": "2026-10-06" },
+    { "id": "GOOGLE_LINKS", "domain": "support.google.com", "kind": "FEATURE", "label": "Google ビジネスプロフィール リンク", "fact": "予約等のlocal business links追加可能;適格性条件あり", "verified_at": "2026-10-06" }
+  ]
+}

@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+.env*.local
+# 3幅スクショは主要ページの SP/PC だけを残す（容量対策）
+docs/qa/screenshots/*-tb-*.png
+docs/qa/screenshots/advertising-policy-*.png
+docs/qa/screenshots/need-index-*.png
+docs/qa/screenshots/not-found-*.png

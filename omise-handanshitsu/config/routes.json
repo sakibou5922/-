@@ -1,0 +1,21 @@
+{
+  "public_routes": [
+    "/",
+    "/check",
+    "/need",
+    "/need/hotpepper-beauty",
+    "/need/reservation-system",
+    "/need/pos-register",
+    "/need/cashless-payment",
+    "/need/line-official",
+    "/guide/opening-order",
+    "/about",
+    "/editorial-policy",
+    "/advertising-policy",
+    "/privacy",
+    "/operator"
+  ],
+  "noindex_patterns": [
+    "/check/result*"
+  ]
+}

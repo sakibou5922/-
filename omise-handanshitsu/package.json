@@ -1,0 +1,33 @@
+{
+  "name": "omise-handanshitsu",
+  "version": "0.1.0",
+  "private": true,
+  "description": "お店の判断室 — 小さなお店の開業・運営サービス判断ガイド (PREVIEW CANDIDATE)",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run typecheck && npm run test && npm run build",
+    "qa:screens": "node scripts/screenshots.mjs",
+    "qa:axe": "node scripts/axe.mjs",
+    "qa:links": "node scripts/linkcheck.mjs",
+    "qa:seo": "node scripts/seocheck.mjs"
+  },
+  "dependencies": {
+    "next": "16.3.8",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "playwright": "^1.63.0",
+    "typescript": "^5.9.0",
+    "vitest": "^5.0.0"
+  }
+}

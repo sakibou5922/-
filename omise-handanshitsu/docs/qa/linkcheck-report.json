@@ -1,0 +1,82 @@
+{
+  "base": "http://localhost:3000",
+  "internal": [
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/need",
+      "status": 200
+    },
+    {
+      "path": "/guide/opening-order",
+      "status": 200
+    },
+    {
+      "path": "/editorial-policy",
+      "status": 200
+    },
+    {
+      "path": "/check",
+      "status": 200
+    },
+    {
+      "path": "/need/hotpepper-beauty",
+      "status": 200
+    },
+    {
+      "path": "/need/reservation-system",
+      "status": 200
+    },
+    {
+      "path": "/need/pos-register",
+      "status": 200
+    },
+    {
+      "path": "/need/cashless-payment",
+      "status": 200
+    },
+    {
+      "path": "/need/line-official",
+      "status": 200
+    },
+    {
+      "path": "/advertising-policy",
+      "status": 200
+    },
+    {
+      "path": "/about",
+      "status": 200
+    },
+    {
+      "path": "/privacy",
+      "status": 200
+    },
+    {
+      "path": "/operator",
+      "status": 200
+    },
+    {
+      "path": "/check?from=EXTERNAL_PLATFORM",
+      "status": 200
+    },
+    {
+      "path": "/check?from=RESERVATION",
+      "status": 200
+    },
+    {
+      "path": "/check?from=POS",
+      "status": 200
+    },
+    {
+      "path": "/check?from=CASHLESS",
+      "status": 200
+    },
+    {
+      "path": "/check?from=LINE",
+      "status": 200
+    }
+  ],
+  "external": []
+}

@@ -1,0 +1,261 @@
+{
+  "version": "0.1",
+  "_note": "05_REVENUE_OFFER_RULES.md。Need決定とは完全分離。display_order は固定（報酬順ランキング禁止）。affiliate_url が空 / status が ACTIVE 以外 / enrollment が APPROVED 以外 / flag が false / 鮮度切れ のいずれかで fail closed（official_url に落ちる）。 status は収益プログラムの状態。UNVERIFIED/PAUSED の収益 Offer は official_fallback が true のときだけ公式リンクのカードとして出し、EXPIRED は常に非表示。",
+  "max_offers_per_area": 3,
+  "offers": [
+    {
+      "offer_id": "freee_reservation",
+      "categories": [
+        "RESERVATION"
+      ],
+      "provider_name": "freee予約",
+      "program_type": "PARTNER",
+      "flag": "partner_freee_reservation_enabled",
+      "affiliate_url": null,
+      "official_url": "https://www.freee.co.jp/reservation/",
+      "status": "UNVERIFIED",
+      "smask_enrollment": "NOT_EXECUTED",
+      "display_order": 10,
+      "audience_fit": [
+        "予約中心で、まず無料で予約ページと予約台帳を試したい",
+        "将来、顧客管理やアンケートなど有料機能が必要になるか見極めたい"
+      ],
+      "audience_misfit": [
+        "予約件数が少なく、電話やDMで困っていない",
+        "Starterで足りるのに有料へ急ぐ必要はない"
+      ],
+      "fee_summary": "Starter 0円。Business は年払い3,180円/月・月払い3,980円/月",
+      "free_plan": "Starter（0円）",
+      "initial_equipment": "不要（スマホ・PCで利用）",
+      "transaction_fee": "予約自体に手数料なし（決済機能利用時は別途条件を確認）",
+      "integration": "freee会計などfreee製品との連携を確認",
+      "cancel_check": "有料プランの契約期間・解約タイミング・データのエクスポート可否",
+      "conversion_condition": "有料Business契約（月払い5,000円/件・年払い20,000円/件）",
+      "verified_at": "2026-10-06",
+      "valid_until": "2026-11-05",
+      "disclosure_type": "PR",
+      "evidence": [
+        "FREEE_RES_PRICE",
+        "FREEE_RES_PARTNER"
+      ],
+      "official_fallback": true
+    },
+    {
+      "offer_id": "square",
+      "categories": [
+        "CASHLESS",
+        "POS"
+      ],
+      "provider_name": "Square",
+      "program_type": "AFFILIATE",
+      "flag": "affiliate_square_enabled",
+      "affiliate_url": null,
+      "official_url": "https://squareup.com/jp/ja",
+      "status": "UNVERIFIED",
+      "smask_enrollment": "NOT_EXECUTED",
+      "display_order": 20,
+      "audience_fit": [
+        "POSアプリを無料で始め、決済端末だけ買い足したい",
+        "キャッシュレスとレジを一つにまとめたい"
+      ],
+      "audience_misfit": [
+        "店頭決済がほとんどない",
+        "決済料率より固定費ゼロを重視し、既に別の決済が入っている"
+      ],
+      "fee_summary": "POSアプリ無料。Reader 4,980円・Stand 29,980円・Terminal 39,980円（端末）",
+      "free_plan": "POSアプリ（無料）",
+      "initial_equipment": "決済端末（Reader / Stand / Terminal）",
+      "transaction_fee": "決済料率は条件（ブランド・審査・プログラム）で変わるため最新の自店条件を確認",
+      "integration": "会計ソフト連携・ECとの在庫連携の対応範囲を確認",
+      "cancel_check": "端末の返品条件・入金サイクル・アカウント停止条件",
+      "conversion_condition": "ASP（もしもアフィリエイト）内で要確認",
+      "verified_at": "2026-10-06",
+      "valid_until": "2026-11-05",
+      "disclosure_type": "PR",
+      "evidence": [
+        "SQUARE_POS",
+        "SQUARE_AFF"
+      ],
+      "official_fallback": true
+    },
+    {
+      "offer_id": "freee_accounting",
+      "categories": [
+        "ACCOUNTING"
+      ],
+      "provider_name": "freee会計",
+      "program_type": "AFFILIATE",
+      "flag": "affiliate_freee_accounting_enabled",
+      "affiliate_url": null,
+      "official_url": "https://www.freee.co.jp/accounting/",
+      "status": "UNVERIFIED",
+      "smask_enrollment": "NOT_EXECUTED",
+      "display_order": 30,
+      "audience_fit": [
+        "帳簿付けを自分でやる前提で、銀行・カード明細の自動取り込みをしたい",
+        "freee予約など同じ会社の製品と組み合わせたい"
+      ],
+      "audience_misfit": [
+        "税理士にすべて任せていて自分では触らない",
+        "取引が極端に少なく、表計算で十分"
+      ],
+      "fee_summary": "料金は公式サイトで要確認（本サイトでは未検証のため表示しません）",
+      "free_plan": "要確認",
+      "initial_equipment": "不要",
+      "transaction_fee": "なし",
+      "integration": "銀行口座・クレジットカード・決済サービスの明細連携",
+      "cancel_check": "年払い時の返金条件・データのエクスポート可否",
+      "conversion_condition": "ASP（A8.net / もしも）内で要確認",
+      "verified_at": "2026-10-06",
+      "valid_until": "2026-11-05",
+      "disclosure_type": "PR",
+      "evidence": [
+        "FREEE_AFF"
+      ],
+      "official_fallback": false
+    },
+    {
+      "offer_id": "airregi",
+      "categories": [
+        "POS"
+      ],
+      "provider_name": "Airレジ",
+      "program_type": "OFFICIAL",
+      "flag": null,
+      "affiliate_url": null,
+      "official_url": "https://airregi.jp/",
+      "status": "ACTIVE",
+      "smask_enrollment": "NOT_APPLICABLE",
+      "display_order": 25,
+      "audience_fit": [
+        "レジ機能だけ無料で使い始めたい",
+        "Airペイなど同じ系列のサービスとまとめたい"
+      ],
+      "audience_misfit": [
+        "在庫やEC連携など高度な機能が最初から必要"
+      ],
+      "fee_summary": "アプリ・初期費用・月額・基本サポート 0円（周辺機器は別途）",
+      "free_plan": "あり（アプリ無料）",
+      "initial_equipment": "iPad / iPhone、必要に応じてプリンター・キャッシュドロアー",
+      "transaction_fee": "なし（決済は別サービス）",
+      "integration": "Airペイ・会計ソフト連携の範囲を確認",
+      "cancel_check": "周辺機器の購入条件・データの保持期間",
+      "conversion_condition": null,
+      "verified_at": "2026-10-06",
+      "valid_until": "2026-11-05",
+      "disclosure_type": "NONE",
+      "evidence": [
+        "AIRREGI"
+      ],
+      "official_fallback": true
+    },
+    {
+      "offer_id": "airpay",
+      "categories": [
+        "CASHLESS"
+      ],
+      "provider_name": "Airペイ",
+      "program_type": "OFFICIAL",
+      "flag": null,
+      "affiliate_url": null,
+      "official_url": "https://airregi.jp/payment/",
+      "status": "ACTIVE",
+      "smask_enrollment": "NOT_APPLICABLE",
+      "display_order": 21,
+      "audience_fit": [
+        "固定費を抑えてカード・電子マネー・QRをまとめて受けたい",
+        "Airレジと組み合わせたい"
+      ],
+      "audience_misfit": [
+        "iPad / iPhone を店舗に置けない",
+        "決済がほぼ発生しない"
+      ],
+      "fee_summary": "初期費用・使用料・月額・振込手数料 0円の現行案内（条件あり）",
+      "free_plan": "固定費0円（決済手数料は別途）",
+      "initial_equipment": "iPad / iPhone とカードリーダー",
+      "transaction_fee": "決済手数料はブランド・審査・プログラム条件で異なるため最新確認",
+      "integration": "Airレジとの連携",
+      "cancel_check": "審査条件・入金サイクル・端末の扱い",
+      "conversion_condition": null,
+      "verified_at": "2026-10-06",
+      "valid_until": "2026-11-05",
+      "disclosure_type": "NONE",
+      "evidence": [
+        "AIRPAY"
+      ],
+      "official_fallback": true
+    },
+    {
+      "offer_id": "google_business_profile",
+      "categories": [
+        "GOOGLE_FOUNDATION"
+      ],
+      "provider_name": "Google ビジネスプロフィール",
+      "program_type": "OFFICIAL",
+      "flag": null,
+      "affiliate_url": null,
+      "official_url": "https://www.google.com/intl/ja_jp/business/",
+      "status": "ACTIVE",
+      "smask_enrollment": "NOT_APPLICABLE",
+      "display_order": 1,
+      "audience_fit": [
+        "店名・地域で検索されたときに正しい情報を出したい",
+        "無料で営業時間・写真・口コミ・予約リンクを整えたい"
+      ],
+      "audience_misfit": [
+        "実店舗や訪問エリアを持たない事業"
+      ],
+      "fee_summary": "無料",
+      "free_plan": "無料",
+      "initial_equipment": "不要",
+      "transaction_fee": "なし",
+      "integration": "予約リンクなどのローカルビジネスリンク（適格性条件あり）",
+      "cancel_check": "オーナー確認の方法・住所非公開設定",
+      "conversion_condition": null,
+      "verified_at": "2026-10-06",
+      "valid_until": "2027-01-04",
+      "disclosure_type": "NONE",
+      "evidence": [
+        "GOOGLE_LINKS"
+      ],
+      "official_fallback": true
+    },
+    {
+      "offer_id": "line_official",
+      "categories": [
+        "LINE"
+      ],
+      "provider_name": "LINE公式アカウント",
+      "program_type": "OFFICIAL",
+      "flag": null,
+      "affiliate_url": null,
+      "official_url": "https://www.lycbiz.com/jp/service/line-official-account/",
+      "status": "ACTIVE",
+      "smask_enrollment": "NOT_APPLICABLE",
+      "display_order": 40,
+      "audience_fit": [
+        "再来客に予約・お知らせを届けたい",
+        "まず無料枠で始めて必要通数を測りたい"
+      ],
+      "audience_misfit": [
+        "再来がほとんどない業態",
+        "配信担当を決められない"
+      ],
+      "fee_summary": "コミュニケーション 0円/200通、ライト 5,000円/5,000通、スタンダード 15,000円/30,000通（税別）",
+      "free_plan": "コミュニケーションプラン（0円・200通/月）",
+      "initial_equipment": "不要",
+      "transaction_fee": "なし（追加メッセージは従量、2026-10-01に料金改定あり）",
+      "integration": "予約システムとの連携可否を確認",
+      "cancel_check": "プラン変更のタイミング・追加メッセージの上限設定",
+      "conversion_condition": null,
+      "verified_at": "2026-10-06",
+      "valid_until": "2026-11-05",
+      "disclosure_type": "NONE",
+      "evidence": [
+        "LINE_PLAN",
+        "LINE_PLAN_CHANGE"
+      ],
+      "official_fallback": true
+    }
+  ]
+}

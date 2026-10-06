@@ -1,0 +1,4 @@
+{
+  "_note": "06_EVIDENCE_FRESHNESS.md: 料金/報酬/契約条件 30日、機能 90日、法令/広告Policy 90日。超過時は数値claimを非表示（fail closed）。",
+  "days": { "PRICING": 30, "FEATURE": 90, "POLICY": 90 }
+}

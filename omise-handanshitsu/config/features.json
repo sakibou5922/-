@@ -1,0 +1,8 @@
+{
+  "_note": "08_ENGINEERING_CANDIDATE.md: feature flags default false. 公開前のHuman gate を通るまで true にしない。",
+  "affiliate_square_enabled": false,
+  "partner_freee_reservation_enabled": false,
+  "affiliate_freee_accounting_enabled": false,
+  "smask_consultation_enabled": false,
+  "public_release_enabled": false
+}

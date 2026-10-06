@@ -1,0 +1,132 @@
+{
+  "version": "0.1",
+  "questions": [
+    {
+      "id": "Q1",
+      "key": "stage",
+      "type": "single",
+      "values": [
+        "PRE_OPEN_90_PLUS",
+        "PRE_OPEN_31_90",
+        "PRE_OPEN_0_30",
+        "OPERATING"
+      ]
+    },
+    {
+      "id": "Q2",
+      "key": "business_type",
+      "type": "single",
+      "values": [
+        "BEAUTY_SALON",
+        "HEALTH_TREATMENT",
+        "FOOD",
+        "RETAIL",
+        "LESSON_SCHOOL",
+        "FITNESS",
+        "PET",
+        "OTHER_FACE_TO_FACE"
+      ]
+    },
+    {
+      "id": "Q3",
+      "key": "reservation_model",
+      "type": "single",
+      "values": [
+        "APPOINTMENT_DOMINANT",
+        "MIXED",
+        "WALKIN_DOMINANT"
+      ]
+    },
+    {
+      "id": "Q4",
+      "key": "onsite_payment",
+      "type": "single",
+      "values": [
+        "MOST",
+        "SOME",
+        "LITTLE"
+      ]
+    },
+    {
+      "id": "Q5",
+      "key": "ops_complexity",
+      "type": "single",
+      "values": [
+        "SIMPLE",
+        "MULTI_LOW_INVENTORY",
+        "INVENTORY_IMPORTANT"
+      ]
+    },
+    {
+      "id": "Q6",
+      "key": "staff_count",
+      "type": "single",
+      "values": [
+        "SOLO",
+        "SMALL_2_3",
+        "TEAM_4_PLUS"
+      ]
+    },
+    {
+      "id": "Q7",
+      "key": "repeat_rate",
+      "type": "single",
+      "values": [
+        "HIGH",
+        "MEDIUM",
+        "LOW"
+      ]
+    },
+    {
+      "id": "Q8",
+      "key": "existing_services",
+      "type": "multi",
+      "values": [
+        "GOOGLE_BUSINESS",
+        "EXTERNAL_PLATFORM",
+        "LINE",
+        "RESERVATION",
+        "CASHLESS",
+        "POS",
+        "ACCOUNTING",
+        "WEBSITE",
+        "NONE"
+      ]
+    }
+  ],
+  "conditional": [
+    {
+      "id": "CQ1",
+      "when": "EXTERNAL_PLATFORM in Q8",
+      "key": "platform_dependency",
+      "values": [
+        "HIGH",
+        "MEDIUM",
+        "LOW",
+        "UNKNOWN"
+      ]
+    },
+    {
+      "id": "CQ2",
+      "when": "count(Q8 excluding NONE)>=3",
+      "key": "manual_duplication",
+      "values": [
+        "YES",
+        "NO",
+        "UNKNOWN"
+      ]
+    },
+    {
+      "id": "CQ3",
+      "when": "Q1==OPERATING",
+      "key": "new_customer_state",
+      "values": [
+        "NEED_MORE",
+        "ENOUGH",
+        "CAPACITY_FULL",
+        "UNKNOWN"
+      ]
+    }
+  ],
+  "persist_personal_answers": false
+}

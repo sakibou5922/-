@@ -1,0 +1,71 @@
+{
+  "verified_at": "2026-10-06",
+  "sources": [
+    {
+      "id": "HPB_TERMS",
+      "domain": "cdn.p.recruit.co.jp",
+      "fact": "共通ネット予約利用料1%",
+      "verified_at": "2026-10-06"
+    },
+    {
+      "id": "HPB_LISTING",
+      "domain": "beauty.hotpepper.jp",
+      "fact": "掲載は問い合わせ方式",
+      "verified_at": "2026-10-06"
+    },
+    {
+      "id": "LINE_PLAN",
+      "domain": "lycbiz.com",
+      "fact": "0円/200通;5000円/5000通;15000円/30000通税別",
+      "verified_at": "2026-10-06"
+    },
+    {
+      "id": "FREEE_RES_PRICE",
+      "domain": "freee.co.jp",
+      "fact": "Starter0円;Business3180/月年払い,3980/月月払い",
+      "verified_at": "2026-10-06"
+    },
+    {
+      "id": "FREEE_RES_PARTNER",
+      "domain": "freee.co.jp",
+      "fact": "月払い5000円/件;年払い20000円/件",
+      "verified_at": "2026-10-06"
+    },
+    {
+      "id": "SQUARE_POS",
+      "domain": "squareup.com",
+      "fact": "POS app無料; reader4980; stand29980; terminal39980",
+      "verified_at": "2026-10-06"
+    },
+    {
+      "id": "SQUARE_AFF",
+      "domain": "squareup.com",
+      "fact": "もしもアフィリエイトのみ参加可能",
+      "verified_at": "2026-10-06"
+    },
+    {
+      "id": "AIRREGI",
+      "domain": "airregi.jp",
+      "fact": "アプリ/初期/月額/サポート0円;hardware別途",
+      "verified_at": "2026-10-06"
+    },
+    {
+      "id": "AIRPAY",
+      "domain": "airregi.jp",
+      "fact": "初期/使用/月額/振込手数料0円;条件あり",
+      "verified_at": "2026-10-06"
+    },
+    {
+      "id": "FREEE_AFF",
+      "domain": "freee.co.jp",
+      "fact": "A8.net/もしもAffiliate公式案内",
+      "verified_at": "2026-10-06"
+    },
+    {
+      "id": "GOOGLE_LINKS",
+      "domain": "support.google.com",
+      "fact": "予約等のlocal business links追加可能;適格性条件あり",
+      "verified_at": "2026-10-06"
+    }
+  ]
+}
