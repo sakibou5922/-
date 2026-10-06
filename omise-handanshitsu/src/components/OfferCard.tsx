@@ -1,5 +1,5 @@
 import type { OfferCardView, OfferSelection } from "@/lib/offers";
-import { formatDateJa } from "@/lib/evidence";
+import { formatDateJa } from "@/lib/format";
 import { OutboundLink } from "./OutboundLink";
 import { TrackView } from "./TrackView";
 
@@ -88,12 +88,7 @@ export function OfferSection({ selection, areaName, note, heading }: SectionProp
       <h3 id={`offers-${selection.area}`} className="offers__head">
         {heading ?? `${areaName}の候補`}
       </h3>
-      {note !== "" && (
-        <p className="offers__note">
-          {note ??
-            "必要性が確定した領域だけに候補を出しています。並び順は固定で、紹介報酬の額では並べ替えません。収益リンクが有効なものだけ PR 表示を付けます。"}
-        </p>
-      )}
+      {note && <p className="offers__note">{note}</p>}
       <div className="card-grid card-grid--2">
         {selection.cards.map((c) => (
           <OfferCard key={c.offer_id} card={c} />

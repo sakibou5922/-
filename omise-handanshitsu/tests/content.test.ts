@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { ARTICLES } from "@/lib/content/articles";
+import { ARTICLES, articleHref } from "@/lib/content/articles";
+import { getMiniCheck } from "@/lib/content/minichecks";
 import { listSources } from "@/lib/evidence";
 import { PUBLIC_ROUTES } from "@/lib/site";
-import { QUESTION_BY_KEY } from "@/lib/decision/labels";
+import { AREA_META, QUESTION_BY_KEY } from "@/lib/decision/labels";
 
 const BRAND_WORDS = /Square|Airレジ|Airペイ|freee|LINE|HOT PEPPER|ホットペッパー|Google/;
 
@@ -17,10 +18,11 @@ describe("A16 各記事に 即答・向く/向かない・代替・次の行動 
       }
       expect(a.alternative.length).toBeGreaterThan(0);
       expect(a.nextAction.length).toBeGreaterThan(0);
-      expect(a.measure.length).toBeGreaterThanOrEqual(3);
+      expect(AREA_META[a.area].measure.length).toBeGreaterThanOrEqual(3);
+      expect(a.subject.length).toBeGreaterThan(0);
       expect(a.title.length).toBeLessThanOrEqual(60);
       expect(a.description.length).toBeGreaterThan(50);
-      expect(PUBLIC_ROUTES).toContain(`/need/${a.slug}`);
+      expect(PUBLIC_ROUTES).toContain(articleHref(a.slug));
     });
   }
 });
@@ -28,7 +30,7 @@ describe("A16 各記事に 即答・向く/向かない・代替・次の行動 
 describe("A17 紹介リンクを消しても価値が残る（記事本文に収益 URL を埋め込まない）", () => {
   it("本文に外部 URL やアフィリエイトパラメータがない", () => {
     for (const a of ARTICLES) {
-      const text = JSON.stringify({ ...a, miniCheck: undefined });
+      const text = JSON.stringify(a);
       expect(text).not.toMatch(/https?:\/\//);
       expect(text).not.toMatch(/a8\.net|moshimo|af_id|utm_/i);
     }
@@ -55,7 +57,7 @@ describe("A18 / A19 固有名の数値 claim は根拠付き", () => {
 describe("ミニチェックは全組み合わせで有効な状態を返す", () => {
   for (const a of ARTICLES) {
     it(a.slug, () => {
-      const mc = a.miniCheck;
+      const mc = getMiniCheck(a.slug)!;
       expect(mc.questions).toHaveLength(5);
       const stateIds = new Set(mc.states.map((s) => s.id));
       expect(stateIds.size).toBe(a.decisionRows.length);
@@ -89,9 +91,10 @@ describe("ミニチェックは全組み合わせで有効な状態を返す", (
 describe("A15 予約記事は Starter で足りる人を有料へ誘導しない", () => {
   it("ミニチェックの手動十分ケースは NOT_NOW", () => {
     const a = ARTICLES.find((x) => x.slug === "reservation-system")!;
-    const s = a.miniCheck.resolve({ model: "MIXED", channels: "ONE", after_hours: "NO", trouble: "NO", staff: "SOLO" });
+    const mc = getMiniCheck(a.slug)!;
+    const s = mc.resolve({ model: "MIXED", channels: "ONE", after_hours: "NO", trouble: "NO", staff: "SOLO" });
     expect(s).toBe("MANUAL_OK");
-    expect(a.miniCheck.states.find((x) => x.id === s)?.need).toBe("NOT_NOW");
+    expect(mc.states.find((x) => x.id === s)?.need).toBe("NOT_NOW");
     expect(a.risk.join("")).toContain("Starterで十分な人を有料へ誘導しません");
   });
 });

@@ -4,7 +4,6 @@
  * 固有名の数値 claim は sources に根拠 id を持ち、鮮度切れなら表示しない（A18〜A20）。
  */
 import type { Area } from "../decision/types";
-import { MINI_CHECKS, type MiniCheck } from "./minichecks";
 
 export interface CostFact {
   text: string;
@@ -26,6 +25,8 @@ export interface Article {
   area: Area;
   title: string;
   shortTitle: string;
+  /** 一覧カードの見出し（サービス名） */
+  subject: string;
   description: string;
   /** 検索で入ってくる質問文 */
   question: string;
@@ -38,20 +39,18 @@ export interface Article {
   costFacts: CostFact[];
   risk: string[];
   decisionRows: DecisionRow[];
-  miniCheck: MiniCheck;
   alternative: string[];
   nextAction: string[];
-  measure: string[];
   /** Offer カードの前に置く免責文 */
   offerNote: string;
   related: string[];
-  cta: string;
 }
 
 /* ------------------------------------------------------------------ */
 
 const hotpepper: Article = {
   slug: "hotpepper-beauty",
+  subject: "ホットペッパービューティー",
   area: "EXTERNAL_PLATFORM",
   title: "ホットペッパービューティーは本当に必要？掲載する店・しない店の判断基準",
   shortTitle: "ホットペッパービューティーは本当に必要？",
@@ -96,7 +95,6 @@ const hotpepper: Article = {
     { state: "MEASURE_FIRST", label: "まず数字を出す", fit: "費用・新規客数・再来率を把握していない。", action: "解約・継続より先に3〜6か月の数字を出す。" },
     { state: "LOW_PRIORITY", label: "優先度は低い", fit: "紹介や直接予約で十分稼働し、追加集客の必要性が低い。", action: "受け入れ余力ができたら再検討。" },
   ],
-  miniCheck: MINI_CHECKS["hotpepper-beauty"],
   alternative: [
     "「使わない」で終わらせず、発見・信頼・予約・再来を何で代替するかを決めます。",
     "Googleビジネスプロフィールでは、条件に応じて予約リンクなどを掲載できます。店名検索の受け皿を無料で整えるのが先です。",
@@ -104,14 +102,13 @@ const hotpepper: Article = {
   nextAction: [
     "直近3〜6か月の媒体関連費・新規客数・再来率を出してください。数字が分からないなら、まずそこが最優先です。",
   ],
-  measure: ["媒体経由の新規数", "新規1人あたりの獲得費（CAC）", "再来率", "6か月の顧客価値", "媒体依存率"],
   offerNote: "この記事に収益リンクはありません。掲載の問い合わせは公式サイトから行ってください。",
   related: ["reservation-system", "line-official"],
-  cta: "自分の店の集客依存度を確認する",
 };
 
 const reservation: Article = {
   slug: "reservation-system",
+  subject: "予約システム",
   area: "RESERVATION",
   title: "予約システムは本当に必要？LINE・電話・DMで十分な店との違い",
   shortTitle: "予約システムは本当に必要？",
@@ -152,20 +149,18 @@ const reservation: Article = {
     { state: "SYSTEM_RECOMMENDED", label: "システム化する価値が高い", fit: "複数スタッフ・複数経路・漏れや二重予約が起きている。", action: "受付経路を寄せ、リマインドと空き枠を自動化する。" },
     { state: "INTEGRATION_REVIEW", label: "経路の一本化・連携を見直す", fit: "経路が分散し、漏れが出ていて、スタッフも複数。", action: "新規導入の前に、受付経路の一本化と既存ツールの連携を見直す。" },
   ],
-  miniCheck: MINI_CHECKS["reservation-system"],
   alternative: [
     "電話・LINE・DMで受け、紙かスプレッドシートの台帳で管理します。受付経路を1つに決めるだけでも、漏れは減ります。",
     "Googleビジネスプロフィールに電話番号と営業時間を正しく載せれば、検索からの予約は受けられます。",
   ],
   nextAction: ["直近1週間の予約受付に何分使ったか、何経路から予約が来たかを数えてください。"],
-  measure: ["予約対応にかかる時間", "営業時間外の予約数", "予約漏れ・二重予約の件数", "キャンセル対応の手間", "予約経路の数"],
   offerNote: "Starterで十分な人を有料へ誘導しません。紹介制度が有効なときだけ PR 表示を付けます。",
   related: ["line-official", "hotpepper-beauty"],
-  cta: "予約管理の負荷を確認する",
 };
 
 const pos: Article = {
   slug: "pos-register",
+  subject: "POSレジ",
   area: "POS",
   title: "POSレジは本当に必要？小さなお店で入れる店・まだ不要な店",
   shortTitle: "POSレジは本当に必要？",
@@ -206,19 +201,17 @@ const pos: Article = {
     { state: "ADVANCED_POS_FIT", label: "高機能POSの価値がある", fit: "在庫が重要・品目が多い・複数スタッフ・分析したい。", action: "在庫と分析の要件を書き出し、連携範囲で選ぶ。" },
     { state: "INTEGRATION_REVIEW", label: "連携を前提に選ぶ", fit: "キャッシュレスや会計と連携したい。", action: "連携先を先に決め、対応するPOSから選ぶ。" },
   ],
-  miniCheck: MINI_CHECKS["pos-register"],
   alternative: [
     "無料のレジアプリか、手書き伝票＋表計算で売上だけ記録します。締め作業に時間がかかり始めたら、そのときにPOSを検討すれば十分です。",
   ],
   nextAction: ["商品・メニュー数と在庫の管理方法を書き出し、締め作業に毎日何分かかっているかを1週間測ってください。"],
-  measure: ["締め作業の時間", "在庫差異", "集計の時間", "転記の回数", "売上分析を見た頻度"],
   offerNote: "必要性が確定したあとだけ候補を出します。収益リンクが有効なときだけ PR 表示を付け、公式の選択肢も同じ条件で並べます。",
   related: ["cashless-payment", "reservation-system"],
-  cta: "レジ周りの負荷を確認する",
 };
 
 const cashless: Article = {
   slug: "cashless-payment",
+  subject: "キャッシュレス決済",
   area: "CASHLESS",
   title: "キャッシュレス決済は本当に必要？手数料を払う価値がある店・ない店",
   shortTitle: "キャッシュレス決済は本当に必要？",
@@ -262,19 +255,17 @@ const cashless: Article = {
     { state: "CONDITIONAL", label: "条件付き", fit: "店頭決済はあるが、要望や負荷はまだ小さい。", action: "要望を1か月記録し、続くなら試す。" },
     { state: "LOW_PRIORITY", label: "優先度は低い", fit: "店頭決済がほぼない・請求書/振込中心・顧客不便が確認できない。", action: "今は入れない。請求・振込の方法を整える。" },
   ],
-  miniCheck: MINI_CHECKS["cashless-payment"],
   alternative: [
     "現金と振込で受け、「カード使える？」と聞かれた回数を記録します。要望が月に何件も続くなら、そのときに固定費ゼロの候補で試せば遅くありません。",
   ],
   nextAction: ["月の店頭売上の想定額と、想定される料率で手数料を試算してください。粗利に対して許容できるかで決めます。"],
-  measure: ["キャッシュレス利用率", "月間の決済手数料", "会計にかかる時間", "現金締めの時間", "お客さまからの要望数"],
   offerNote: "必要性が確定したあとだけ、収益リンクの候補と公式の候補を同じ条件で並べます。収益リンクが有効なときだけ PR 表示を付けます。",
   related: ["pos-register", "reservation-system"],
-  cta: "手数料を払う価値があるか確認する",
 };
 
 const line: Article = {
   slug: "line-official",
+  subject: "LINE公式アカウント",
   area: "LINE",
   title: "LINE公式アカウントは本当に必要？小さなお店が作る前に考えたいこと",
   shortTitle: "LINE公式アカウントは本当に必要？",
@@ -319,15 +310,12 @@ const line: Article = {
     { state: "SCALE_AFTER_VALUE", label: "成果が出てから広げる", fit: "顧客数が多く、無料枠を超えそう。", action: "予約・再来への効果を測ってから有料プランへ。" },
     { state: "NOT_PRIORITY", label: "今は優先しない", fit: "再来が少ない、または顧客がまだいない。", action: "まず来店客を増やし、再来客が見えたら作る。" },
   ],
-  miniCheck: MINI_CHECKS["line-official"],
   alternative: [
     "再来のお礼や次回予約の案内は、会計時の一言と名刺・ショップカードで十分なことが多いです。再来客が見えてきてから作っても遅くありません。",
   ],
   nextAction: ["友だち数の見込み × 月の配信回数で必要通数を出し、送る内容を1つ決めてください。決まらないなら、まだ作る段階ではありません。"],
-  measure: ["友だちの純増数", "配信の到達数", "ブロック数", "予約・再来につながった数", "配信コスト"],
   offerNote: "この記事に収益リンクはありません。開設は公式サイトから行ってください。",
   related: ["reservation-system", "hotpepper-beauty"],
-  cta: "LINEを作る前に決めることを確認する",
 };
 
 export const ARTICLES: Article[] = [hotpepper, reservation, pos, cashless, line];

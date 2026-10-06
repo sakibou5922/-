@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArticleCard } from "@/components/ArticleCard";
 import { HeroDecisionVisual } from "@/components/HeroDecisionVisual";
 import { JsonLd } from "@/components/JsonLd";
 import { TrackView } from "@/components/TrackView";
-import { ARTICLES, articleHref } from "@/lib/content/articles";
+import { ARTICLES } from "@/lib/content/articles";
+import { organizationJsonLd } from "@/lib/seo";
 import { BRAND, absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `${BRAND.brand_name}｜${BRAND.descriptor}`,
   description:
     "そのサービス、本当に今のお店に必要ですか？ HOT PEPPER Beauty・LINE・予約システム・POS・キャッシュレス。小さなお店に「必要」「あとでいい」「今はいらない」を、8問で整理します。無料・登録不要・営業連絡なし。",
   alternates: { canonical: absoluteUrl("/") },
@@ -17,27 +18,7 @@ export default function HomePage() {
   return (
     <>
       <TrackView name="entry_view" props={{ page: "top" }} />
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@graph": [
-            {
-              "@type": "Organization",
-              "@id": `${absoluteUrl("/")}#organization`,
-              name: BRAND.brand_name,
-              url: absoluteUrl("/"),
-            },
-            {
-              "@type": "WebSite",
-              "@id": `${absoluteUrl("/")}#website`,
-              name: BRAND.brand_name,
-              url: absoluteUrl("/"),
-              inLanguage: "ja",
-              publisher: { "@id": `${absoluteUrl("/")}#organization` },
-            },
-          ],
-        }}
-      />
+      <JsonLd data={organizationJsonLd()} />
 
       <section className="hero">
         <div className="container hero__grid">
@@ -72,12 +53,7 @@ export default function HomePage() {
           </div>
           <div className="card-grid card-grid--3">
             {ARTICLES.map((a) => (
-              <Link key={a.slug} href={articleHref(a.slug)} className="card article-card">
-                <span className="article-card__kicker">本当に必要？</span>
-                <h3>{a.shortTitle.replace(/は本当に必要？$/, "")}</h3>
-                <p>{a.immediateAnswer[0]}</p>
-                <span className="article-card__more">判断基準を読む →</span>
-              </Link>
+              <ArticleCard key={a.slug} article={a} />
             ))}
             <Link href="/guide/opening-order" className="card article-card">
               <span className="article-card__kicker">順番</span>

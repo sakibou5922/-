@@ -21,29 +21,22 @@ export interface Brand {
 
 export const BRAND: Brand = brandJson as Brand;
 
-export type FlagName =
-  | "affiliate_square_enabled"
-  | "partner_freee_reservation_enabled"
-  | "affiliate_freee_accounting_enabled"
-  | "smask_consultation_enabled"
-  | "public_release_enabled";
-
-export type Flags = Record<FlagName, boolean>;
-
-const FLAG_NAMES: FlagName[] = [
+const FLAG_NAMES = [
   "affiliate_square_enabled",
   "partner_freee_reservation_enabled",
   "affiliate_freee_accounting_enabled",
   "smask_consultation_enabled",
   "public_release_enabled",
-];
+] as const;
+
+export type FlagName = (typeof FLAG_NAMES)[number];
+export type Flags = Record<FlagName, boolean>;
+export type EnvLike = Record<string, string | undefined>;
 
 /**
  * 既定は config/features.json（すべて false）。
  * 環境変数 FLAG_<NAME>=true でサーバー側だけ上書きできる（プレビュー検証用）。
  */
-export type EnvLike = Record<string, string | undefined>;
-
 export function loadFlags(env: EnvLike = process.env): Flags {
   const out = {} as Flags;
   for (const name of FLAG_NAMES) {
@@ -57,12 +50,14 @@ export function loadFlags(env: EnvLike = process.env): Flags {
 export const FLAGS: Flags = loadFlags();
 
 export const PUBLIC_ROUTES: string[] = (routesJson as { public_routes: string[] }).public_routes;
-export const NOINDEX_PATTERNS: string[] = (routesJson as { noindex_patterns: string[] }).noindex_patterns;
+
+/** routes.json の noindex_patterns（末尾 * は前方一致）を前方一致の接頭辞に正規化したもの */
+export const NOINDEX_PREFIXES: string[] = (routesJson as { noindex_patterns: string[] }).noindex_patterns.map((p) =>
+  p.endsWith("*") ? p.slice(0, -1) : p,
+);
 
 export function isNoindexPath(pathname: string): boolean {
-  return NOINDEX_PATTERNS.some((pattern) =>
-    pattern.endsWith("*") ? pathname.startsWith(pattern.slice(0, -1)) : pathname === pattern,
-  );
+  return NOINDEX_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 }
 
 export function siteUrl(env: EnvLike = process.env): string {
@@ -70,8 +65,11 @@ export function siteUrl(env: EnvLike = process.env): string {
   return (u && u.length > 0 ? u : BRAND.site_url).replace(/\/+$/, "");
 }
 
+/** 絶対 URL。ルート（"/"）は末尾スラッシュなし（canonical と sitemap を同じ綴りにする） */
 export function absoluteUrl(pathname: string): string {
-  return `${siteUrl()}${pathname.startsWith("/") ? pathname : `/${pathname}`}`;
+  const base = siteUrl();
+  if (pathname === "/" || pathname === "") return base;
+  return `${base}${pathname.startsWith("/") ? pathname : `/${pathname}`}`;
 }
 
 /** 公開判定: フラグ と brand.public_release の両方が true のときだけ公開扱い */

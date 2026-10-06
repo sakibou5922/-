@@ -9,7 +9,7 @@ import "./globals.css";
 
 /** 見出し用の明朝。Android など明朝を持たない端末でも編集物らしい見出しにする（ビルド時に自己ホスト） */
 const serif = Noto_Serif_JP({
-  weight: ["600", "700"],
+  weight: ["700"],
   subsets: ["latin"],
   display: "swap",
   preload: false,

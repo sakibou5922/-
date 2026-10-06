@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { track } from "@/lib/analytics";
 import { getMiniCheck } from "@/lib/content/minichecks";
+import { checkHref } from "@/lib/decision/encode";
 import type { Area } from "@/lib/decision/types";
 import type { OfferSelection } from "@/lib/offers";
-import { ENTRY_KEY, PREFILL_KEY } from "./CheckWizard";
+import { writePrefill, type Prefill } from "@/lib/prefill";
 import { OfferSection } from "./OfferCard";
 
 interface Props {
@@ -22,16 +23,12 @@ export function MiniCheck({ slug, area, offers, areaName, offerNote }: Props) {
   const mc = getMiniCheck(slug);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [result, setResult] = useState<string | null>(null);
-  const [started, setStarted] = useState(false);
 
   if (!mc) return null;
   const complete = mc.questions.every((q) => answers[q.id] !== undefined);
 
   const onChange = (id: string, value: string) => {
-    if (!started) {
-      setStarted(true);
-      track("mini_check_start", { article: slug });
-    }
+    if (Object.keys(answers).length === 0) track("mini_check_start", { article: slug });
     setAnswers((prev) => ({ ...prev, [id]: value }));
     setResult(null);
   };
@@ -44,19 +41,13 @@ export function MiniCheck({ slug, area, offers, areaName, offerNote }: Props) {
     track("mini_check_complete", { article: slug, state });
     track("article_decision_view", { article: slug, state });
     // 8問チェックへの事前入力（同じ質問を再質問しない）
-    try {
-      const prefill: Record<string, string> = {};
-      for (const q of mc.questions) {
-        const v = answers[q.id];
-        if (q.prefill && v !== undefined && q.prefill.map[v] !== undefined) {
-          prefill[q.prefill.key] = q.prefill.map[v] as string;
-        }
-      }
-      window.sessionStorage.setItem(PREFILL_KEY, JSON.stringify(prefill));
-      window.sessionStorage.setItem(ENTRY_KEY, JSON.stringify(area));
-    } catch {
-      /* storage unavailable: 事前入力なしで続行 */
+    const prefill: Prefill = {};
+    for (const q of mc.questions) {
+      const v = answers[q.id];
+      const mapped = q.prefill && v !== undefined ? q.prefill.map[v] : undefined;
+      if (q.prefill && mapped !== undefined) prefill[q.prefill.key] = mapped;
     }
+    writePrefill(prefill);
   };
 
   const state = result ? mc.states.find((s) => s.id === result) : undefined;
@@ -103,7 +94,7 @@ export function MiniCheck({ slug, area, offers, areaName, offerNote }: Props) {
           <p>{state.summary}</p>
           <p className="result-card__next">次にやること：{state.next}</p>
           <div className="btn-row">
-            <Link href={`/check?from=${area}`} className="btn btn--primary">
+            <Link href={checkHref(area)} className="btn btn--primary">
               8問で、ほかに今必要なものも確認する
             </Link>
           </div>

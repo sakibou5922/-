@@ -5,15 +5,15 @@ import { StatusBadge } from "./StatusBadge";
 
 interface Props {
   decision: AreaDecision;
-  compact?: boolean;
+  /** 記事から来た「気になっていた」領域 */
   highlight?: boolean;
 }
 
-export function DecisionCard({ decision: d, compact = false, highlight = false }: Props) {
+export function DecisionCard({ decision: d, highlight = false }: Props) {
   const meta = AREA_META[d.area];
   return (
     <article
-      className={`card decision decision--${d.status}${compact ? " decision--compact" : ""}`}
+      className={`card decision decision--${d.status}`}
       aria-labelledby={`decision-${d.area}`}
       data-area={d.area}
       data-status={d.status}
@@ -21,7 +21,7 @@ export function DecisionCard({ decision: d, compact = false, highlight = false }
       <div className="decision__head">
         <StatusBadge status={d.status} />
         <h3 id={`decision-${d.area}`}>{meta.name}</h3>
-        {highlight && <span className="status status--entry">気になっていたもの</span>}
+        {highlight && <span className="entry-mark">気になっていたもの</span>}
       </div>
       {d.reasons.length > 0 && (
         <ul className="decision__reasons">

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { CheckWizard } from "@/components/CheckWizard";
 
@@ -21,15 +20,7 @@ export default function CheckPage() {
         </p>
       </div>
       <section className="section section--tight">
-        <Suspense
-          fallback={
-            <div className="wizard">
-              <p className="wizard__help">読み込み中…</p>
-            </div>
-          }
-        >
-          <CheckWizard />
-        </Suspense>
+        <CheckWizard />
       </section>
     </div>
   );

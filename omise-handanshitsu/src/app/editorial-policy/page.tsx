@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { REGISTRY_VERIFIED_AT, formatDateJa, freshnessDays, listSources } from "@/lib/evidence";
+import { REGISTRY_VERIFIED_AT, freshnessDays, listSources } from "@/lib/evidence";
+import { formatDateJa } from "@/lib/format";
 import { BRAND } from "@/lib/site";
 
 export const metadata: Metadata = {

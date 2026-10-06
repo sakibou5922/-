@@ -88,7 +88,7 @@ h2,
 h3,
 h4 {
   font-family: var(--font-serif);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.35;
   letter-spacing: 0.02em;
   margin: 0;
@@ -151,18 +151,6 @@ code {
   background: var(--paper-2);
   padding: 0.1em 0.4em;
   border-radius: 4px;
-}
-
-.visually-hidden {
-  position: absolute !important;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 
 .skip-link {
@@ -403,9 +391,6 @@ main {
 }
 .btn--ghost:hover {
   background: var(--paper-2);
-}
-.btn--block {
-  width: 100%;
 }
 .btn[disabled],
 .btn:disabled {
@@ -713,9 +698,6 @@ main {
   margin-top: 12px;
   font-size: var(--fs-sm);
   font-weight: 700;
-}
-.decision--compact .decision__sub {
-  display: none;
 }
 
 /* result page */
@@ -1533,15 +1515,17 @@ main {
   }
 }
 
-/* 「気になっていたもの」は状態ではなく目印 */
-.status--entry {
-  background: transparent;
+/* 「気になっていたもの」は状態ではなく目印（バッジとは別物） */
+.entry-mark {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: 6px;
   border: 1px solid var(--line-strong);
   color: var(--ink-2);
-  font-weight: 500;
-}
-.status--entry::before {
-  display: none;
+  white-space: nowrap;
 }
 
 /* 考え方：カードではなく、罫線付きの定義リスト（編集物らしく） */
@@ -1600,7 +1584,3 @@ main {
   margin-inline: 0;
 }
 
-/* ウィザード読み込み中も同じ高さを確保し、レイアウトシフトを防ぐ */
-.wizard[aria-busy="true"] {
-  min-height: 520px;
-}

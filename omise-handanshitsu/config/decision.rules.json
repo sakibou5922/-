@@ -1,32 +1,27 @@
 {
   "version": "0.1",
-  "statuses": [
-    "FREE_FOUNDATION",
-    "NOW",
-    "NEXT",
-    "LATER",
-    "NOT_PRIORITY",
-    "REVIEW_EXISTING",
-    "HIDDEN"
-  ],
+  "_note": "03_DECISION_ENGINE.md の点数・閾値・ハードルールをデータ化したもの。engine は flags / offers を参照しない（Affiliate は Need 判定に影響しない）。INTEGRATION の HIDDEN 判定（既存>=integration_min_existing_services かつ 二重入力 YES で NEXT、それ以外 HIDDEN）だけは engine 内に実装。ACCOUNTING / WEBSITE の点数は仕様に定義がないため v0.1 暫定。",
   "max_now": 3,
   "max_next": 2,
-  "affiliate_influences_need_decision": false,
-  "hard_rules": {
-    "reservation_walkin": "NOT_PRIORITY",
-    "cashless_little_onsite": "NOT_PRIORITY",
-    "pos_solo_simple": "NOT_PRIORITY",
-    "line_low_repeat": "NOT_PRIORITY",
-    "line_now_requires_operating": true,
-    "external_platform_new_max": "NEXT",
-    "integration_min_existing_services": 3
-  },
+  "areas": [
+    { "id": "GOOGLE_FOUNDATION", "existing": "GOOGLE_BUSINESS" },
+    { "id": "RESERVATION", "existing": "RESERVATION" },
+    { "id": "CASHLESS", "existing": "CASHLESS" },
+    { "id": "POS", "existing": "POS" },
+    { "id": "ACCOUNTING", "existing": "ACCOUNTING" },
+    { "id": "LINE", "existing": "LINE" },
+    { "id": "EXTERNAL_PLATFORM", "existing": "EXTERNAL_PLATFORM" },
+    { "id": "WEBSITE", "existing": "WEBSITE" },
+    { "id": "INTEGRATION", "existing": null }
+  ],
   "thresholds": {
     "RESERVATION": { "NOW": 6, "NEXT": 3 },
     "CASHLESS": { "NOW": 5, "NEXT": 3 },
     "POS": { "NOW": 6, "NEXT": 3 },
     "LINE": { "NOW": 6, "NEXT": 3 },
-    "EXTERNAL_PLATFORM": { "NEXT": 5 }
+    "EXTERNAL_PLATFORM": { "NEXT": 5 },
+    "ACCOUNTING": { "NEXT": 3 },
+    "WEBSITE": { "NEXT": 3 }
   },
   "scores": {
     "RESERVATION": {
@@ -56,23 +51,27 @@
       "stage": { "PRE_OPEN_31_90": 2, "PRE_OPEN_0_30": 2, "OPERATING": 1 },
       "business_type": { "BEAUTY_SALON": 2, "HEALTH_TREATMENT": 2, "FOOD": 2 },
       "new_customer_state": { "NEED_MORE": 3, "ENOUGH": -2, "CAPACITY_FULL": -5 }
+    },
+    "ACCOUNTING": {
+      "stage": { "PRE_OPEN_90_PLUS": 1, "PRE_OPEN_31_90": 1, "PRE_OPEN_0_30": 3, "OPERATING": 3 }
+    },
+    "WEBSITE": {
+      "stage": { "OPERATING": 1 },
+      "new_customer_state": { "NEED_MORE": 2 }
     }
   },
-  "engineering_defaults": {
-    "_note": "03_DECISION_ENGINE.md に点数定義がない領域の v0.1 暫定ルール。仕様確定時に差し替える。",
-    "ACCOUNTING": { "NEXT_when_stage": ["PRE_OPEN_0_30", "OPERATING"], "otherwise": "LATER" },
-    "WEBSITE": { "NEXT_when": "OPERATING かつ 新規客が足りない かつ 外部媒体なし", "otherwise": "LATER" },
-    "INTEGRATION": { "NEXT_when": "既存サービス>=3 かつ 手作業の二重入力あり", "otherwise": "HIDDEN" }
-  },
-  "area_order": [
-    "GOOGLE_FOUNDATION",
-    "RESERVATION",
-    "CASHLESS",
-    "POS",
-    "ACCOUNTING",
-    "LINE",
-    "EXTERNAL_PLATFORM",
-    "WEBSITE",
-    "INTEGRATION"
-  ]
+  "hard_rules": {
+    "not_priority_when": [
+      { "area": "RESERVATION", "all": [{ "key": "reservation_model", "value": "WALKIN_DOMINANT" }] },
+      { "area": "CASHLESS", "all": [{ "key": "onsite_payment", "value": "LITTLE" }] },
+      { "area": "POS", "all": [{ "key": "staff_count", "value": "SOLO" }, { "key": "ops_complexity", "value": "SIMPLE" }] },
+      { "area": "LINE", "all": [{ "key": "repeat_rate", "value": "LOW" }] }
+    ],
+    "caps": [
+      { "area": "EXTERNAL_PLATFORM", "max_status": "NEXT" },
+      { "area": "LINE", "max_status": "NEXT", "unless": { "key": "stage", "value": "OPERATING" } },
+      { "area": "WEBSITE", "max_status": "LATER", "when_existing": "EXTERNAL_PLATFORM" }
+    ],
+    "integration_min_existing_services": 3
+  }
 }

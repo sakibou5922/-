@@ -8,9 +8,11 @@ import { JsonLd } from "@/components/JsonLd";
 import { MiniCheck } from "@/components/MiniCheck";
 import { TrackView } from "@/components/TrackView";
 import { ARTICLES, articleHref, getArticle } from "@/lib/content/articles";
+import { checkHref } from "@/lib/decision/encode";
 import { AREA_META } from "@/lib/decision/labels";
-import { formatDateJa } from "@/lib/evidence";
+import { formatDateJa } from "@/lib/format";
 import { selectOffers } from "@/lib/offers";
+import { articleJsonLd } from "@/lib/seo";
 import { BRAND, absoluteUrl } from "@/lib/site";
 
 /** 鮮度判定を定期的にやり直す（料金 30 日ルール） */
@@ -57,20 +59,7 @@ export default async function ArticlePage({ params }: Props) {
   return (
     <article className="container">
       <TrackView name="entry_view" props={{ page: "article", article: a.slug }} />
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "Article",
-          headline: a.title,
-          description: a.description,
-          inLanguage: "ja",
-          datePublished: a.publishedAt,
-          dateModified: a.reviewedAt,
-          mainEntityOfPage: absoluteUrl(articleHref(a.slug)),
-          author: { "@type": "Organization", name: BRAND.brand_name },
-          publisher: { "@type": "Organization", name: BRAND.brand_name, url: absoluteUrl("/") },
-        }}
-      />
+      <JsonLd data={articleJsonLd({ headline: a.title, description: a.description, path: articleHref(a.slug), published: a.publishedAt, modified: a.reviewedAt })} />
       <Breadcrumbs
         items={[
           { name: "本当に必要？", href: "/need" },
@@ -154,7 +143,7 @@ export default async function ArticlePage({ params }: Props) {
 
         <h2>導入したら測るもの</h2>
         <ul className="measure-list">
-          {a.measure.map((m) => (
+          {AREA_META[a.area].measure.map((m) => (
             <li key={m}>{m}</li>
           ))}
         </ul>
@@ -183,7 +172,7 @@ export default async function ArticlePage({ params }: Props) {
       </div>
 
       <div className="sticky-cta">
-        <Link href={`/check?from=${a.area}`} className="btn btn--primary">
+        <Link href={checkHref(a.area)} className="btn btn--primary">
           8問で、今必要なものを確認する
         </Link>
       </div>

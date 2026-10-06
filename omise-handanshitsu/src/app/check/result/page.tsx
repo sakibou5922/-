@@ -5,10 +5,10 @@ import { OfferSection } from "@/components/OfferCard";
 import { SmaskExit } from "@/components/SmaskExit";
 import { TrackView } from "@/components/TrackView";
 import { decide } from "@/lib/decision/engine";
-import { answersToParams, entryFromParams, paramsToAnswers, type SearchParamsLike } from "@/lib/decision/encode";
-import { AREA_META, QUESTIONS, STATUS_META, optionLabel } from "@/lib/decision/labels";
-import type { AreaDecision } from "@/lib/decision/types";
-import { selectOffers } from "@/lib/offers";
+import { checkHref, entryFromParams, paramsToAnswers, type SearchParamsLike } from "@/lib/decision/encode";
+import { AREA_META, STATUS_META, answerLabel, visibleQuestions } from "@/lib/decision/labels";
+import { isNeedConfirmed, type Area, type AreaDecision } from "@/lib/decision/types";
+import { OFFER_DISCLOSURE_NOTE, selectOffers } from "@/lib/offers";
 import { BRAND, FLAGS } from "@/lib/site";
 
 /** 結果の組み合わせページは noindex（02 / routes.json） */
@@ -21,6 +21,39 @@ export const dynamic = "force-dynamic";
 
 interface Props {
   searchParams: Promise<SearchParamsLike>;
+}
+
+interface Group {
+  id: string;
+  tone?: "now" | "next" | "not";
+  heading: string;
+  description: string;
+  items: AreaDecision[];
+  empty: string | null;
+  /** 2 枚以上あれば 2 列（判断の重さが軽い群だけ） */
+  twoCol?: boolean;
+}
+
+function ResultGroup({ group, entry }: { group: Group; entry: Area | null }) {
+  if (group.items.length === 0 && group.empty === null) return null;
+  const headingId = `g-${group.id}`;
+  return (
+    <section className={`result-group${group.tone ? ` result-group--${group.tone}` : ""}`} aria-labelledby={headingId}>
+      <div className="result-group__head">
+        <h2 id={headingId}>{group.heading}</h2>
+        <p>{group.description}</p>
+      </div>
+      {group.items.length > 0 ? (
+        <div className={`card-grid${group.twoCol && group.items.length >= 2 ? " card-grid--2" : ""}`}>
+          {group.items.map((d) => (
+            <DecisionCard key={d.area} decision={d} highlight={d.area === entry} />
+          ))}
+        </div>
+      ) : (
+        <p className="result-group__empty">{group.empty}</p>
+      )}
+    </section>
+  );
 }
 
 export default async function ResultPage({ searchParams }: Props) {
@@ -46,11 +79,19 @@ export default async function ResultPage({ searchParams }: Props) {
   const result = decide(answers);
   const now = new Date();
   const g = result.groups;
-  const notNow: AreaDecision[] = [...g.not_priority, ...g.later];
-  const editHref = `/check?${answersToParams(answers, entry).toString()}`;
+  const notNow = [...g.not_priority, ...g.later];
   const entryDecision = entry ? result.decisions.find((d) => d.area === entry) : undefined;
 
-  const offerAreas = [...g.now, ...g.next, ...g.free_foundation]
+  const groups: Group[] = [
+    { id: "free", heading: `1. ${STATUS_META.FREE_FOUNDATION.label}`, description: STATUS_META.FREE_FOUNDATION.description, items: g.free_foundation, empty: "無料の土台はすでに整っています。「既存サービスの見直し」で状態を確認してください。" },
+    { id: "now", tone: "now", heading: `2. ${STATUS_META.NOW.label}`, description: STATUS_META.NOW.description, items: g.now, empty: "いま急いで整えるものはありません。無料の土台と「次に考える」から進めてください。" },
+    { id: "next", tone: "next", heading: `3. ${STATUS_META.NEXT.label}`, description: STATUS_META.NEXT.description, items: g.next, empty: "次に検討するものは、いまのところありません。" },
+    { id: "not", tone: "not", heading: `4. ${STATUS_META.NOT_PRIORITY.label}・${STATUS_META.LATER.label}`, description: `入れない判断で問題ないもの（${STATUS_META.NOT_PRIORITY.label}）と、あとで見直せば十分なもの（${STATUS_META.LATER.label}）。`, items: notNow, empty: "優先しないと判断したものはありません。", twoCol: true },
+    { id: "review", heading: `5. ${STATUS_META.REVIEW_EXISTING.label}`, description: STATUS_META.REVIEW_EXISTING.description, items: g.review_existing, empty: null, twoCol: true },
+  ];
+
+  const offerAreas = result.decisions
+    .filter((d) => isNeedConfirmed(d.status))
     .map((d) => ({ d, sel: selectOffers(d.area, d.status, { now }) }))
     .filter((x) => x.sel.cards.length > 0);
 
@@ -74,117 +115,37 @@ export default async function ResultPage({ searchParams }: Props) {
       {entryDecision && (
         <div className="result-entry" role="note">
           <p>
-            <strong>気になっていた「{AREA_META[entryDecision.area].name}」は：</strong>{" "}
-            {STATUS_META[entryDecision.status].label}。下の一覧に理由があります。
+            <strong>気になっていた「{AREA_META[entryDecision.area].name}」は：</strong> {STATUS_META[entryDecision.status].label}
+            。下の一覧に理由があります。
           </p>
         </div>
       )}
 
-      <section className="result-group" aria-labelledby="g-free">
-        <div className="result-group__head">
-          <h2 id="g-free">1. 無料で先に整える</h2>
-          <p>{STATUS_META.FREE_FOUNDATION.description}</p>
-        </div>
-        {g.free_foundation.length > 0 ? (
-          <div className="card-grid">
-            {g.free_foundation.map((d) => (
-              <DecisionCard key={d.area} decision={d} highlight={d.area === entry} />
-            ))}
-          </div>
-        ) : (
-          <p className="result-group__empty">無料の土台はすでに整っています。「既存サービスの見直し」で状態を確認してください。</p>
-        )}
-      </section>
-
-      <section className="result-group result-group--now" aria-labelledby="g-now">
-        <div className="result-group__head">
-          <h2 id="g-now">2. 今、整える</h2>
-          <p>{STATUS_META.NOW.description}</p>
-        </div>
-        {g.now.length > 0 ? (
-          <div className="card-grid">
-            {g.now.map((d) => (
-              <DecisionCard key={d.area} decision={d} highlight={d.area === entry} />
-            ))}
-          </div>
-        ) : (
-          <p className="result-group__empty">いま急いで整えるものはありません。無料の土台と「次に考える」から進めてください。</p>
-        )}
-      </section>
-
-      <section className="result-group result-group--next" aria-labelledby="g-next">
-        <div className="result-group__head">
-          <h2 id="g-next">3. 次に考える</h2>
-          <p>{STATUS_META.NEXT.description}</p>
-        </div>
-        {g.next.length > 0 ? (
-          <div className="card-grid">
-            {g.next.map((d) => (
-              <DecisionCard key={d.area} decision={d} highlight={d.area === entry} />
-            ))}
-          </div>
-        ) : (
-          <p className="result-group__empty">次に検討するものは、いまのところありません。</p>
-        )}
-      </section>
-
-      <section className="result-group result-group--not" aria-labelledby="g-not">
-        <div className="result-group__head">
-          <h2 id="g-not">4. 今は優先しない・あとで考える</h2>
-          <p>入れない判断で問題ないもの（今は優先しない）と、あとで見直せば十分なもの（あとで考える）。</p>
-        </div>
-        {notNow.length > 0 ? (
-          <div className={`card-grid${notNow.length >= 2 ? " card-grid--2" : ""}`}>
-            {notNow.map((d) => (
-              <DecisionCard key={d.area} decision={d} highlight={d.area === entry} />
-            ))}
-          </div>
-        ) : (
-          <p className="result-group__empty">優先しないと判断したものはありません。</p>
-        )}
-      </section>
-
-      {g.review_existing.length > 0 && (
-        <section className="result-group" aria-labelledby="g-review">
-          <div className="result-group__head">
-            <h2 id="g-review">5. 既存サービスの見直し</h2>
-            <p>{STATUS_META.REVIEW_EXISTING.description}</p>
-          </div>
-          <div className={`card-grid${g.review_existing.length >= 2 ? " card-grid--2" : ""}`}>
-            {g.review_existing.map((d) => (
-              <DecisionCard key={d.area} decision={d} highlight={d.area === entry} />
-            ))}
-          </div>
-        </section>
-      )}
+      {groups.map((group) => (
+        <ResultGroup key={group.id} group={group} entry={entry} />
+      ))}
 
       <section className="result-summary" aria-labelledby="summary-heading">
         <h2 id="summary-heading" style={{ fontSize: "1.1rem", marginBottom: 10 }}>
           あなたの回答
         </h2>
         <dl>
-          {QUESTIONS.filter((q) => !q.when || q.when(answers)).map((q) => {
-            const v = answers[q.key];
-            const label = Array.isArray(v) ? v.map((x) => optionLabel(q.key, x)).join("、") : typeof v === "string" ? optionLabel(q.key, v) : "—";
-            return (
-              <div key={q.key} style={{ display: "contents" }}>
-                <dt>{q.title}</dt>
-                <dd>{label}</dd>
-              </div>
-            );
-          })}
+          {visibleQuestions(answers).map((q) => (
+            <div key={q.key} style={{ display: "contents" }}>
+              <dt>{q.title}</dt>
+              <dd>{answerLabel(q.key, answers[q.key])}</dd>
+            </div>
+          ))}
         </dl>
         <div className="btn-row" style={{ marginTop: 14 }}>
-          <Link href={editHref} className="btn btn--ghost">
+          <Link href={checkHref(entry, answers)} className="btn btn--ghost">
             回答を直す
           </Link>
-          <Link href="/check?reset=1" className="btn btn--ghost">
+          <Link href={checkHref()} className="btn btn--ghost">
             最初からやり直す
           </Link>
         </div>
-        <p className="btn-support">
-          ルール版 {result.rule_version}。同じ回答なら、いつ開いても同じ結果になります。このページは検索エンジンに登録されません。
-        </p>
+        <p className="btn-support">ルール版 {result.rule_version}。同じ回答なら、いつ開いても同じ結果になります。このページは検索エンジンに登録されません。</p>
       </section>
 
       {offerAreas.length > 0 && (
@@ -192,11 +153,9 @@ export default async function ResultPage({ searchParams }: Props) {
           <h2 id="offers-heading" style={{ fontSize: "1.2rem" }}>
             必要と判断した領域の候補
           </h2>
-          <p className="offers__note">
-            判断結果が先、候補はその下です。並び順は固定で、紹介報酬では並べ替えません。収益リンクが有効なものだけ PR 表示を付け、無効なときは公式サイトへの通常リンクになります。
-          </p>
+          <p className="offers__note">判断結果が先、候補はその下です。{OFFER_DISCLOSURE_NOTE}</p>
           {offerAreas.map(({ d, sel }) => (
-            <OfferSection key={d.area} selection={sel} areaName={AREA_META[d.area].name} note="" />
+            <OfferSection key={d.area} selection={sel} areaName={AREA_META[d.area].name} />
           ))}
         </section>
       )}

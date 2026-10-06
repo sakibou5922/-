@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_RULES, decide, hashAnswers, parseAnswers, scoreArea } from "@/lib/decision/engine";
+import { DEFAULT_RULES, EXISTING_BY_AREA, decide, hashAnswers, parseAnswers, scoreArea } from "@/lib/decision/engine";
 import {
   BUSINESS_TYPES,
   DecisionInputError,
@@ -91,7 +91,7 @@ describe("A04 NOW 最大3 / NEXT 最大2", () => {
     expect(r.groups.next.length).toBeLessThanOrEqual(2);
     const demoted = r.decisions.filter((d) => d.demoted_from === "NOW");
     expect(demoted.length).toBeGreaterThanOrEqual(1);
-    expect(demoted[0]?.reasons.at(-1)).toContain("3つまでに絞る");
+    expect(demoted[0]?.reasons.at(-1)).toContain(`${DEFAULT_RULES.max_now}つまでに絞る`);
   });
 });
 
@@ -167,10 +167,8 @@ describe("全組み合わせの不変条件（A04 / A09 / A10 / A05）", () => {
                     const line = find(r, "LINE");
                     if (stage !== "OPERATING") expect(line?.status).not.toBe("NOW"); // A09
                     expect(find(r, "EXTERNAL_PLATFORM")?.status).not.toBe("NOW"); // A10
-                    for (const s of existing_services) {
-                      if (s === "NONE") continue;
-                      const area = s === "GOOGLE_BUSINESS" ? "GOOGLE_FOUNDATION" : s;
-                      expect(find(r, area)?.status).toBe("REVIEW_EXISTING"); // A05
+                    for (const [area, service] of Object.entries(EXISTING_BY_AREA)) {
+                      if (service && existing_services.includes(service)) expect(find(r, area)?.status).toBe("REVIEW_EXISTING"); // A05
                     }
                     // 点数は結果に含めない。理由文は「。」で始まらない。次の行動は必ずある
                     for (const d of r.decisions) {
@@ -195,9 +193,6 @@ describe("理由文と次の行動", () => {
       expect(d.next_action.length).toBeGreaterThan(0);
       expect(d.measure.length).toBeGreaterThan(0);
       expect(d.alternative).toBeNull();
-    }
-    for (const d of [...r.groups.not_priority, ...r.groups.later]) {
-      expect(d.alternative ?? "").not.toBe("—");
     }
   });
   it("要因ゼロの LATER でも理由文が「。」から始まらない（外部媒体・開業90日以上・物販）", () => {

@@ -1,11 +1,8 @@
 // SEO の基本チェック（/seo page 相当）：title 一意・description・canonical・JSON-LD・h1・noindex・sitemap・robots。
 // 使い方: BASE_URL=http://localhost:3000 node scripts/seocheck.mjs
-import { readFile, mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
+import { BASE, RESULT_URL as RESULT, publicRoutes, writeReport } from "./_common.mjs";
 
-const BASE = (process.env.BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
-const routes = JSON.parse(await readFile(path.resolve("config/routes.json"), "utf8"));
-const RESULT = "/check/result?st=OPERATING&bt=FOOD&rm=MIXED&op=MOST&oc=SIMPLE&sc=SOLO&rr=MEDIUM&ex=NONE&nc=ENOUGH";
+const routes = { public_routes: await publicRoutes() };
 
 const pick = (html, re) => {
   const m = html.match(re);
@@ -69,7 +66,6 @@ if (smUrls.some((u) => u.includes("/check/result"))) {
   console.log("✗ sitemap contains result page");
 }
 
-await mkdir("docs/qa", { recursive: true });
-await writeFile(path.resolve("docs/qa/seo-report.json"), JSON.stringify({ base: BASE, pages: rows, sitemap: smUrls, robots: rbText }, null, 2));
+await writeReport("seo-report.json", { base: BASE, pages: rows, sitemap: smUrls, robots: rbText });
 console.log(`\nproblems: ${problems}`);
 process.exit(problems ? 1 : 0);

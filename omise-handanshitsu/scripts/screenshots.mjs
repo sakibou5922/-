@@ -1,18 +1,18 @@
 // 3つの幅（スマホ 375 / タブレット 768 / PC 1440）で主要ページを撮影し、横はみ出しを検出する。
 // 使い方: BASE_URL=http://localhost:3000 node scripts/screenshots.mjs
 import { chromium } from "playwright";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir } from "node:fs/promises";
 import path from "node:path";
+import { BASE, QA_DIR, writeReport } from "./_common.mjs";
 
-const BASE = (process.env.BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
-const OUT = path.resolve("docs/qa/screenshots");
+const OUT = path.join(QA_DIR, "screenshots");
 const WIDTHS = [
   { name: "sp", width: 375, height: 812, mobile: true },
   { name: "tb", width: 768, height: 1024, mobile: true },
   { name: "pc", width: 1440, height: 900, mobile: false },
 ];
 const RESULT =
-  "/check/result?st=OPERATING&bt=BEAUTY_SALON&rm=APPOINTMENT_DOMINANT&op=MOST&oc=SIMPLE&sc=SMALL_2_3&rr=HIGH&ex=GOOGLE_BUSINESS&nc=NEED_MORE&from=RESERVATION";
+  "/check/result?st=OPERATING&bt=BEAUTY_SALON&rm=APPOINTMENT_DOMINANT&op=MOST&oc=SIMPLE&sc=SMALL_2_3&rr=HIGH&ex=GOOGLE_BUSINESS&nc=NEED_MORE&from=RESERVATION"; // 「気になっていたもの」付き
 const PAGES = [
   ["top", "/"],
   ["check", "/check"],
@@ -63,7 +63,7 @@ for (const w of WIDTHS) {
   await ctx.close();
 }
 await browser.close();
-await writeFile(path.join(OUT, "..", "screenshots-report.json"), JSON.stringify(report, null, 2));
+await writeReport("screenshots-report.json", report);
 const bad = report.filter((r) => r.horizontalOverflow);
 console.log(`\n${report.length} shots, ${bad.length} with horizontal overflow`);
 process.exit(bad.length ? 1 : 0);

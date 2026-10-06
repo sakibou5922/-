@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { checkSource, formatDateJa } from "@/lib/evidence";
+import { checkSource } from "@/lib/evidence";
+import { formatDateJa } from "@/lib/format";
 
 interface Props {
   sources: string[];

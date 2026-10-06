@@ -35,7 +35,7 @@ export interface MiniCheck {
 }
 
 
-export type MiniCheckSlug = "hotpepper-beauty" | "reservation-system" | "pos-register" | "cashless-payment" | "line-official";
+type MiniCheckSlug = "hotpepper-beauty" | "reservation-system" | "pos-register" | "cashless-payment" | "line-official";
 
 export const MINI_CHECKS: Record<MiniCheckSlug, MiniCheck> = {
   "hotpepper-beauty": {

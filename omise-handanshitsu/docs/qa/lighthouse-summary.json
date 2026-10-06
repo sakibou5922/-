@@ -1,46 +1,42 @@
 [
   {
     "page": "article",
-    "perf": 90,
+    "perf": 89,
     "a11y": 100,
     "bp": 96,
     "seo": 66,
-    "lcp": "3.2 s",
-    "tbt": "120 ms",
-    "cls": "0.001",
-    "seoFails": "is-crawlable"
+    "lcp": "3.3 s",
+    "tbt": "90 ms",
+    "cls": "0.001"
   },
   {
     "page": "check",
-    "perf": 74,
-    "a11y": 100,
-    "bp": 96,
-    "seo": 66,
-    "lcp": "4.4 s",
-    "tbt": "0 ms",
-    "cls": "0.108",
-    "seoFails": "is-crawlable"
-  },
-  {
-    "page": "result",
-    "perf": 80,
-    "a11y": 100,
-    "bp": 96,
-    "seo": 63,
-    "lcp": "4.1 s",
-    "tbt": "0 ms",
-    "cls": "0.001",
-    "seoFails": "is-crawlable"
-  },
-  {
-    "page": "top",
-    "perf": 96,
+    "perf": 95,
     "a11y": 100,
     "bp": 96,
     "seo": 66,
     "lcp": "2.6 s",
+    "tbt": "120 ms",
+    "cls": "0.001"
+  },
+  {
+    "page": "result",
+    "perf": 92,
+    "a11y": 100,
+    "bp": 96,
+    "seo": 63,
+    "lcp": "3.0 s",
     "tbt": "100 ms",
-    "cls": "0.001",
-    "seoFails": "is-crawlable"
+    "cls": "0.001"
+  },
+  {
+    "page": "top",
+    "perf": 98,
+    "a11y": 100,
+    "bp": 96,
+    "seo": 66,
+    "lcp": "2.3 s",
+    "tbt": "100 ms",
+    "cls": "0.001"
   }
 ]

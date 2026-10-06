@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BRAND } from "@/lib/site";
-import { REGISTRY_VERIFIED_AT, formatDateJa } from "@/lib/evidence";
+import { REGISTRY_VERIFIED_AT } from "@/lib/evidence";
+import { formatDateJa } from "@/lib/format";
 
 export function SiteFooter() {
   return (

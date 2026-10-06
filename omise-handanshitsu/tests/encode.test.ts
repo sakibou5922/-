@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { answersToParams, entryFromParams, paramsToAnswers, resultHref } from "@/lib/decision/encode";
+import { answersToParams, checkHref, entryFromParams, fromSearchParams, paramsToAnswers, resultHref } from "@/lib/decision/encode";
 import { decide } from "@/lib/decision/engine";
 import type { DiagnosisAnswers } from "@/lib/decision/types";
 
@@ -16,13 +16,7 @@ const a: DiagnosisAnswers = {
   new_customer_state: "ENOUGH",
 };
 
-function toObj(p: URLSearchParams): Record<string, string> {
-  const o: Record<string, string> = {};
-  p.forEach((v, k) => {
-    o[k] = v;
-  });
-  return o;
-}
+const toObj = fromSearchParams;
 
 describe("回答 ↔ URL", () => {
   it("往復で同じ回答・同じ結果になる（A22: 個人情報なし）", () => {
@@ -32,6 +26,9 @@ describe("回答 ↔ URL", () => {
     expect(decide(back!)).toEqual(decide(a));
     expect(entryFromParams(toObj(p))).toBe("POS");
     expect(resultHref(a)).toMatch(/^\/check\/result\?/);
+    expect(checkHref()).toBe("/check");
+    expect(checkHref("POS")).toBe("/check?from=POS");
+    expect(paramsToAnswers(toObj(new URLSearchParams(checkHref("POS", a).split("?")[1])))).toEqual(a);
     expect(p.toString()).not.toMatch(/name|mail|tel|phone/);
   });
   it("壊れた URL は null（DIAGNOSIS_INCOMPLETE）", () => {

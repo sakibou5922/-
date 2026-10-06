@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArticleCard } from "@/components/ArticleCard";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { ARTICLES, articleHref } from "@/lib/content/articles";
+import { ARTICLES } from "@/lib/content/articles";
 
 export const metadata: Metadata = {
   title: "「本当に必要？」記事一覧",
@@ -26,12 +27,7 @@ export default function NeedIndexPage() {
         </h2>
         <div className="card-grid card-grid--2">
           {ARTICLES.map((a) => (
-            <Link key={a.slug} href={articleHref(a.slug)} className="card article-card">
-              <span className="article-card__kicker">本当に必要？</span>
-              <h3>{a.shortTitle.replace(/は本当に必要？$/, "")}</h3>
-              <p>{a.immediateAnswer[0]}</p>
-              <span className="article-card__more">判断基準を読む →</span>
-            </Link>
+            <ArticleCard key={a.slug} article={a} />
           ))}
         </div>
         <p style={{ marginTop: 24 }}>

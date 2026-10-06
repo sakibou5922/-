@@ -2,17 +2,11 @@
 // 使い方: BASE_URL=http://localhost:3000 node scripts/axe.mjs
 import { chromium } from "playwright";
 import AxeBuilder from "@axe-core/playwright";
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
+import { BASE, RESULT_URL as RESULT, writeReport } from "./_common.mjs";
 
-const BASE = (process.env.BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
-const OUT = path.resolve("docs/qa");
-const RESULT =
-  "/check/result?st=OPERATING&bt=FOOD&rm=MIXED&op=MOST&oc=INVENTORY_IMPORTANT&sc=TEAM_4_PLUS&rr=MEDIUM&ex=LINE,POS,CASHLESS&md=YES&nc=NEED_MORE";
 const PAGES = ["/", "/check", RESULT, "/need", "/need/pos-register", "/need/line-official", "/guide/opening-order", "/editorial-policy", "/operator"];
 const WIDTHS = [375, 1440];
 
-await mkdir(OUT, { recursive: true });
 const browser = await chromium.launch(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {});
 const all = [];
 for (const width of WIDTHS) {
@@ -30,7 +24,7 @@ for (const width of WIDTHS) {
   await ctx.close();
 }
 await browser.close();
-await writeFile(path.join(OUT, "axe-report.json"), JSON.stringify(all, null, 2));
+await writeReport("axe-report.json", all);
 const seriousTotal = all.flatMap((a) => a.violations).filter((x) => x.impact === "serious" || x.impact === "critical").length;
 console.log(`\nserious/critical total: ${seriousTotal}`);
 process.exit(seriousTotal ? 1 : 0);

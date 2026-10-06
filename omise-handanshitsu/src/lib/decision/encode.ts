@@ -3,8 +3,8 @@
  * 回答は保存しない（persist_personal_answers: false）。結果 URL に回答そのものを載せることで、
  * サーバーに何も残さず、同じ URL → 同じ結果 を保証する。個人情報は含まれない。
  */
-import { parseAnswers } from "./engine";
-import type { DiagnosisAnswers, Area } from "./types";
+import { parseAnswers } from "./parse";
+import { AREAS, type Area, type DiagnosisAnswers } from "./types";
 
 const KEYS: Record<keyof DiagnosisAnswers, string> = {
   stage: "st",
@@ -20,24 +20,15 @@ const KEYS: Record<keyof DiagnosisAnswers, string> = {
   new_customer_state: "nc",
 };
 
-export const ENTRY_AREAS: Area[] = [
-  "RESERVATION",
-  "CASHLESS",
-  "POS",
-  "LINE",
-  "EXTERNAL_PLATFORM",
-  "GOOGLE_FOUNDATION",
-  "ACCOUNTING",
-  "WEBSITE",
-];
+/** 記事やガイドから入ってこられる領域（INTEGRATION は入口を持たない） */
+const ENTRY_AREAS: readonly string[] = AREAS.filter((a) => a !== "INTEGRATION");
 
 export function answersToParams(a: DiagnosisAnswers, entry?: Area | null): URLSearchParams {
   const p = new URLSearchParams();
-  (Object.keys(KEYS) as (keyof DiagnosisAnswers)[]).forEach((key) => {
+  for (const [key, short] of Object.entries(KEYS) as [keyof DiagnosisAnswers, string][]) {
     const v = a[key];
-    if (v === undefined) return;
-    p.set(KEYS[key], Array.isArray(v) ? v.join(",") : v);
-  });
+    if (v !== undefined) p.set(short, Array.isArray(v) ? v.join(",") : v);
+  }
   if (entry) p.set("from", entry);
   return p;
 }
@@ -46,7 +37,17 @@ export function resultHref(a: DiagnosisAnswers, entry?: Area | null): string {
   return `/check/result?${answersToParams(a, entry).toString()}`;
 }
 
+/** 8問チェックの入口。回答付きなら確認画面から始まる（「回答を直す」） */
+export function checkHref(entry?: Area | null, answers?: DiagnosisAnswers): string {
+  const q = answers ? answersToParams(answers, entry).toString() : entry ? `from=${entry}` : "";
+  return q ? `/check?${q}` : "/check";
+}
+
 export type SearchParamsLike = Record<string, string | string[] | undefined>;
+
+export function fromSearchParams(params: URLSearchParams): SearchParamsLike {
+  return Object.fromEntries(params);
+}
 
 function first(v: string | string[] | undefined): string | undefined {
   return Array.isArray(v) ? v[0] : v;
@@ -55,11 +56,11 @@ function first(v: string | string[] | undefined): string | undefined {
 /** 不正・不足なら null（DIAGNOSIS_INCOMPLETE） */
 export function paramsToAnswers(params: SearchParamsLike): DiagnosisAnswers | null {
   const raw: Record<string, unknown> = {};
-  (Object.keys(KEYS) as (keyof DiagnosisAnswers)[]).forEach((key) => {
-    const v = first(params[KEYS[key]]);
-    if (v === undefined) return;
+  for (const [key, short] of Object.entries(KEYS) as [keyof DiagnosisAnswers, string][]) {
+    const v = first(params[short]);
+    if (v === undefined) continue;
     raw[key] = key === "existing_services" ? v.split(",").filter(Boolean) : v;
-  });
+  }
   try {
     return parseAnswers(raw);
   } catch {
@@ -69,5 +70,5 @@ export function paramsToAnswers(params: SearchParamsLike): DiagnosisAnswers | nu
 
 export function entryFromParams(params: SearchParamsLike): Area | null {
   const v = first(params.from);
-  return v && (ENTRY_AREAS as string[]).includes(v) ? (v as Area) : null;
+  return v && ENTRY_AREAS.includes(v) ? (v as Area) : null;
 }

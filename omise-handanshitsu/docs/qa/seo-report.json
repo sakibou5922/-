@@ -190,7 +190,7 @@
       "issues": []
     },
     {
-      "route": "/check/result?st=OPERATING&bt=FOOD&rm=MIXED&op=MOST&oc=SIMPLE&sc=SOLO&rr=MEDIUM&ex=NONE&nc=ENOUGH",
+      "route": "/check/result?st=OPERATING&bt=FOOD&rm=MIXED&op=MOST&oc=INVENTORY_IMPORTANT&sc=TEAM_4_PLUS&rr=MEDIUM&ex=LINE,POS,CASHLESS&md=YES&nc=NEED_MORE",
       "status": 200,
       "title": "判断結果｜お店に今必要なものチェック｜お店の判断室",
       "description": "予約システム・POS・キャッシュレス・LINE公式・集客媒体。小さなお店に本当に必要なものを、必要な順番で判断するガイド",

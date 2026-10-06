@@ -66,32 +66,32 @@ export interface DiagnosisAnswers {
 export type QuestionKey = keyof DiagnosisAnswers;
 export type SingleQuestionKey = Exclude<QuestionKey, "existing_services">;
 
+/** 領域。並び順は config/decision.rules.json の areas と同じ */
 export const AREAS = [
   "GOOGLE_FOUNDATION",
-  "EXTERNAL_PLATFORM",
   "RESERVATION",
   "CASHLESS",
   "POS",
   "ACCOUNTING",
   "LINE",
+  "EXTERNAL_PLATFORM",
   "WEBSITE",
   "INTEGRATION",
 ] as const;
 export type Area = (typeof AREAS)[number];
 
-export const SCORED_AREAS = ["RESERVATION", "CASHLESS", "POS", "LINE", "EXTERNAL_PLATFORM"] as const;
-export type ScoredArea = (typeof SCORED_AREAS)[number];
+/** 点数表（config.scores）を持つ領域 */
+export type ScoredArea = Exclude<Area, "GOOGLE_FOUNDATION" | "INTEGRATION">;
 
-export const STATUSES = [
-  "FREE_FOUNDATION",
-  "NOW",
-  "NEXT",
-  "LATER",
-  "NOT_PRIORITY",
-  "REVIEW_EXISTING",
-  "HIDDEN",
-] as const;
-export type Status = (typeof STATUSES)[number];
+export type Status = "FREE_FOUNDATION" | "NOW" | "NEXT" | "LATER" | "NOT_PRIORITY" | "REVIEW_EXISTING" | "HIDDEN";
+/** 結果に現れるステータス（HIDDEN は結果に含めない） */
+export type VisibleStatus = Exclude<Status, "HIDDEN">;
+
+/** Need が確定したとみなすステータス。Offer を出してよいのはここだけ（A25） */
+export const NEED_CONFIRMED: readonly Status[] = ["NOW", "NEXT", "FREE_FOUNDATION"];
+export function isNeedConfirmed(status: Status): boolean {
+  return NEED_CONFIRMED.includes(status);
+}
 
 /** 点数に寄与した回答（内部用。理由文の生成にだけ使う） */
 export interface Factor {
@@ -102,7 +102,7 @@ export interface Factor {
 
 export interface AreaDecision {
   area: Area;
-  status: Status;
+  status: VisibleStatus;
   /** ユーザーに見せる理由文（点数は含めない） */
   reasons: string[];
   /** 導入後に測る指標 */

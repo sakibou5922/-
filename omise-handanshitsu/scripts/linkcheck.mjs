@@ -1,9 +1,7 @@
 // サイト内リンク切れチェック（lychee 相当・内部のみ。--external で外部も HEAD）。
 // 使い方: BASE_URL=http://localhost:3000 node scripts/linkcheck.mjs [--external]
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
+import { BASE, writeReport } from "./_common.mjs";
 
-const BASE = (process.env.BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 const EXTERNAL = process.argv.includes("--external");
 const origin = new URL(BASE).origin;
 
@@ -60,8 +58,7 @@ if (EXTERNAL) {
   }
 }
 
-await mkdir("docs/qa", { recursive: true });
-await writeFile(path.resolve("docs/qa/linkcheck-report.json"), JSON.stringify({ base: BASE, internal, external: EXTERNAL ? ext : [...external.keys()] }, null, 2));
+await writeReport("linkcheck-report.json", { base: BASE, internal, external: EXTERNAL ? ext : [...external.keys()] });
 const broken = internal.filter((x) => x.status >= 400).length + ext.filter((x) => x.status >= 400 || x.status === 0).length;
 console.log(`\ninternal pages: ${internal.length}, external links: ${external.size}, broken: ${broken}`);
 process.exit(broken ? 1 : 0);

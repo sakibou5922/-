@@ -3,8 +3,9 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
 import { StatusBadge } from "@/components/StatusBadge";
-import { BRAND, absoluteUrl } from "@/lib/site";
-import type { Status } from "@/lib/decision/types";
+import { REGISTRY_VERIFIED_AT } from "@/lib/evidence";
+import { articleJsonLd } from "@/lib/seo";
+import type { VisibleStatus } from "@/lib/decision/types";
 
 export const metadata: Metadata = {
   title: "開業の順番｜何を・いつ決めるか",
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 
 interface Step {
   title: string;
-  status: Status;
+  status: VisibleStatus;
   when: string;
   rule: string;
   href?: string;
@@ -80,19 +81,7 @@ const STEPS: Step[] = [
 export default function OpeningOrderPage() {
   return (
     <div className="container">
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "Article",
-          headline: "開業の順番｜何を・いつ決めるか",
-          inLanguage: "ja",
-          datePublished: "2026-10-06",
-          dateModified: "2026-10-06",
-          mainEntityOfPage: absoluteUrl("/guide/opening-order"),
-          author: { "@type": "Organization", name: BRAND.brand_name },
-          publisher: { "@type": "Organization", name: BRAND.brand_name, url: absoluteUrl("/") },
-        }}
-      />
+      <JsonLd data={articleJsonLd({ headline: "開業の順番｜何を・いつ決めるか", path: "/guide/opening-order", published: REGISTRY_VERIFIED_AT, modified: REGISTRY_VERIFIED_AT })} />
       <Breadcrumbs items={[{ name: "開業の順番", href: "/guide/opening-order" }]} />
       <div className="page-title">
         <h1>開業の順番｜何を・いつ決めるか</h1>

@@ -59,7 +59,7 @@ describe("A13 公式フォールバック", () => {
 describe("A14 収益リンクが有効なときだけ sponsored", () => {
   it("フラグ ON + ACTIVE + APPROVED + URL + 鮮度内 → sponsored / PR", () => {
     const offers = OFFERS.map((o) => (o.offer_id === "freee_reservation" ? approved(o) : o));
-    const sel = selectOffers("RESERVATION", "NOW", { flags: allOn, now: NOW }, offers);
+    const sel = selectOffers("RESERVATION", "NOW", { flags: allOn, now: NOW, offers });
     const card = sel.cards.find((c) => c.offer_id === "freee_reservation");
     expect(card?.sponsored).toBe(true);
     expect(card?.disclosure).toBe("PR");
@@ -79,7 +79,7 @@ describe("A14 収益リンクが有効なときだけ sponsored", () => {
 describe("A12 未確認・期限切れ Offer の非表示", () => {
   it("EXPIRED / PAUSED の収益 Offer は候補に出ない", () => {
     const offers = OFFERS.map((o) => (o.offer_id === "square" ? { ...o, status: "EXPIRED" as const } : o));
-    const sel = selectOffers("CASHLESS", "NOW", { flags: allOff, now: NOW }, offers);
+    const sel = selectOffers("CASHLESS", "NOW", { flags: allOff, now: NOW, offers });
     expect(sel.cards.map((c) => c.offer_id)).not.toContain("square");
     expect(sel.cards.map((c) => c.offer_id)).toContain("airpay");
   });
@@ -98,7 +98,7 @@ describe("A12 UNVERIFIED は official_fallback のときだけ公式リンクで
   });
   it("PAUSED でも official_fallback=false なら出ない", () => {
     const offers = OFFERS.map((o) => (o.offer_id === "square" ? { ...o, status: "PAUSED" as const, official_fallback: false } : o));
-    const sel = selectOffers("POS", "NOW", { flags: allOff, now: NOW }, offers);
+    const sel = selectOffers("POS", "NOW", { flags: allOff, now: NOW, offers });
     expect(sel.cards.map((c) => c.offer_id)).not.toContain("square");
     expect(sel.cards.map((c) => c.offer_id)).toContain("airregi");
   });
@@ -140,7 +140,7 @@ describe("A20 鮮度切れは数値 claim を隠し、収益を止める", () =>
   it("valid_until を過ぎると料金が null になり、承認済みでも sponsored にならない", () => {
     const late = new Date("2027-03-01T00:00:00Z");
     const offers = OFFERS.map((o) => (o.offer_id === "freee_reservation" ? approved(o) : o));
-    const sel = selectOffers("RESERVATION", "NOW", { flags: allOn, now: late }, offers);
+    const sel = selectOffers("RESERVATION", "NOW", { flags: allOn, now: late, offers });
     const card = sel.cards.find((c) => c.offer_id === "freee_reservation");
     expect(card?.facts_visible).toBe(false);
     expect(card?.fee_summary).toBeNull();

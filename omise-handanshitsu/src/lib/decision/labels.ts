@@ -5,6 +5,7 @@ import type {
   QuestionKey,
   SingleQuestionKey,
   Status,
+  VisibleStatus,
 } from "./types";
 
 /* ------------------------------------------------------------------ */
@@ -187,6 +188,17 @@ export function optionLabel(key: QuestionKey, value: string): string {
   return QUESTION_BY_KEY[key].options.find((o) => o.value === value)?.label ?? value;
 }
 
+/** いまの回答で出すべき質問（条件付き質問は条件を満たすときだけ） */
+export function visibleQuestions(a: Partial<DiagnosisAnswers>): QuestionDef[] {
+  return QUESTIONS.filter((q) => !q.when || q.when(a));
+}
+
+/** 回答の表示用ラベル。複数選択は「、」で連結 */
+export function answerLabel(key: QuestionKey, value: string | string[] | undefined, empty = "—"): string {
+  if (Array.isArray(value)) return value.map((v) => optionLabel(key, v)).join("、");
+  return typeof value === "string" ? optionLabel(key, value) : empty;
+}
+
 /* ------------------------------------------------------------------ */
 /* 理由文に使う言い回し                                                  */
 /* ------------------------------------------------------------------ */
@@ -269,10 +281,10 @@ function joinPhrases(factors: Factor[]): string {
 
 export interface AreaMeta {
   name: string;
-  short: string;
   href: string;
   measure: string[];
-  alternative: string;
+  /** 不要・後回しのときの代替。土台や連携のように代替がない領域は null */
+  alternative: string | null;
   review_points: string[];
   next_action: Partial<Record<Status, string>>;
 }
@@ -280,10 +292,9 @@ export interface AreaMeta {
 export const AREA_META: Record<Area, AreaMeta> = {
   GOOGLE_FOUNDATION: {
     name: "Googleビジネスプロフィール",
-    short: "Google",
     href: "/guide/opening-order",
     measure: ["店名検索の表示回数", "電話・経路・サイトのタップ数", "口コミ数と返信率"],
-    alternative: "—",
+    alternative: null,
     review_points: ["営業時間・住所・写真が最新か", "口コミに返信しているか", "予約リンクなど導線を置けているか"],
     next_action: {
       FREE_FOUNDATION: "オーナー確認を済ませ、営業時間・写真・説明文を今日中に埋める。",
@@ -292,7 +303,6 @@ export const AREA_META: Record<Area, AreaMeta> = {
   },
   RESERVATION: {
     name: "予約システム",
-    short: "予約",
     href: "/need/reservation-system",
     measure: ["予約対応にかかる時間", "営業時間外の予約数", "予約漏れ・二重予約の件数", "キャンセル対応の手間", "予約経路の数"],
     alternative: "電話・LINE・DMで受け、紙かスプレッドシートの台帳で管理する。",
@@ -307,7 +317,6 @@ export const AREA_META: Record<Area, AreaMeta> = {
   },
   CASHLESS: {
     name: "キャッシュレス決済",
-    short: "キャッシュレス",
     href: "/need/cashless-payment",
     measure: ["キャッシュレス利用率", "月間の決済手数料", "会計にかかる時間", "現金締めの時間", "お客さまからの要望数"],
     alternative: "現金と振込で受け、要望が出た回数を記録する。",
@@ -322,7 +331,6 @@ export const AREA_META: Record<Area, AreaMeta> = {
   },
   POS: {
     name: "POSレジ",
-    short: "POS",
     href: "/need/pos-register",
     measure: ["締め作業の時間", "在庫差異", "集計の時間", "転記の回数", "売上分析を見た頻度"],
     alternative: "無料のレジアプリか手書き伝票＋表計算で、売上だけ記録する。",
@@ -337,7 +345,6 @@ export const AREA_META: Record<Area, AreaMeta> = {
   },
   ACCOUNTING: {
     name: "会計ソフト",
-    short: "会計",
     href: "/guide/opening-order",
     measure: ["月次の記帳にかかる時間", "レシート・明細の取り込み率", "確定申告の準備時間"],
     alternative: "開業初月は表計算で収支を記録し、税理士に依頼するかを決める。",
@@ -350,7 +357,6 @@ export const AREA_META: Record<Area, AreaMeta> = {
   },
   LINE: {
     name: "LINE公式アカウント",
-    short: "LINE",
     href: "/need/line-official",
     measure: ["友だちの純増数", "配信の到達数", "ブロック数", "予約・再来につながった数", "配信コスト"],
     alternative: "再来のお礼や次回予約は、会計時の一言と名刺・カードで十分なことが多い。",
@@ -365,7 +371,6 @@ export const AREA_META: Record<Area, AreaMeta> = {
   },
   EXTERNAL_PLATFORM: {
     name: "外部の集客媒体",
-    short: "集客媒体",
     href: "/need/hotpepper-beauty",
     measure: ["媒体経由の新規数", "新規1人あたりの獲得費（CAC）", "再来率", "6か月の顧客価値", "媒体依存率"],
     alternative: "Googleビジネスプロフィール・店名検索・紹介・SNSで直接の導線を育てる。",
@@ -379,7 +384,6 @@ export const AREA_META: Record<Area, AreaMeta> = {
   },
   WEBSITE: {
     name: "自社サイト",
-    short: "サイト",
     href: "/guide/opening-order",
     measure: ["検索からの訪問数", "サイト経由の予約・問い合わせ数", "滞在時間"],
     alternative: "Googleビジネスプロフィールと予約ページ（無料プラン）で、検索の受け皿を作る。",
@@ -392,7 +396,6 @@ export const AREA_META: Record<Area, AreaMeta> = {
   },
   INTEGRATION: {
     name: "サービス間の連携",
-    short: "連携",
     href: "/guide/opening-order",
     measure: ["二重入力の回数", "転記ミスの件数", "締め作業の時間"],
     alternative: "二重入力している項目を書き出しておき、次に見直すときに連携から検討する。",
@@ -410,42 +413,34 @@ export const AREA_META: Record<Area, AreaMeta> = {
 
 export interface StatusMeta {
   label: string;
-  short: string;
   description: string;
 }
 
-export const STATUS_META: Record<Status, StatusMeta> = {
+export const STATUS_META: Record<VisibleStatus, StatusMeta> = {
   FREE_FOUNDATION: {
     label: "無料で先に整える",
-    short: "無料",
     description: "費用ゼロで、どの業態でも先に整えて損がない土台です。",
   },
   NOW: {
     label: "今、整える",
-    short: "今",
     description: "いまのお店の条件なら、先に手を付ける価値が高いものです（最大3つ）。",
   },
   NEXT: {
     label: "次に考える",
-    short: "次",
     description: "今すぐではないが、条件がそろえば検討する価値があるものです（最大2つ）。",
   },
   LATER: {
     label: "あとで考える",
-    short: "あと",
     description: "今は動かなくてよいもの。状況が変わったら見直します。",
   },
   NOT_PRIORITY: {
     label: "今は優先しない",
-    short: "今はいらない",
     description: "いまのお店の条件では、入れない判断で問題ないものです。",
   },
   REVIEW_EXISTING: {
     label: "既存サービスの見直し",
-    short: "見直し",
     description: "すでに使っているため新規導入は勧めません。使い方と費用対効果を見直す観点です。",
   },
-  HIDDEN: { label: "", short: "", description: "" },
 };
 
 /* ------------------------------------------------------------------ */
