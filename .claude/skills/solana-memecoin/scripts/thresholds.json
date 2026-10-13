@@ -1,0 +1,14 @@
+{
+  "min_liquidity_usd": 10000,
+  "min_lp_locked_pct": 90,
+  "max_top10_pct": 30,
+  "max_single_holder_pct": 10,
+  "max_insiders_pct": 15,
+  "max_creator_pct": 5,
+  "min_holders": 100,
+  "max_creator_prior_tokens": 5,
+  "max_transfer_fee_pct": 2,
+  "parabolic_h24_pct": 1000,
+  "sell_buy_ratio_warn": 1.5,
+  "young_age_hours": 1
+}
