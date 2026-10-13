@@ -6,6 +6,13 @@ import sys
 import time
 import urllib.request
 
+# Windows では出力が cp932 になり絵文字で落ちるため UTF-8 に固定する
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
+
 UA = {"User-Agent": "Mozilla/5.0 (solana-memecoin-skill)", "Accept": "application/json"}
 RPC_URL = os.environ.get("SOLANA_RPC_URL", "https://api.mainnet-beta.solana.com")
 ERRORS = []  # 取得に失敗したソース(レポート末尾に表示する)
@@ -116,7 +123,8 @@ def flag(name):
 def dex_pairs(mint):
     """DexScreener のペア一覧(Solana)。"""
     d = get_json(f"{DEX}/tokens/v1/solana/{mint}", "DexScreener")
-    return d if isinstance(d, list) else []
+    # 対象トークンが quote 側のペア(例: XXX/対象)は価格・時価総額が別物なので除外
+    return [p for p in d if (p.get("baseToken") or {}).get("address") == mint] if isinstance(d, list) else []
 
 
 def dex_pairs_bulk(mints):

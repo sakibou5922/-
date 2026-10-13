@@ -1,6 +1,6 @@
 ---
 name: solana-memecoin
-description: Solana ミームコイン(pump.fun 等)の詐欺チェック・新しいコイン探し・開発者/大口の調査・売買記録と振り返りを、無料の公開API(キー不要・読み取り専用)で行う。ユーザーがコントラクトアドレス(CA)や pump.fun / DexScreener / RugCheck のリンク、ミームコインのティッカーを送ってきたとき、「このコイン大丈夫?」「詐欺?」「ラグる?」「いいコインない?」「新しいコイン探して」「graduate しそうなの」「開発者調べて」「誰が持ってる?」「KOL 買ってる?」「買ったから記録して」「売った」「振り返りして」「勝率は?」と言われたときに必ず使う。Use for any Solana memecoin safety check, discovery, dev/holder research, or trade journaling.
+description: Solana ミームコイン(pump.fun 等)の詐欺チェック・新しいコイン探し・開発者/大口の調査・売買記録と振り返りを、無料の公開API(キー不要・読み取り専用)で行う。ユーザーがコントラクトアドレス(CA)や pump.fun / DexScreener / RugCheck のリンク、ミームコインのティッカーを送ってきたとき、「このコイン大丈夫?」「詐欺?」「ラグる?」「いいコインない?」「新しいコイン探して」「graduate しそうなの」「開発者調べて」「誰が持ってる?」「KOL 買ってる?」「買ったから記録して」「売った」「振り返りして」「勝率は?」「自動で探して」「Discordに通知して」と言われたときに必ず使う。Use for any Solana memecoin safety check, discovery, dev/holder research, or trade journaling.
 ---
 
 # Solana ミームコイン調査スキル
@@ -16,6 +16,7 @@ description: Solana ミームコイン(pump.fun 等)の詐欺チェック・新�
 
 ## 準備
 - 必要なのは `python3`(3.8以上)だけ。外部ライブラリ・APIキーは不要。
+- Windows では `python3` が使えないことがある。その場合は `py -3` か `python` に読み替えて実行する。
 - スクリプトはこの SKILL.md と同じフォルダの `scripts/` にある。`cd <このスキルのフォルダ>/scripts` してから実行する。
 - 公開 Solana RPC が混んでいると dev.py の一部が「取得できず」になる。ユーザーが無料の RPC(Helius などの無料枠)を持っていれば `SOLANA_RPC_URL` 環境変数で指定できる。
 
@@ -77,6 +78,36 @@ python3 journal.py delete <ID>
   - 「🔴 判定を無視したトレードは平均 −60%」
   - 「負けトレードは保有時間が長い(損切りが遅い)」
 - 記録は `~/.memecoin/journal.json` にだけ保存され、外部には送られない。
+
+## 機能5: 自動スキャン(放っておいても探して Discord に通知)
+`autoscan.py` は次の流れを1回実行する:
+1. 機能2の「急上昇」「graduate直前」からコインを集める
+2. 上位10件を機能1でチェックする
+3. 🔴 と、注意が多すぎるものを除く
+4. 残った最大5件を Discord に通知する
+
+同じコインは24時間は再通知しない。
+```bash
+python3 autoscan.py --dry-run        # 通知せずに結果だけ表示(まず動作確認)
+python3 autoscan.py --test-discord   # Discord にテスト通知
+```
+- **Windows で定期実行する**: ユーザーに次のコマンドを PowerShell で実行してもらう。
+  ```
+  powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.claude\skills\solana-memecoin\scripts\setup_windows.ps1"
+  ```
+  - 実行すると Webhook URL を聞かれ、テスト通知を送ったあと、タスクスケジューラに「30分ごと・画面なし」で登録する。
+  - 間隔を変えるときは `-Minutes 60`、解除するときは `-Remove` を付ける。
+- **Discord Webhook URL の作り方**(ユーザーに案内する):
+  1. 自分用の Discord サーバーを開き、通知を受けたいチャンネルの ⚙(チャンネルの編集)を押す。
+  2. 「連携サービス」→「ウェブフック」→「新しいウェブフック」→「ウェブフックURLをコピー」。
+  - この URL を知っている人は誰でもそのチャンネルに投稿できる。人に見せたり GitHub に上げたりしないよう伝える。
+- 設定は `~/.memecoin/config.json` に保存される。ユーザーが URL を渡して「設定して」と言ったら、Claude がこのファイルを書く。中身は `{"discord_webhook": "URL"}` の形。
+- 通知の条件を変えるオプション: `--allow-yellow`(注意が何件までなら通知するか。初期値は2)、`--max-mcap`、`--max-age-h`(初期値は24時間)、`--max-notify`。Windows の自動実行の条件を変えたいときは、`setup_windows.ps1` の `$WArgs` にオプションを足して、もう一度実行してもらう。
+- ログは `~/.memecoin/autoscan.log`、通知した履歴は `~/.memecoin/reports/日付.md` にある。「最近どんなコインが通知された?」と聞かれたら、このファイルを読む。
+- 「通知が来ない」と言われたら、次を順に確認する:
+  1. ログを見る。
+  2. `--dry-run` で手動実行してみる。
+  3. 条件が厳しすぎないか確かめる。🔴 しかないときは通知されないのが正常。
 
 ## 結果の見せ方のテンプレート
 ```

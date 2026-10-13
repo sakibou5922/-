@@ -30,12 +30,29 @@ python3 discover.py new
 ```
 コインの一覧が出れば成功です。
 
+## 自動でコインを探して Discord に通知する(Windows)
+1. **Discord の Webhook URL を作る**
+   - 通知を受けたいチャンネルの ⚙ →「連携サービス」→「ウェブフック」→「新しいウェブフック」→「ウェブフックURLをコピー」
+2. **PowerShell で次のコマンドを実行する**
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.claude\skills\solana-memecoin\scripts\setup_windows.ps1"
+   ```
+   聞かれたら URL を貼り付けます。テスト通知が Discord に届けば設定完了です。
+3. あとは PC にログインしている間、30分ごとに自動で探して通知します。
+
+- 間隔を変える: 最後に ` -Minutes 60` を付けて、もう一度実行
+- 止める: 最後に ` -Remove` を付けて実行
+- ログ: `%USERPROFILE%\.memecoin\autoscan.log`
+- 通知履歴: `%USERPROFILE%\.memecoin\reports\`
+
 ## ファイル構成
 - `SKILL.md`:Claude 向けの使い方(どんな時に・どう使うか)
 - `scripts/check.py`:詐欺チェック
 - `scripts/discover.py`:新しいコイン探し
 - `scripts/dev.py`:開発者・大口の調査(ウォッチリスト対応)
 - `scripts/journal.py`:売買記録と振り返り(`~/.memecoin/journal.json` に保存)
+- `scripts/autoscan.py`:自動スキャンと Discord 通知
+- `scripts/setup_windows.ps1`:自動スキャンを Windows に登録する
 - `scripts/thresholds.json`:判定の基準値(自分好みに変えられます)
 - `references/`:危険サインの解説と、使っているAPIの一覧
 
