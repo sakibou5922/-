@@ -1,4 +1,4 @@
-# X運用キット（@dorachan598）
+# X運用キット（@ROIYAL65 / @dorachan598）
 
 Claude Code で次のコマンドが使えます（本体は `.claude/skills/`）。
 
@@ -15,7 +15,7 @@ Claude Code で次のコマンドが使えます（本体は `.claude/skills/`�
 | `/x-monetize` | 収益化の設計（商品・導線・数値目標・30日ロードマップ） |
 
 ## 最初にやること
-1. `x/account.md` の `？` を埋める（どのコマンドからでも質問されます）
+1. `x/accounts/<ハンドル>.md` の `？` を埋める（どのコマンドからでも質問されます）。アカウント一覧は `x/account.md`
 2. `/x-monetize` → `/x-profile` → `/x-plan` の順に実行
 
 ## 文字数チェック
