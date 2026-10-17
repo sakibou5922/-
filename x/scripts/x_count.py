@@ -17,7 +17,10 @@
 import argparse
 import re
 import sys
+import signal
 import unicodedata
+
+signal.signal(signal.SIGPIPE, signal.SIG_DFL)  # head などで出力を途中で切っても落ちないように
 
 LIMIT = 280
 LONG_LIMIT = 25000
